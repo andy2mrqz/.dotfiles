@@ -97,3 +97,13 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 export AWS_REGION='us-east-1'
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+#
+# Export common dumps to better places than $HOME
+#
+
+mkdir -p $HOME/.cache
+export LESSHISTFILE=$HOME/.cache/.lesshst
+export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
+
+
