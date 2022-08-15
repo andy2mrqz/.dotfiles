@@ -34,7 +34,7 @@ end
 packer.init {
   display = {
     open_fn = function()
-      return require("packer.util").float { border = "rounded" }
+      return require("packer.util").float({ border = "rounded" })
     end
   }
 }
@@ -45,6 +45,12 @@ return packer.startup(function(use)
   use "wbthomason/packer.nvim"          -- Packer can manage itself
   use "lewis6991/impatient.nvim"        -- Speeds up lua module loading for better startup time
   use "rebelot/kanagawa.nvim"           -- Colorscheme
+  use {
+    "nvim-treesitter/nvim-treesitter",  -- Treesitter for better highlighting/language support
+    run = function()
+      require('nvim-treesitter.install').update({ with_sync = true })
+    end
+  }
   use {
     "lewis6991/gitsigns.nvim",          -- Git gutter, blame, etc.
     config = function()
