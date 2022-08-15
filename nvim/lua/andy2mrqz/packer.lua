@@ -34,7 +34,6 @@ packer.init {
 
 -- Plugins to install
 return packer.startup(function(use)
-
   use "wbthomason/packer.nvim"          -- Packer can manage itself
   use "lewis6991/impatient.nvim"        -- Speeds up lua module loading for better startup time
   use "rebelot/kanagawa.nvim"           -- Colorscheme
