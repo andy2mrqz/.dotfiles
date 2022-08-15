@@ -18,4 +18,9 @@ vim.opt.pumheight = 10
 vim.opt.splitbelow = true        -- always open splits below
 vim.opt.splitright = true        -- always open splits to the right
 
-vim.api.nvim_command("au TextYankPost * silent! lua vim.highlight.on_yank()") -- Briefly highlight yank selection
+vim.api.nvim_create_autocmd("TextYankPost", {
+  group = vim.api.nvim_create_augroup("HIGHLIGHTED_YANK", {}),
+  pattern = "*",
+  callback = function() vim.highlight.on_yank() end
+})
+
