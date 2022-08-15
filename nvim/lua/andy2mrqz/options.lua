@@ -17,3 +17,5 @@ vim.opt.signcolumn = "yes"        -- always show the signcolumn (git gutter, lin
 vim.opt.pumheight = 10
 vim.opt.splitbelow = true        -- always open splits below
 vim.opt.splitright = true        -- always open splits to the right
+
+vim.api.nvim_command("au TextYankPost * silent! lua vim.highlight.on_yank()") -- Briefly highlight yank selection
