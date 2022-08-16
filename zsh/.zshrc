@@ -5,7 +5,7 @@ export PATH="$HOME/bin:/usr/local/bin:/usr/local/sbin:$PATH"
 PATH+=":$HOME/.emacs.d/bin"
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/andrewmarquez/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 # Theme
 ZSH_THEME="robbyrussell"
