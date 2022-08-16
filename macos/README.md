@@ -6,7 +6,7 @@ A few loose notes while setting up a new MBP
 
 ### homebrew packages
 
-- bitwarden chrome imagemagick jq obsidian postman ripgrep slack tmux tree
+- bitwarden chrome docker imagemagick jq maccy obsidian postman ripgrep slack tmux tree
 - nightly neovim
 ```sh
   brew install --HEAD neovim
