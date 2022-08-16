@@ -15,8 +15,10 @@ vim.opt.hidden = true             -- allow switching buffers without saving
 vim.opt.undofile = true           -- persistent undo
 vim.opt.signcolumn = "yes"        -- always show the signcolumn (git gutter, linting)
 vim.opt.pumheight = 10
-vim.opt.splitbelow = true        -- always open splits below
-vim.opt.splitright = true        -- always open splits to the right
+vim.opt.splitbelow = true         -- always open splits below
+vim.opt.splitright = true         -- always open splits to the right
+-- vim.opt.textwidth = 80            -- maximum width of text that is being inserted
+-- vim.opt.colorcolumn = "+1"
 
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = vim.api.nvim_create_augroup("HIGHLIGHTED_YANK", {}),
