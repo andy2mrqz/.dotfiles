@@ -23,6 +23,17 @@ vim.opt.splitright = true         -- always open splits to the right
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = vim.api.nvim_create_augroup("HIGHLIGHTED_YANK", {}),
   pattern = "*",
-  callback = function() vim.highlight.on_yank() end
+  callback = function()
+    vim.highlight.on_yank()
+  end
+})
+
+local FT_DETECT_GROUP = vim.api.nvim_create_augroup("FILETYPE_DETECT", {})
+vim.api.nvim_create_autocmd("BufRead,BufNewFile", {
+  group = FT_DETECT_GROUP,
+  pattern = "*.code-workspace",
+  callback = function()
+    vim.api.nvim_set_option_value("filetype", "json", { scope = "local" })
+  end
 })
 
