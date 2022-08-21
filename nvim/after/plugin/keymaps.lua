@@ -19,3 +19,7 @@ nnoremap("<leader>e", ":Lex 40<cr>")
 -- Buffer navigation
 nnoremap("<S-l>", ":bnext<cr>")
 nnoremap("<S-h>", ":bprevious<cr>")
+
+-- gitsigns config
+nnoremap("<leader>gb", ":Gitsigns toggle_current_line_blame<cr>")
+
