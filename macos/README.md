@@ -6,16 +6,28 @@ A few loose notes while setting up a new MBP
 
 ### homebrew packages
 
-- bitwarden chrome docker imagemagick jq maccy obsidian postman ripgrep slack tmux tree
-- nightly neovim
-```sh
-  brew install --HEAD neovim
-```
+- bitwarden
+- chrome
+- docker
 - emacs (optionally --with-no-titlebar)
 ```sh
   brew tap d12frosted/emacs-plus
   brew install emacs-plus --with-native-comp
 ```
+- imagemagick
+- jq
+- neovim (nightly)
+```sh
+  brew install --HEAD neovim
+```
+- obsidian
+- postman
+- raindropio (bookmark keeper)
+- raycast (spotlight alternative)
+- ripgrep
+- slack
+- tmux
+- tree
 
 ### other
 
