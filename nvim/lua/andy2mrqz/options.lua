@@ -38,3 +38,11 @@ vim.api.nvim_create_autocmd("BufRead,BufNewFile", {
   end
 })
 
+vim.api.nvim_create_autocmd("BufRead,BufNewFile", {
+  group = FT_DETECT_GROUP,
+  pattern = "*.gitignore",
+  callback = function()
+    vim.api.nvim_set_option_value("filetype", "gitignore", { scope = "local" })
+  end
+})
+
