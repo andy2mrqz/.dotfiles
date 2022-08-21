@@ -42,15 +42,17 @@ return packer.startup(function(use)
   use "wbthomason/packer.nvim"          -- Packer can manage itself
   use "lewis6991/impatient.nvim"        -- Speeds up lua module loading for better startup time
   use "rebelot/kanagawa.nvim"           -- Colorscheme
-  use {
-    "nvim-treesitter/nvim-treesitter",  -- Treesitter for better highlighting/language support
-    run = function()
-      require('nvim-treesitter.install').update({ with_sync = true })
-    end
-  }
+  use("nvim-treesitter/nvim-treesitter", {
+    run = ":TSUpdate"                   -- Treesitter for better highlighting/language support
+  })
+
+  -- lsp plugins
+  use "neovim/nvim-lspconfig"           -- nvim builtin lsp
 
   -- cmp plugins
   use "hrsh7th/nvim-cmp"                -- completion plugin
+  use "hrsh7th/cmp-nvim-lsp"            -- complete lsp suggestions
+  use "hrsh7th/cmp-nvim-lua"            -- completion for nvim lua
   use "hrsh7th/cmp-buffer"              -- complete within buffer
   use "hrsh7th/cmp-path"                -- complete paths
   use "hrsh7th/cmp-cmdline"             -- completions for commandline
