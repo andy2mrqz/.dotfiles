@@ -19,7 +19,7 @@ end
 --
 vim.api.nvim_create_autocmd('BufWritePost', {
   group = vim.api.nvim_create_augroup('PACKER', { clear = true }),
-  command = 'source <afile> | PackerCompile',
+  command = 'source <afile> | PackerSync',
   pattern = 'packer.lua'
 })
 
@@ -48,6 +48,17 @@ return packer.startup(function(use)
       require('nvim-treesitter.install').update({ with_sync = true })
     end
   }
+
+  -- cmp plugins
+  use "hrsh7th/nvim-cmp"                -- completion plugin
+  use "hrsh7th/cmp-buffer"              -- complete within buffer
+  use "hrsh7th/cmp-path"                -- complete paths
+  use "hrsh7th/cmp-cmdline"             -- completions for commandline
+  use "saadparwaiz1/cmp_luasnip"        -- complete snippets
+
+  -- snippets
+  use "L3MON4D3/LuaSnip"                -- snippet engine
+
   use {
     "lewis6991/gitsigns.nvim",          -- Git gutter, blame, etc.
     config = function()
