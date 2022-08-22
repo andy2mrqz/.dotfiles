@@ -1,7 +1,9 @@
 require('nvim-treesitter.configs').setup({
   ensure_installed = "all",                       -- Which parsers to install
   sync_install = false,                           -- Whether installation of parsers should be synchronous
-  ignore_install = { "" },                        -- List of parsers to ignore
+  ignore_install = {
+    "phpdoc"
+  },                        -- List of parsers to ignore
   highlight = {
     enable = true,
     disable = { "" },

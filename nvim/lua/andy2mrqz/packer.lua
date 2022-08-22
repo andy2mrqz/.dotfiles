@@ -46,8 +46,12 @@ return packer.startup(function(use)
     run = ":TSUpdate"                   -- Treesitter for better highlighting/language support
   })
 
-  -- lsp plugins
-  use "neovim/nvim-lspconfig"           -- nvim builtin lsp
+  -- lsp plugins (ORDER MATTERS)
+  use {
+    "williamboman/mason.nvim",            -- lsp/linter package manager
+    "williamboman/mason-lspconfig.nvim",  -- bridges mason and lspconfig
+    "neovim/nvim-lspconfig",              -- nvim builtin lsp
+  }
 
   -- cmp plugins
   use "hrsh7th/nvim-cmp"                -- completion plugin
