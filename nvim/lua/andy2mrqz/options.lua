@@ -1,6 +1,6 @@
 vim.opt.fileencoding = "utf-8"    -- set file encoding
 vim.opt.number = true             -- set numbered lines
-vim.opt.relativenumber = true     -- set relative numbered lines
+vim.opt.relativenumber = false     -- set relative numbered lines
 vim.opt.tabstop = 2               -- actual tabs display as this many spaces
 vim.opt.softtabstop = 2           -- tabs become spaces
 vim.opt.shiftwidth = 2            -- width to shift from >> key
