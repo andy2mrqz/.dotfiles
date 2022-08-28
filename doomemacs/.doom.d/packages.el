@@ -51,3 +51,5 @@
                                         ;
 (package! elisp-format)
 (package! transpose-frame)
+(package! map
+  :pin "bb50dba")
