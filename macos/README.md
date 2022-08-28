@@ -9,10 +9,10 @@ A few loose notes while setting up a new MBP
 - bitwarden
 - chrome
 - docker
-- emacs (optionally --with-no-titlebar)
+- fd (better find, written in rust)
+- font setup
 ```sh
-  brew tap d12frosted/emacs-plus
-  brew install emacs-plus --with-native-comp
+  brew tap homebrew/cask-fonts
 ```
 - imagemagick
 - jq
@@ -25,9 +25,27 @@ A few loose notes while setting up a new MBP
 - raindropio (bookmark keeper)
 - raycast (spotlight alternative)
 - ripgrep
+- shellcheck
 - slack
 - tmux
 - tree
+
+### AWS Development
+
+- brew install awscli
+- brew tap aws/tap
+  - brew install aws-sam-cli
+- brew install --cask docker
+
+#### Clojure Development
+
+- leiningen (installs openjdk at the same time)
+- borkdude/brew/clj-kondo
+- emacs (optionally --with-no-titlebar)
+```sh
+  brew tap d12frosted/emacs-plus
+  brew install emacs-plus --with-native-comp
+```
 
 ### other
 
