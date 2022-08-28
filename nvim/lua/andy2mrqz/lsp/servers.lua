@@ -1,7 +1,8 @@
 return {
+  "clojure_lsp",
+  "gopls",
+  "jsonls",
+  "rust_analyzer",
   "sumneko_lua",
   "tsserver",
-  "clojure_lsp",
-  "rust_analyzer",
-  "gopls",
 }
