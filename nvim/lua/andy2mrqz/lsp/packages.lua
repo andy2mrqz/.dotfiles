@@ -4,8 +4,6 @@ if not status_ok then
   return
 end
 
-local lspconfig = require("lspconfig")
-
 mason.setup {
   ui = {
     icons = {
@@ -22,24 +20,8 @@ if not mason_status_ok then
   return
 end
 
-local servers = {
-    "sumneko_lua",
-    "tsserver",
-    "clojure_lsp",
-    "rust_analyzer",
-    "gopls",
-  }
-
 mason_lsp_config.setup {
-  ensure_installed = servers
-  ,
+  ensure_installed = require("andy2mrqz.lsp.servers"),
   automatic_installation = true,
 }
 
-for _, server in pairs(servers) do
-  local opts = {
-    on_attach = require("andy2mrqz.lsp.handlers").on_attach,
-    capabilities = require("andy2mrqz.lsp.handlers").capabilities,
-  }
-  lspconfig[server].setup(opts)
-end
