@@ -5,3 +5,4 @@ if not status_ok then
 end
 
 require("andy2mrqz.lsp.packages")
+require("andy2mrqz.lsp.handlers").setup()
