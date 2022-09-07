@@ -22,8 +22,7 @@ HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE="true"
 ZSH_AUTOSUGGEST_USE_ASYNC="true"
 ZSH_AUTOSUGGEST_MANUAL_REBIND="true"
 
-# Make nvm faster
-export NVM_LAZY_LOAD=true
+#export NVM_LAZY_LOAD=true
 export NVM_COMPLETION=true
 export NVM_AUTO_USE=true
 
