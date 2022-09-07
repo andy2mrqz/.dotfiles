@@ -77,6 +77,7 @@ return packer.startup(function(use)
       require("nvim-surround").setup()
     end
   }
+  use "windwp/nvim-autopairs"           -- Autoclose " ' ( {
 
   if PACKER_BOOTSTRAP then              -- Runs the first time when bootstrapping
     require("packer").sync()

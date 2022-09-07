@@ -28,7 +28,7 @@ nnoremap("<leader>gb", ":Gitsigns toggle_current_line_blame<cr>")
 local function find_git_or_files()
   local git_root = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
   if git_root ~= "" then
-    require("telescope.builtin").git_files()
+    require("telescope.builtin").git_files({ show_untracked = true })
   else
     require("telescope.builtin").find_files()
   end
