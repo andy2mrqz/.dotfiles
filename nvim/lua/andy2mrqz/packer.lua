@@ -40,6 +40,7 @@ packer.init {
 -- Plugins to install
 return packer.startup(function(use)
   use "wbthomason/packer.nvim"          -- Packer can manage itself
+  use "nvim-lua/plenary.nvim"           -- Common dependency fns
   use "lewis6991/impatient.nvim"        -- Speeds up lua module loading for better startup time
   use "rebelot/kanagawa.nvim"           -- Colorscheme
   use("nvim-treesitter/nvim-treesitter", {
@@ -65,6 +66,10 @@ return packer.startup(function(use)
   -- snippets
   use "L3MON4D3/LuaSnip"                -- snippet engine
 
+  -- telescope
+  use "nvim-telescope/telescope.nvim"   -- fuzzy finding searcher
+
+  -- miscellaneous
   use "lewis6991/gitsigns.nvim"         -- Git gutter, blame, etc.
   use {
     "kylechui/nvim-surround",           -- Easier surrounding (e.g. cs"')

@@ -24,7 +24,7 @@ end
 
 local status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
 if not status_ok then
-  print("Couldn't require cmp_nvim_lsp")
+  print("cmp_nvim_lsp failed to load")
   return
 end
 
