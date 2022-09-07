@@ -18,7 +18,7 @@ M.on_attach = function(client, bufnr)
   nnoremap("K", vim.lsp.buf.hover, bufopts)
   nnoremap("gi", vim.lsp.buf.implementation, bufopts)
   nnoremap("<C-k>", vim.lsp.buf.signature_help, bufopts)
-  nnoremap("<leader>f", lsp_formatter, bufopts)
+  nnoremap("<leader>F", lsp_formatter, bufopts)
 end
 
 

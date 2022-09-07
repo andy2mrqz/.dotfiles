@@ -25,16 +25,39 @@ nnoremap("<S-h>", ":bprevious<cr>")
 nnoremap("<leader>gb", ":Gitsigns toggle_current_line_blame<cr>")
 
 -- telescope shortcuts
-local function find_git_or_files()
-  local git_root = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
-  if git_root ~= "" then
-    require("telescope.builtin").git_files({ show_untracked = true })
+local themes = require("telescope.themes")
+
+local function maybe_git_root() -- nil or string
+  return vim.fn.systemlist("git rev-parse --show-toplevel 2> /dev/null")[1]
+end
+
+local function custom_find_files()
+  if maybe_git_root() ~= nil then
+    require("telescope.builtin").git_files(themes.get_dropdown {
+      show_untracked = true,
+    })
   else
-    require("telescope.builtin").find_files()
+    require("telescope.builtin").find_files(themes.get_dropdown())
   end
 end
 
-nnoremap("<leader>ff", find_git_or_files)
-nnoremap("<leader>fg", "<cmd>Telescope live_grep<cr>")
-nnoremap("<leader>fb", "<cmd>Telescope buffers<cr>")
-nnoremap("<leader>fh", "<cmd>Telescope help_tags<cr>")
+local function custom_live_grep()
+  require("telescope.builtin").live_grep(themes.get_dropdown {
+    cwd = maybe_git_root(),
+  })
+end
+
+local function custom_buffers()
+  require("telescope.builtin").buffers(themes.get_dropdown())
+end
+
+local function custom_help_tags()
+  require("telescope.builtin").help_tags(themes.get_dropdown {
+    previewer = false
+  })
+end
+
+nnoremap("<leader>ff", custom_find_files)
+nnoremap("<leader>fg", custom_live_grep)
+nnoremap("<leader>fb", custom_buffers)
+nnoremap("<leader>fh", custom_help_tags)
