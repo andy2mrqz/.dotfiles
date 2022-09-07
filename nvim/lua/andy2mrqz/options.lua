@@ -18,8 +18,8 @@ vim.opt.cursorline = true         -- highlight current line
 vim.opt.pumheight = 10            -- limit popup window to 10 items
 vim.opt.splitbelow = true         -- always open splits below
 vim.opt.splitright = true         -- always open splits to the right
--- vim.opt.textwidth = 80           -- maximum width of text that is being inserted
--- vim.opt.colorcolumn = "+1"
+vim.opt.laststatus = 3            -- only show one statusline when many are open
+vim.opt.clipboard = "unnamed"     -- yank to system clipboard
 
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = vim.api.nvim_create_augroup("HIGHLIGHTED_YANK", {}),
