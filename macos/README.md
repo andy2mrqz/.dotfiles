@@ -7,6 +7,7 @@ A few loose notes while setting up a new MBP
 ### homebrew packages
 
 - bitwarden
+- bitwarden-cli
 - chrome
 - docker
 - fd (better find, written in rust)
@@ -14,6 +15,8 @@ A few loose notes while setting up a new MBP
 ```sh
   brew tap homebrew/cask-fonts
 ```
+- golang
+- hugo
 - imagemagick
 - jq
 - neovim (nightly)
@@ -26,6 +29,7 @@ A few loose notes while setting up a new MBP
 - raycast (spotlight alternative)
 - ripgrep
 - shellcheck
+- shfmt
 - slack
 - tmux
 - tree
@@ -36,6 +40,8 @@ A few loose notes while setting up a new MBP
 - brew tap aws/tap
   - brew install aws-sam-cli
 - brew install --cask docker
+- brew install --cask session-manager-plugin
+- sudo pip3 install aws-ssm-tools
 
 #### Clojure Development
 
