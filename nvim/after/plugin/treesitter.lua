@@ -4,6 +4,9 @@ require('nvim-treesitter.configs').setup({
   ignore_install = {
     "phpdoc"
   },                        -- List of parsers to ignore
+  autopairs = {
+    enable = true
+  },
   highlight = {
     enable = true,
     disable = { "" },
@@ -12,5 +15,9 @@ require('nvim-treesitter.configs').setup({
   indent = {
     enable = true,
     disable = { "" }
-  }
+  },
+  context_commentstring = {
+    enable = true,
+    enable_autocmd = false,
+  },
 })

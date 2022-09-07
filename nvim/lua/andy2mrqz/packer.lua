@@ -46,6 +46,8 @@ return packer.startup(function(use)
   use("nvim-treesitter/nvim-treesitter", {
     run = ":TSUpdate"                   -- Treesitter for better highlighting/language support
   })
+  use "numToStr/Comment.nvim"           -- Commenting functionality
+  use "JoosepALviste/nvim-ts-context-commentstring" -- Context aware commenting (jsx)
 
   -- lsp plugins (ORDER MATTERS)
   use {
