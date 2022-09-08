@@ -31,6 +31,7 @@ A few loose notes while setting up a new MBP
 - shellcheck
 - shfmt
 - slack
+- stylua
 - tmux
 - tree
 

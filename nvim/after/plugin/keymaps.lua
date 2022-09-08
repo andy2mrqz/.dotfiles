@@ -10,6 +10,7 @@ nnoremap("<leader>wk", "<C-w>k")
 nnoremap("<leader>wh", "<C-w>h")
 nnoremap("<leader>wl", "<C-w>l")
 nnoremap("<leader>wq", ":bd<cr>")
+nnoremap("<leader>bd", ":bd<cr>")
 
 -- Terminal keymaps
 tnoremap("<esc>", "<C-\\><C-n>") -- <esc> goes to normal mode in terminal
