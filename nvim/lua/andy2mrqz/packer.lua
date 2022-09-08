@@ -48,6 +48,7 @@ return packer.startup(function(use)
 	})
 	use("numToStr/Comment.nvim") -- Commenting functionality
 	use("JoosepALviste/nvim-ts-context-commentstring") -- Context aware commenting (jsx)
+	use("folke/which-key.nvim") -- show command options as you type
 
 	-- lsp plugins (ORDER MATTERS)
 	use({
