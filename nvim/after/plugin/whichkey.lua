@@ -35,6 +35,11 @@ whichkey.register({
 			name = "file",
 			["f"] = { U.custom_find_files, "find file" },
 		},
+		["o"] = {
+			name = "open",
+			["t"] = { ":12 split term://zsh<cr>", "terminal" },
+			["n"] = { ":12 split term://node<cr>", "open node" },
+		},
 		["s"] = {
 			name = "search",
 			["h"] = { U.custom_help_tags, "find help" },

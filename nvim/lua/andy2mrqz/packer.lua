@@ -50,6 +50,14 @@ return packer.startup(function(use)
 	use("JoosepALviste/nvim-ts-context-commentstring") -- Context aware commenting (jsx)
 	use("folke/which-key.nvim") -- show command options as you type
 
+	use({
+		"goolord/alpha-nvim", -- Startup theme
+		requires = { "kyazdani42/nvim-web-devicons" },
+		config = function()
+			require("alpha").setup(require("alpha.themes.dashboard").config)
+		end,
+	})
+
 	-- lsp plugins (ORDER MATTERS)
 	use({
 		"williamboman/mason.nvim", -- lsp/linter package manager
@@ -82,6 +90,7 @@ return packer.startup(function(use)
 		end,
 	})
 	use("windwp/nvim-autopairs") -- Autoclose " ' ( {
+  use("windwp/nvim-ts-autotag") -- Autoclose html tags
 
 	if PACKER_BOOTSTRAP then -- Runs the first time when bootstrapping
 		require("packer").sync()
