@@ -66,6 +66,8 @@ return packer.startup(function(use)
 		"jose-elias-alvarez/null-ls.nvim", -- for formatters/linters
 	})
 
+	use({ "Olical/conjure", ft = { "clojure" } }) -- repl support for clojure/other languages
+
 	-- cmp plugins
 	use("hrsh7th/nvim-cmp") -- completion plugin
 	use("hrsh7th/cmp-nvim-lsp") -- complete lsp suggestions

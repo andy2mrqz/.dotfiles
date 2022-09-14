@@ -38,7 +38,8 @@ whichkey.register({
 		["o"] = {
 			name = "open",
 			["t"] = { ":12 split term://zsh<cr>", "terminal" },
-			["n"] = { ":12 split term://node<cr>", "open node" },
+			["n"] = { ":12 split term://node<cr>", "node" },
+			["r"] = { ":12 split term://lein repl<cr>", "clojure repl" },
 		},
 		["s"] = {
 			name = "search",
