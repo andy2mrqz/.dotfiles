@@ -14,6 +14,7 @@ A few loose notes while setting up a new MBP
 - font setup
 ```sh
   brew tap homebrew/cask-fonts
+  brew install --cask font-meslo-lg-nerd-font
 ```
 - golang
 - hugo
