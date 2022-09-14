@@ -90,7 +90,8 @@ return packer.startup(function(use)
 		end,
 	})
 	use("windwp/nvim-autopairs") -- Autoclose " ' ( {
-  use("windwp/nvim-ts-autotag") -- Autoclose html tags
+	use("windwp/nvim-ts-autotag") -- Autoclose html tags
+	use("lukas-reineke/indent-blankline.nvim") -- indent guides
 
 	if PACKER_BOOTSTRAP then -- Runs the first time when bootstrapping
 		require("packer").sync()

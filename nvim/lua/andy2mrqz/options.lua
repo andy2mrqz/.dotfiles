@@ -20,6 +20,8 @@ vim.opt.splitbelow = true -- always open splits below
 vim.opt.splitright = true -- always open splits to the right
 vim.opt.laststatus = 3 -- only show one statusline when many are open
 vim.opt.clipboard = "unnamed" -- yank to system clipboard
+vim.opt.list = true
+vim.opt.listchars:append "trail:⋅"
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	group = vim.api.nvim_create_augroup("HIGHLIGHTED_YANK", {}),
