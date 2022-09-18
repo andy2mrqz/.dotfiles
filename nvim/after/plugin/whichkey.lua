@@ -16,7 +16,7 @@ whichkey.setup({
 
 whichkey.register({
 	["<leader>"] = {
-		["."] = { U.custom_find_files, "Find file" },
+		["<leader>"] = { U.custom_find_files, "Find file" },
 		["/"] = { U.custom_live_grep, "Search project" },
 		["b"] = { U.custom_find_buffers, "Find Buffer" },
 		["e"] = { ":Lex 40<cr>", "Open sidebar" },
@@ -30,6 +30,7 @@ whichkey.register({
 		["g"] = {
 			name = "git",
 			["b"] = { ":Gitsigns toggle_current_line_blame<cr>", "toggle blame" },
+			["d"] = { ":Gitsigns diffthis<cr>", "diff this" },
 		},
 		["f"] = {
 			name = "file",

@@ -1,10 +1,12 @@
 local whichkey = require("which-key")
 local telescope = require("telescope.builtin")
 local nnoremap = require("andy2mrqz.keymaps").nnoremap
+local inoremap = require("andy2mrqz.keymaps").inoremap
 
 local M = {}
 
 M.on_attach = function(client, bufnr)
+  client = client or {}
 	whichkey.register({
 		["<leader>"] = {
 			["F"] = {
@@ -12,6 +14,21 @@ M.on_attach = function(client, bufnr)
 					vim.lsp.buf.format({ bufnr = bufnr, async = true })
 				end,
 				"Format buffer",
+			},
+			["d"] = {
+				name = "diagnostic",
+				["s"] = {
+					function()
+						vim.diagnostic.open_float()
+					end,
+					"show",
+				},
+				["q"] = {
+					function()
+						vim.diagnostic.setqflist()
+					end,
+					"set quickfix list",
+				},
 			},
 			["r"] = {
 				name = "refactor",
@@ -31,7 +48,7 @@ M.on_attach = function(client, bufnr)
 	})
 
 	nnoremap("K", vim.lsp.buf.hover, { buffer = bufnr })
-	nnoremap("<C-k>", vim.lsp.buf.signature_help, { buffer = bufnr })
+	inoremap("<C-k>", vim.lsp.buf.signature_help, { buffer = bufnr })
 end
 
 local status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")

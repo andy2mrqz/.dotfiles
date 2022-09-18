@@ -71,6 +71,7 @@ return packer.startup(function(use)
 	-- cmp plugins
 	use("hrsh7th/nvim-cmp") -- completion plugin
 	use("hrsh7th/cmp-nvim-lsp") -- complete lsp suggestions
+	use("hrsh7th/cmp-nvim-lsp-signature-help") -- show signature while typing
 	use("hrsh7th/cmp-nvim-lua") -- completion for nvim lua
 	use("hrsh7th/cmp-buffer") -- complete within buffer
 	use("hrsh7th/cmp-path") -- complete paths
