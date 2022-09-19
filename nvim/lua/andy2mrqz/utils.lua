@@ -21,6 +21,9 @@ end
 M.custom_live_grep = function()
 	telescope.live_grep(themes.get_dropdown({
 		cwd = M.maybe_git_root(),
+		additional_args = function()
+			return { "--hidden" }
+		end,
 	}))
 end
 
