@@ -2,6 +2,7 @@ local whichkey = require("which-key")
 local telescope = require("telescope.builtin")
 local nnoremap = require("andy2mrqz.keymaps").nnoremap
 local inoremap = require("andy2mrqz.keymaps").inoremap
+local U = require("andy2mrqz.utils")
 
 local M = {}
 
@@ -43,7 +44,7 @@ M.on_attach = function(client, bufnr)
 			["d"] = { telescope.lsp_definitions, "go to definition" },
 			["D"] = { telescope.type_definitions, "go to type definition" },
 			["i"] = { telescope.lsp_implementations, "go to implementations" },
-			["r"] = { telescope.lsp_references, "go to references" },
+			["r"] = { U.custom_lsp_references, "go to references" },
 		},
 	})
 
