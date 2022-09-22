@@ -6,6 +6,7 @@ A few loose notes while setting up a new MBP
 
 ### homebrew packages
 
+- bat
 - bitwarden
 - bitwarden-cli
 - chrome
@@ -16,6 +17,7 @@ A few loose notes while setting up a new MBP
   brew tap homebrew/cask-fonts
   brew install --cask font-meslo-lg-nerd-font
 ```
+- git-delta
 - golang
 - hugo
 - imagemagick
