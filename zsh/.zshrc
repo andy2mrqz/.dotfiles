@@ -1,8 +1,16 @@
 zmodload zsh/zprof
 
 # Add to PATH
-export PATH="$HOME/bin:/usr/local/bin:/usr/local/sbin:$PATH"
-PATH+=":$HOME/.emacs.d/bin"
+PRE_PATH=$(tr -d $'\n[:blank:]' <<< "
+  $HOME/bin:
+  /usr/local/bin:
+  /usr/local/sbin:
+  $HOME/.emacs.d/bin:
+  $HOME/.yarn/bin:
+  $HOME/.config/yarn/global/node_modules/.bin:
+  $HOME/Library/Python/3.9/bin:
+")
+export PATH="$PRE_PATH$PATH"
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -62,22 +70,15 @@ alias pk="kill -9"
 alias gco="git checkout"
 alias gfollow="git log --follow -p"
 alias ts-swc="ts-node --swc"
+alias vimdiff="nvim -d"
+alias awsp="source _awsp"
+alias aws-login="yawsso auto --profile taxbit -e | yawsso decrypt | pbcopy && echo 'copied!'"
+
 gmbd() {
     curr=`git symbolic-ref --short HEAD`
     (git checkout master || git checkout main) && git pull && git branch -d ${curr}
     unset curr
 }
-# See if this works with new SSO
-# ssm() {
-#     profile=${2-legacy}
-#     targetId=$(aws ec2 describe-instances --profile $profile --filters "Name=tag:Name,Values=$1" \
-#   --output text --query 'Reservations[*].Instances[*].InstanceId')
-#     if [ -z $targetId ]; then
-#         echo 'No instance found by that name'
-#     else
-#         aws ssm start-session --target $targetId --profile $profile
-#     fi
-# }
 
 searchcomponent() {
   # $1 -> componentName
@@ -95,7 +96,9 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 
 export AWS_REGION='us-east-1'
 
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+# Helps so that `git branch` doesn't use less if content can be viewed on one screen
+# See here: https://stackoverflow.com/a/60498979
+export LESS=-FRX
 
 #
 # Export common dumps to better places than $HOME
