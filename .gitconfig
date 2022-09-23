@@ -1,0 +1,26 @@
+[core]
+  pager = delta
+
+[user]
+  name = Andrew Marquez
+  email = andy2mgcc@gmail.com
+
+[interactive]
+  diffFilter = delta --color-only
+
+[add.interactive]
+  useBuiltin = false
+
+[delta]
+  navigate = true
+  light = false
+
+[merge]
+  conflictstyle = diff3
+
+[diff]
+  colorMoved = default
+
+[push]
+  default = simple
+
