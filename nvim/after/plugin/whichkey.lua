@@ -36,11 +36,11 @@ whichkey.register({
 			name = "file",
 			["f"] = { U.custom_find_files, "find file" },
 		},
-		["o"] = {
-			name = "open",
-			["t"] = { ":12 split term://zsh<cr>", "terminal" },
-			["n"] = { ":12 split term://node<cr>", "node" },
-			["r"] = { ":12 split term://lein repl<cr>", "clojure repl" },
+		["t"] = {
+			name = "terminal",
+			["t"] = { ":ToggleTerm direction=horizontal<cr>", "terminal" },
+			["n"] = { ":lua _NODE_TOGGLE()<cr>", "node" },
+			["r"] = { ":lua _CLJREPL_TOGGLE()", "clojure repl" },
 		},
 		["s"] = {
 			name = "search",
@@ -48,4 +48,3 @@ whichkey.register({
 		},
 	},
 })
-
