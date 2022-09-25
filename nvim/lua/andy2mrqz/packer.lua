@@ -58,6 +58,12 @@ return packer.startup(function(use)
 		end,
 	})
 
+	use({
+		"kyazdani42/nvim-tree.lua", -- File tree
+		requires = { "kyazdani42/nvim-web-devicons" },
+		tag = "nightly",
+	})
+
 	-- lsp plugins (ORDER MATTERS)
 	use({
 		"williamboman/mason.nvim", -- lsp/linter package manager

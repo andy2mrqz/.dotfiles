@@ -19,7 +19,7 @@ whichkey.register({
 		["<leader>"] = { U.custom_find_files, "Find file" },
 		["/"] = { U.custom_live_grep, "Search project" },
 		["b"] = { U.custom_find_buffers, "Find Buffer" },
-		["e"] = { ":Lex 40<cr>", "Open sidebar" },
+		["e"] = { ":NvimTreeToggle<cr>", "Open sidebar" },
 		["w"] = {
 			name = "window",
 			["j"] = { "<C-w>j", "window down" },
