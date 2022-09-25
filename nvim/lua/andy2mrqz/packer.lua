@@ -101,6 +101,7 @@ return packer.startup(function(use)
 	use("windwp/nvim-autopairs") -- Autoclose " ' ( {
 	use("windwp/nvim-ts-autotag") -- Autoclose html tags
 	use("lukas-reineke/indent-blankline.nvim") -- indent guides
+  use({ "moll/vim-bbye", commit = "25ef93ac5a87526111f43e5110675032dbcacf56" }) -- :Bd doesn't mess up splits
 
 	if PACKER_BOOTSTRAP then -- Runs the first time when bootstrapping
 		require("packer").sync()
