@@ -43,6 +43,7 @@ return packer.startup(function(use)
 	use("nvim-lua/plenary.nvim") -- Common dependency fns
 	use("lewis6991/impatient.nvim") -- Speeds up lua module loading for better startup time
 	use("rebelot/kanagawa.nvim") -- Colorscheme
+  use("tpope/vim-fugitive") -- Git in neovim!
 	use("nvim-treesitter/nvim-treesitter", {
 		run = ":TSUpdate", -- Treesitter for better highlighting/language support
 	})
@@ -58,7 +59,7 @@ return packer.startup(function(use)
 	})
 	use({
 		"akinsho/toggleterm.nvim", -- better terminal support
-		tag = "*"
+		tag = "*",
 	})
 
 	use({
@@ -88,7 +89,7 @@ return packer.startup(function(use)
 	-- cmp plugins
 	use("hrsh7th/nvim-cmp") -- completion plugin
 	use("hrsh7th/cmp-nvim-lsp") -- complete lsp suggestions
-	use("hrsh7th/cmp-nvim-lsp-signature-help") -- show signature while typing
+	use("hrsh7th/cmp-nvim-lsp-signature-help") -- show function signature while typing
 	use("hrsh7th/cmp-nvim-lua") -- completion for nvim lua
 	use("hrsh7th/cmp-buffer") -- complete within buffer
 	use("hrsh7th/cmp-path") -- complete paths
