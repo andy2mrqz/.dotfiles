@@ -8,6 +8,5 @@ nnoremap("<S-y>", "yy")
 tnoremap("<esc>", "<C-\\><C-n>") -- <esc> goes to normal mode in terminal
 
 -- Buffer navigation
-nnoremap("<S-l>", ":bnext<cr>")
-nnoremap("<S-h>", ":bprevious<cr>")
-
+nnoremap("<S-l>", ":bn<cr>")
+nnoremap("<S-h>", ":bp<cr>")

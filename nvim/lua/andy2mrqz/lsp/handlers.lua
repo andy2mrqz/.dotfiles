@@ -6,13 +6,13 @@ local U = require("andy2mrqz.utils")
 
 local M = {}
 
-M.on_attach = function(client, bufnr)
-  client = client or {}
+M.on_attach = function(client)
+	client = client or {}
 	whichkey.register({
 		["<leader>"] = {
 			["F"] = {
 				function()
-					vim.lsp.buf.format({ bufnr = bufnr, async = true })
+					vim.lsp.buf.format({ async = true })
 				end,
 				"Format buffer",
 			},
@@ -48,8 +48,8 @@ M.on_attach = function(client, bufnr)
 		},
 	})
 
-	nnoremap("K", vim.lsp.buf.hover, { buffer = bufnr })
-	inoremap("<C-k>", vim.lsp.buf.signature_help, { buffer = bufnr })
+	nnoremap("K", vim.lsp.buf.hover)
+	inoremap("<C-k>", vim.lsp.buf.signature_help)
 end
 
 local status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
