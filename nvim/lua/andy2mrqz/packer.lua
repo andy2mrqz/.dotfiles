@@ -64,10 +64,7 @@ return packer.startup(function(use)
 
 	use({
 		"goolord/alpha-nvim", -- Startup theme
-		requires = { "kyazdani42/nvim-web-devicons" },
-		config = function()
-			require("alpha").setup(require("alpha.themes.dashboard").config)
-		end,
+		requires = { "kyazdani42/nvim-web-devicons" }
 	})
 
 	use({

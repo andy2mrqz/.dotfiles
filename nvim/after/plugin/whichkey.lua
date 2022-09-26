@@ -35,6 +35,7 @@ whichkey.register({
 		["f"] = {
 			name = "file",
 			["f"] = { U.custom_find_files, "find file" },
+			["r"] = { U.custom_old_files, "recently used" },
 		},
 		["t"] = {
 			name = "terminal",
