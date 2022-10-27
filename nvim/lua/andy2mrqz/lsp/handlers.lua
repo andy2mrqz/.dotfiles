@@ -41,7 +41,7 @@ M.on_attach = function(client)
 			},
 		},
 		["g"] = {
-			["d"] = { telescope.lsp_definitions, "go to definition" },
+			["d"] = { U.custom_lsp_definitions, "go to definition" },
 			["D"] = { telescope.type_definitions, "go to type definition" },
 			["i"] = { telescope.lsp_implementations, "go to implementations" },
 			["r"] = { U.custom_lsp_references, "go to references" },
@@ -59,6 +59,6 @@ if not status_ok then
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-M.capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
+M.capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
 
 return M

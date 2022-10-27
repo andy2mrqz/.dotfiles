@@ -4,6 +4,7 @@ return {
   "html",
   "gopls",
   "jsonls",
+  "pylsp",
   "rust_analyzer",
   "sumneko_lua",
   "svelte",

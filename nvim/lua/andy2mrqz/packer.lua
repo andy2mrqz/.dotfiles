@@ -82,6 +82,7 @@ return packer.startup(function(use)
 	})
 
 	use({ "Olical/conjure", ft = { "clojure" } }) -- repl support for clojure/other languages
+	use({ "vlime/vlime", ft = { "lisp" } }) -- support for common lisp
 
 	-- cmp plugins
 	use("hrsh7th/nvim-cmp") -- completion plugin

@@ -16,6 +16,7 @@ null_ls.setup({
     }),
     null_ls.builtins.formatting.rustfmt,
     null_ls.builtins.diagnostics.shellcheck,
+    null_ls.builtins.diagnostics.mypy,
   },
   on_attach = lsp_handlers.on_attach,
 })

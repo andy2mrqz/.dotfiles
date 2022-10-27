@@ -36,11 +36,12 @@ dashboard.section.header.val = {
 	[[                                ░                  ]],
 }
 dashboard.section.buttons.val = {
+	dashboard.button("e", "  New file", ":ene <cr>"),
 	dashboard.button("SPC f f", "  Find file"),
 	dashboard.button("SPC f r", "  Recently used files"),
 	dashboard.button("SPC /", "  Find text"),
-	dashboard.button("c", "  Configuration", ":e ~/.config/nvim/init.lua <CR>"),
-	dashboard.button("q", "  Quit Neovim", ":qa<CR>"),
+	dashboard.button("c", "  Configuration", ":e ~/.config/nvim/init.lua <cr>"),
+	dashboard.button("q", "  Quit Neovim", ":qa<cr>"),
 }
 
 dashboard.section.footer.val = ""

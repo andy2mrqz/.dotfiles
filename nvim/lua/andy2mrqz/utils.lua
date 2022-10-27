@@ -41,6 +41,10 @@ M.custom_help_tags = function()
 	}))
 end
 
+M.custom_lsp_definitions = function()
+	telescope.lsp_definitions(themes.get_dropdown())
+end
+
 M.custom_lsp_references = function()
 	telescope.lsp_references(themes.get_dropdown())
 end
