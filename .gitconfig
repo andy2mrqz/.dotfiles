@@ -22,5 +22,5 @@
   colorMoved = default
 
 [push]
-  default = simple
+  autoSetupRemote = true
 
