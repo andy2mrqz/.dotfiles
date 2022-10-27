@@ -73,6 +73,11 @@ alias ts-swc="ts-node --swc"
 alias vimdiff="nvim -d"
 alias awsp="source _awsp"
 alias aws-login="yawsso auto --profile taxbit -e | yawsso decrypt | pbcopy && echo 'copied!'"
+alias sbcl="rlwrap sbcl" # common lisp
+
+git_reset_author_all_time() {
+  git -c rebase.instructionFormat='%s%nexec GIT_COMMITTER_DATE="%cD" GIT_AUTHOR_DATE="%aD" git commit --amend --no-edit --reset-author' rebase -i --root
+}
 
 gmbd() {
     curr=`git symbolic-ref --short HEAD`
