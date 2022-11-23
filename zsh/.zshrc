@@ -1,5 +1,7 @@
 zmodload zsh/zprof
 
+export GOPATH="$HOME/go"
+
 # Add to PATH
 PRE_PATH=$(tr -d $'\n[:blank:]' <<< "
   $HOME/bin:
@@ -10,7 +12,10 @@ PRE_PATH=$(tr -d $'\n[:blank:]' <<< "
   $HOME/.config/yarn/global/node_modules/.bin:
   $HOME/Library/Python/3.9/bin:
 ")
-export PATH="$PRE_PATH$PATH"
+POST_PATH=$(tr -d $'\n[:blank:]' <<< "
+  $GOPATH/bin
+")
+export PATH="$PRE_PATH$PATH$POST_PATH"
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
