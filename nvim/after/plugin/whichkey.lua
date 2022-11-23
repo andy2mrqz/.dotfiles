@@ -48,4 +48,5 @@ whichkey.register({
 			["h"] = { U.custom_help_tags, "find help" },
 		},
 	},
+	["gx"] = { ':call jobstart(["open", expand("<cfile>")])<cr>', "open in browser" },
 })
