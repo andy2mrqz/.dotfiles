@@ -49,4 +49,6 @@ whichkey.register({
 		},
 	},
 	["gx"] = { ':call jobstart(["open", expand("<cfile>")])<cr>', "open in browser" },
+	["]d"] = { ':lua vim.diagnostic.goto_next() <cr>', "next diagnostic" },
+	["[d"] = { ':lua vim.diagnostic.goto_prev() <cr>', "previous diagnostic" },
 })
