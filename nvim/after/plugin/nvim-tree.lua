@@ -5,5 +5,8 @@ if not status_ok then
 end
 
 -- :help nvim-tree-default-mappings
-nvim_tree.setup()
+nvim_tree.setup({
+  git = { enable = true, ignore = false },
+  filters = { dotfiles = true }
+})
 
