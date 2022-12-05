@@ -79,6 +79,7 @@ return packer.startup(function(use)
 		"williamboman/mason-lspconfig.nvim", -- bridges mason and lspconfig
 		"neovim/nvim-lspconfig", -- nvim builtin lsp
 		"jose-elias-alvarez/null-ls.nvim", -- for formatters/linters
+    'simrat39/rust-tools.nvim', -- rust tools for better rust-analyzer and inlay hints
 	})
 
 	use({ "Olical/conjure", ft = { "clojure" } }) -- repl support for clojure/other languages
