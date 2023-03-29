@@ -80,8 +80,12 @@ alias awsp="source _awsp"
 alias aws-login="yawsso auto --profile taxbit -e | yawsso decrypt | pbcopy && echo 'copied!'"
 alias sbcl="rlwrap sbcl" # common lisp
 
-git_reset_author_all_time() {
-  git -c rebase.instructionFormat='%s%nexec GIT_COMMITTER_DATE="%cD" GIT_AUTHOR_DATE="%aD" git commit --amend --no-edit --reset-author' rebase -i --root
+git_change_personal_email_to_work_email() {
+  git filter-repo --force --email-callback "return email if email != b'andy2mgcc@gmail.com' else b'andrew.marquez@taxbit.com'"
+}
+
+git_change_work_email_to_personal_email() {
+  git filter-repo --force --email-callback "return email if email != b'andrew.marquez@taxbit.com' else b'andy2mgcc@gmail.com'"
 }
 
 gmbd() {
