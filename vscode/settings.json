@@ -1,0 +1,74 @@
+{
+  "editor.bracketPairColorization.enabled": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.tabSize": 2,
+  "editor.minimap.enabled": false,
+  "editor.fontSize": 13,
+  "editor.smoothScrolling": true,
+  "editor.padding.bottom": 4,
+  "editor.suggest.showMethods": true,
+  "editor.acceptSuggestionOnEnter": "on",
+  "editor.snippetSuggestions": "top",
+  "editor.suggest.preview": true,
+  "editor.rulers": [
+    { "column": 80, "color": "#252525" },
+    { "column": 120, "color": "#252525" }
+  ],
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": true,
+    "strings": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/*.code-search": true
+  },
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/.git": true,
+    "**/.hg": true,
+    "**/.svn": true,
+    "**/CVS": true,
+    "**/node_modules": true,
+    "**/Thumbs.db": true,
+    "node_modules": true
+  },
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "git.autofetch": true,
+  "audioCues.lineHasWarning": "off",
+  "audioCues.lineHasBreakpoint": "off",
+  "audioCues.lineHasError": "off",
+  "audioCues.lineHasFoldedArea": "off",
+  "audioCues.lineHasInlineSuggestion": "off",
+  "audioCues.noInlayHints": "off",
+  "audioCues.onDebugBreak": "off",
+  "audioCues.volume": 0,
+  "editor.accessibilitySupport": "off",
+  "python.formatting.provider": "black",
+  "python.linting.flake8Enabled": true,
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": ["u"],
+      "after": [],
+      "commands": [
+        {
+          "command": "undo"
+        }
+      ]
+    },
+    {
+      "before": ["<C-r>"],
+      "after": [],
+      "commands": [
+        {
+          "command": "redo"
+        }
+      ]
+    }
+  ],
+  "workbench.colorTheme": "Default Dark+"
+}
