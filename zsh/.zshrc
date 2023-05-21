@@ -81,10 +81,12 @@ alias aws-login="yawsso auto --profile taxbit -e | yawsso decrypt | pbcopy && ec
 alias sbcl="rlwrap sbcl" # common lisp
 
 git_change_personal_email_to_work_email() {
+  git config --local user.email "andrew.marquez@taxbit.com"
   git filter-repo --force --email-callback "return email if email != b'andy2mgcc@gmail.com' else b'andrew.marquez@taxbit.com'"
 }
 
 git_change_work_email_to_personal_email() {
+  git config --local user.email "andy2mgcc@gmail.com"
   git filter-repo --force --email-callback "return email if email != b'andrew.marquez@taxbit.com' else b'andy2mgcc@gmail.com'"
 }
 
