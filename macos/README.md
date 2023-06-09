@@ -1,51 +1,12 @@
-# macos installation tips
+# macos installation
 
 ## Setup
 
 A few loose notes while setting up a new MBP
 
-### homebrew packages
+### homebrew packages / aws development
 
-- bat
-- bitwarden
-- bitwarden-cli
-- chrome
-- docker
-- fd (better find, written in rust)
-- font setup
-```sh
-  brew tap homebrew/cask-fonts
-  brew install --cask font-meslo-lg-nerd-font
-```
-- git-delta
-- golang
-- hugo
-- imagemagick
-- jq
-- neovim (nightly)
-```sh
-  brew install --HEAD neovim
-```
-- obsidian
-- postman
-- raindropio (bookmark keeper)
-- raycast (spotlight alternative)
-- ripgrep
-- shellcheck
-- shfmt
-- slack
-- stylua
-- tmux
-- tree
-
-### AWS Development
-
-- brew install awscli
-- brew tap aws/tap
-  - brew install aws-sam-cli
-- brew install --cask docker
-- brew install --cask session-manager-plugin
-- sudo pip3 install aws-ssm-tools
+See the script ./setup.sh for details.
 
 #### Clojure Development
 
