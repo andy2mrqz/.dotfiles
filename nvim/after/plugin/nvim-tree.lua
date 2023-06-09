@@ -7,6 +7,6 @@ end
 -- :help nvim-tree-default-mappings
 nvim_tree.setup({
   git = { enable = true, ignore = false },
-  filters = { dotfiles = true }
+  filters = { dotfiles = false }
 })
 
