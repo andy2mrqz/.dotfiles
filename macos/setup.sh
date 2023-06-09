@@ -30,6 +30,7 @@ echo 'installing brew base packages...'
 brew install \
   bat \
   bitwarden-cli \
+  fd \
   git-delta \
   imagemagick \
   jq \
