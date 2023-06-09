@@ -1,7 +1,5 @@
 zmodload zsh/zprof
 
-export GOPATH="$HOME/go"
-
 # Add to PATH
 PRE_PATH=$(tr -d $'\n[:blank:]' <<< "
   $HOME/bin:
@@ -12,10 +10,7 @@ PRE_PATH=$(tr -d $'\n[:blank:]' <<< "
   $HOME/.config/yarn/global/node_modules/.bin:
   $HOME/Library/Python/3.9/bin:
 ")
-POST_PATH=$(tr -d $'\n[:blank:]' <<< "
-  $GOPATH/bin
-")
-export PATH="$PRE_PATH$PATH$POST_PATH"
+export PATH="$PRE_PATH$PATH"
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -35,16 +30,11 @@ HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE="true"
 ZSH_AUTOSUGGEST_USE_ASYNC="true"
 ZSH_AUTOSUGGEST_MANUAL_REBIND="true"
 
-#export NVM_LAZY_LOAD=true
-export NVM_COMPLETION=true
-export NVM_AUTO_USE=true
-
 # Don't update homebrew on every package install
 export HOMEBREW_NO_AUTO_UPDATE=1
 
 # - Which plugins would you like to load?
 plugins=(
-    zsh-nvm
     git
     z
     zsh-autosuggestions
@@ -108,10 +98,6 @@ bindkey -v
 # allow enter in terminal
 stty sane
 
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-
-export AWS_REGION='us-east-1'
-
 # Helps so that `git branch` doesn't use less if content can be viewed on one screen
 # See here: https://stackoverflow.com/a/60498979
 export LESS=-FRX
@@ -124,4 +110,5 @@ mkdir -p $HOME/.cache
 export LESSHISTFILE=$HOME/.cache/.lesshst
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
 
+eval "$(~/bin/rtx activate zsh)"
 
