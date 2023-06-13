@@ -20,6 +20,7 @@ brew install --cask \
   kitty \
   obsidian \
   postman \
+  raindropio \
   raycast \
   slack \
   visual-studio-code
@@ -59,6 +60,21 @@ if ! command -v rtx &> /dev/null; then
   echo 'installing rtx (runtime executor)...'
   brew install jdxcode/tap/rtx
   echo 'eval "$(~/bin/rtx activate zsh)"' >> ~/.zshrc
+fi
+
+if ! command -v omz &> /dev/null; then
+  echo 'installing omz...'
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+fi
+
+if [[ ! -d  "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions" ]]; then
+  echo 'installing zsh-autosuggestions'
+  git clone https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
+fi
+
+if [[ ! -d "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting" ]]; then
+  echo 'installing zsh-syntax-highlighting'
+  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
 fi
 
 
