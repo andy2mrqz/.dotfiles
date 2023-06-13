@@ -1,12 +1,12 @@
 return {
-  "clojure_lsp",
+  --"clojure_lsp",
   "cssls",
   "html",
-  "gopls",
+  --"gopls",
   "jsonls",
   "pylsp",
-  "rust_analyzer",
-  "sumneko_lua",
-  "svelte",
+  --"rust_analyzer",
+  "lua_ls",
+  --"svelte",
   "tsserver",
 }
