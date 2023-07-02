@@ -8,7 +8,8 @@ PRE_PATH=$(tr -d $'\n[:blank:]' <<< "
   $HOME/.emacs.d/bin:
   $HOME/.yarn/bin:
   $HOME/.config/yarn/global/node_modules/.bin:
-  $HOME/Library/Python/3.9/bin:
+  $HOME/.local/share/rtx/shims:
+  $HOME/.local/bin:
 ")
 export PATH="$PRE_PATH$PATH"
 
@@ -109,6 +110,4 @@ export LESS=-FRX
 mkdir -p $HOME/.cache
 export LESSHISTFILE=$HOME/.cache/.lesshst
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
-
-eval "$(~/bin/rtx activate zsh)"
 
