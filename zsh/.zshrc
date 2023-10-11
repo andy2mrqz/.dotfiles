@@ -10,6 +10,8 @@ PRE_PATH=$(tr -d $'\n[:blank:]' <<< "
   $HOME/.config/yarn/global/node_modules/.bin:
   $HOME/.local/share/rtx/shims:
   $HOME/.local/bin:
+  /opt/homebrew/opt/libiodbc/bin:
+  /Applications/Postgres.app/Contents/Versions/latest/bin:
 ")
 export PATH="$PRE_PATH$PATH"
 
@@ -84,6 +86,7 @@ git_change_work_email_to_personal_email() {
 gmbd() {
     curr=`git symbolic-ref --short HEAD`
     (git checkout master || git checkout main) && git pull && git branch -d ${curr}
+    git remote prune origin
     unset curr
 }
 
@@ -101,7 +104,7 @@ stty sane
 
 # Helps so that `git branch` doesn't use less if content can be viewed on one screen
 # See here: https://stackoverflow.com/a/60498979
-export LESS=-FRX
+export LESS="-FRX"
 
 #
 # Export common dumps to better places than $HOME
@@ -111,3 +114,4 @@ mkdir -p $HOME/.cache
 export LESSHISTFILE=$HOME/.cache/.lesshst
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
 
+SAM_CLI_TELEMETRY=0
