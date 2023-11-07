@@ -14,6 +14,9 @@ PRE_PATH=$(tr -d $'\n[:blank:]' <<< "
   /Applications/Postgres.app/Contents/Versions/latest/bin:
 ")
 export PATH="$PRE_PATH$PATH"
+#
+# This runs `rtx env` to update the PATH and get things working
+eval "$(rtx activate zsh)"
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -39,6 +42,7 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 # - Which plugins would you like to load?
 plugins=(
     git
+    git-open
     z
     zsh-autosuggestions
     zsh-syntax-highlighting
