@@ -33,7 +33,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 local FT_DETECT_GROUP = vim.api.nvim_create_augroup("FILETYPE_DETECT", {})
-vim.api.nvim_create_autocmd("BufRead,BufNewFile", {
+vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
 	group = FT_DETECT_GROUP,
 	pattern = "*.code-workspace",
 	callback = function()
@@ -41,7 +41,7 @@ vim.api.nvim_create_autocmd("BufRead,BufNewFile", {
 	end,
 })
 
-vim.api.nvim_create_autocmd("BufRead,BufNewFile", {
+vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
 	group = FT_DETECT_GROUP,
 	pattern = "*.gitignore",
 	callback = function()
