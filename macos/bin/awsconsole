@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Required parameters:
+# @raycast.schemaVersion 1
+# @raycast.title awsconsole
+# @raycast.mode fullOutput
+
+# Optional parameters:
+# @raycast.icon 🚀
+# @raycast.argument1 { "type": "text", "placeholder": "dev" }
+
+# Check if profile is provided
+if [ -z "$1" ]; then
+  scriptname=$(basename -- "$0")
+
+  echo "Usage: $scriptname <profile>"
+  exit 1
+fi
+
+PROFILE=$1
+
+
+if [ -z "$AWS_ACCESS_KEY_ID" ]; then
+  if credentials=$(aws configure export-credentials --profile dev --format env-no-export 2>/dev/null); then
+    eval "$credentials"
+  else
+    echo "No credentials found.  Run 'awslogin $PROFILE' then try again."
+    exit 1
+  fi
+fi
+
+# Encode AWS credentials in JSON format
+SESSION_JSON=$(jq -n \
+  --arg ak "$AWS_ACCESS_KEY_ID" \
+  --arg sk "$AWS_SECRET_ACCESS_KEY" \
+  --arg st "$AWS_SESSION_TOKEN" \
+  '{sessionId: $ak, sessionKey: $sk, sessionToken: $st}')
+
+# URL encode the session JSON
+ENCODED_SESSION=$(echo -n "$SESSION_JSON" | jq -sRr @uri)
+
+# Get the sign-in token from AWS federation endpoint
+SIGNIN_TOKEN_URL="https://signin.aws.amazon.com/federation?Action=getSigninToken&DurationSeconds=43200&Session=$ENCODED_SESSION"
+SIGNIN_TOKEN_RESPONSE=$(curl -s "$SIGNIN_TOKEN_URL")
+SIGNIN_TOKEN=$(echo "$SIGNIN_TOKEN_RESPONSE" | jq -r '.SigninToken')
+
+# Construct the final URL to open the AWS console
+DESTINATION_URL=$(echo -n "https://console.aws.amazon.com/" | jq -sRr @uri)
+ISSUER_URL=$(echo -n "https://example.com" | jq -sRr @uri)
+LOGIN_URL="https://signin.aws.amazon.com/federation?Action=login&Destination=$DESTINATION_URL&SigninToken=$SIGNIN_TOKEN&Issuer=$ISSUER_URL"
+
+# Open the AWS console in the default web browser
+echo "Opening AWS console for profile '$PROFILE'..."
+open "$LOGIN_URL"
