@@ -1,14 +1,5 @@
 #!/bin/bash
 
-# Required parameters:
-# @raycast.schemaVersion 1
-# @raycast.title awsconsole
-# @raycast.mode fullOutput
-
-# Optional parameters:
-# @raycast.icon 🚀
-# @raycast.argument1 { "type": "text", "placeholder": "dev" }
-
 # Check if profile is provided
 if [ -z "$1" ]; then
   scriptname=$(basename -- "$0")
@@ -46,8 +37,7 @@ SIGNIN_TOKEN=$(echo "$SIGNIN_TOKEN_RESPONSE" | jq -r '.SigninToken')
 
 # Construct the final URL to open the AWS console
 DESTINATION_URL=$(echo -n "https://console.aws.amazon.com/" | jq -sRr @uri)
-ISSUER_URL=$(echo -n "https://example.com" | jq -sRr @uri)
-LOGIN_URL="https://signin.aws.amazon.com/federation?Action=login&Destination=$DESTINATION_URL&SigninToken=$SIGNIN_TOKEN&Issuer=$ISSUER_URL"
+LOGIN_URL="https://signin.aws.amazon.com/federation?Action=login&Destination=$DESTINATION_URL&SigninToken=$SIGNIN_TOKEN"
 
 # Open the AWS console in the default web browser
 echo "Opening AWS console for profile '$PROFILE'..."
