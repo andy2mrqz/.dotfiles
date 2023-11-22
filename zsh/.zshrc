@@ -74,7 +74,6 @@ alias gfollow="git log --follow -p"
 alias ts-swc="ts-node --swc"
 alias vimdiff="nvim -d"
 alias awsp="source _awsp"
-alias aws-login="yawsso auto --profile taxbit -e | yawsso decrypt | pbcopy && echo 'copied!'"
 alias sbcl="rlwrap sbcl" # common lisp
 
 git_change_personal_email_to_work_email() {
@@ -98,6 +97,26 @@ searchcomponent() {
   # $1 -> componentName
   # $2 -> propName
   rg -nU "<$1(.|\n)*?/>" src/**/* | rg "$2=" | uniq | rg "$2="
+}
+
+awslogin() {
+  # $1 -> profileName
+  if ! aws sts get-caller-identity --profile "$1" >/dev/null 2>&1; then
+    echo "Logging in with profile: $1"
+    if ! aws sso login --profile "$1"; then
+      echo "SSO login failed"
+      return 1
+    fi
+  fi
+  local export_output
+  export_output=$(aws configure export-credentials --profile "$1" --format env 2>/dev/null)
+  if [ $? -eq 0 ]; then
+    eval "$export_output"
+    echo "AWS environment variables exported"
+  else
+    echo "Failed to export AWS environment variables"
+    return 1
+  fi
 }
 
 # vim mode
