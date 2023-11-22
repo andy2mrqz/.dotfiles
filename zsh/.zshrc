@@ -1,3 +1,4 @@
+# shellcheck disable=SC2034
 zmodload zsh/zprof
 
 # Add to PATH
@@ -49,7 +50,8 @@ plugins=(
     history-substring-search
 )
 
-source $ZSH/oh-my-zsh.sh
+# shellcheck disable=SC1091
+source "$ZSH/oh-my-zsh.sh"
 
 # User configuration
 
@@ -87,8 +89,8 @@ git_change_work_email_to_personal_email() {
 }
 
 gmbd() {
-    curr=`git symbolic-ref --short HEAD`
-    (git checkout master || git checkout main) && git pull && git branch -d ${curr}
+    curr=$(git symbolic-ref --short HEAD)
+    (git checkout master || git checkout main) && git pull && git branch -d "$curr"
     git remote prune origin
     unset curr
 }
@@ -109,8 +111,7 @@ awslogin() {
     fi
   fi
   local export_output
-  export_output=$(aws configure export-credentials --profile "$1" --format env 2>/dev/null)
-  if [ $? -eq 0 ]; then
+  if export_output=$(aws configure export-credentials --profile "$1" --format env 2>/dev/null); then
     eval "$export_output"
     echo "AWS environment variables exported"
   else
@@ -133,7 +134,7 @@ export LESS="-FRX"
 # Export common dumps to better places than $HOME
 #
 
-mkdir -p $HOME/.cache
+mkdir -p "$HOME/.cache"
 export LESSHISTFILE=$HOME/.cache/.lesshst
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
 
