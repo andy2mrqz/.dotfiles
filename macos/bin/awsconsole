@@ -10,13 +10,26 @@ fi
 
 PROFILE=$1
 
+set_credentials() {
+  if credentials=$(aws configure export-credentials --profile "$PROFILE" --format env-no-export 2>/dev/null); then
+    eval "$credentials"
+    return 0
+  else
+    return 1
+  fi
+
+}
+
 
 if [ -z "$AWS_ACCESS_KEY_ID" ]; then
-  if credentials=$(aws configure export-credentials --profile dev --format env-no-export 2>/dev/null); then
-    eval "$credentials"
-  else
-    echo "No credentials found.  Run 'awslogin $PROFILE' then try again."
-    exit 1
+  if ! set_credentials; then
+    echo "Could not find credentials, attempting login..."
+    zsh -ic "awslogin $PROFILE"
+
+    # Try again after logging in
+    if ! set_credentials; then
+      exit 1
+    fi
   fi
 fi
 
@@ -36,9 +49,11 @@ SIGNIN_TOKEN_RESPONSE=$(curl -s "$SIGNIN_TOKEN_URL")
 SIGNIN_TOKEN=$(echo "$SIGNIN_TOKEN_RESPONSE" | jq -r '.SigninToken')
 
 # Construct the final URL to open the AWS console
-DESTINATION_URL=$(echo -n "https://console.aws.amazon.com/" | jq -sRr @uri)
-LOGIN_URL="https://signin.aws.amazon.com/federation?Action=login&Destination=$DESTINATION_URL&SigninToken=$SIGNIN_TOKEN"
+DESTINATION_URL="https://console.aws.amazon.com/"
+LOGIN_URL="https://us-east-1.signin.aws.amazon.com/federation?Action=login&Destination=$DESTINATION_URL&SigninToken=$SIGNIN_TOKEN"
+LOGIN_URL_ENCODED=$(echo -n "$LOGIN_URL" | jq -sRr @uri)
+LOGOUT_THEN_LOGIN_URL="https://us-east-1.signin.aws.amazon.com/oauth?Action=logout&redirect_uri=$LOGIN_URL_ENCODED"
 
 # Open the AWS console in the default web browser
 echo "Opening AWS console for profile '$PROFILE'..."
-open "$LOGIN_URL"
+open "$LOGOUT_THEN_LOGIN_URL"
