@@ -77,6 +77,7 @@ alias ts-swc="ts-node --swc"
 alias vimdiff="nvim -d"
 alias awsp="source _awsp"
 alias sbcl="rlwrap sbcl" # common lisp
+alias vimg="vim -c 'NvimTreeToggle' -c 'G' -c '1000'" # open with git mode on and go to the last line (1000)
 
 git_change_personal_email_to_work_email() {
   git config --local user.email "andrew.marquez@taxbit.com"
