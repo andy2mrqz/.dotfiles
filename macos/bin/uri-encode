@@ -1,0 +1,8 @@
+#!/bin/bash
+
+URL="$1"
+
+res=$(echo -n "$URL" | jq -sRr @uri)
+
+echo -n "$res" | pbcopy
+echo "Copied! $res"
