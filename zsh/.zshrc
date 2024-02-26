@@ -7,17 +7,15 @@ PRE_PATH=$(tr -d $'\n[:blank:]' <<< "
   /usr/local/bin:
   /usr/local/sbin:
   $HOME/.emacs.d/bin:
-  $HOME/.yarn/bin:
-  $HOME/.config/yarn/global/node_modules/.bin:
-  $HOME/.local/share/rtx/shims:
+  $HOME/.local/share/mise/shims:
   $HOME/.local/bin:
   /opt/homebrew/opt/libiodbc/bin:
   /Applications/Postgres.app/Contents/Versions/latest/bin:
 ")
 export PATH="$PRE_PATH$PATH"
-#
-# This runs `rtx env` to update the PATH and get things working
-eval "$(rtx activate zsh)"
+
+# This runs `mise env` to update the PATH and get things working
+eval "$(mise activate zsh)"
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -55,12 +53,7 @@ source "$ZSH/oh-my-zsh.sh"
 
 # User configuration
 
-# Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='nvim'
-else
-  export EDITOR='nvim'
-fi
+export EDITOR='nvim'
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
