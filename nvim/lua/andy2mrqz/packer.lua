@@ -44,6 +44,7 @@ return packer.startup(function(use)
 	use("lewis6991/impatient.nvim") -- Speeds up lua module loading for better startup time
 	use("rebelot/kanagawa.nvim") -- Colorscheme
   use("tpope/vim-fugitive") -- Git in neovim!
+  use("github/copilot.vim") -- Github Copilot in neovim!
 	use("nvim-treesitter/nvim-treesitter", {
 		run = ":TSUpdate", -- Treesitter for better highlighting/language support
 	})

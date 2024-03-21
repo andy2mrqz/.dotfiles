@@ -23,6 +23,7 @@ vim.opt.laststatus = 3 -- only show one statusline when many are open
 vim.opt.clipboard = "unnamed" -- yank to system clipboard
 vim.opt.list = true -- show tabs and spaces in special ways :help options, search nolist
 vim.opt.listchars:append("trail:⋅") -- :help listchars
+vim.g.copilot_filetypes = {gitcommit = true} -- enable copilot for gitcommit filetype
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	group = vim.api.nvim_create_augroup("HIGHLIGHTED_YANK", {}),
