@@ -31,6 +31,11 @@ whichkey.register({
 			name = "git",
 			["b"] = { ":Gitsigns toggle_current_line_blame<cr>", "toggle blame" },
 			["d"] = { ":Gitsigns diffthis<cr>", "diff this" },
+      ["h"] = {
+        name = "hunk",
+        ["r"] = { ":Gitsigns reset_hunk<cr>", "reset hunk" },
+        ["s"] = { ":Gitsigns stage_hunk<cr>", "stage hunk" },
+      },
 		},
 		["f"] = {
 			name = "file",
