@@ -18,10 +18,6 @@ M.custom_find_files = function()
 	end
 end
 
-M.custom_old_files = function ()
-  telescope.oldfiles(themes.get_dropdown())
-end
-
 M.custom_live_grep = function()
 	telescope.live_grep(themes.get_dropdown({
 		cwd = M.maybe_git_root(),

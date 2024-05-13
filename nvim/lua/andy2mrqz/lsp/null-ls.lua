@@ -4,6 +4,8 @@ if not status_ok then
 	return
 end
 
+-- todo: move to https://github.com/nvimtools/none-ls.nvim
+
 local lsp_handlers = require("andy2mrqz.lsp.handlers")
 
 null_ls.setup({
