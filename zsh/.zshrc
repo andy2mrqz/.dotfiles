@@ -61,16 +61,28 @@ export EDITOR='nvim'
 # For a full list of active aliases, run `alias`.
 alias copy="pbcopy <"
 alias sz="exec zsh" # "source ~/.zshrc" -- this is the WRONG way (https://blog.mattclemente.com/2020/06/26/oh-my-zsh-slow-to-load.html)
+alias vz="vim ~/.zshrc"
+alias ex="vim -e"
 alias vim="nvim"
 alias repl="lein repl :connect"
 alias pk="kill -9"
-alias gco="git checkout"
-alias gfollow="git log --follow -p"
 alias ts-swc="ts-node --swc"
 alias vimdiff="nvim -d"
 alias awsp="source _awsp"
 alias sbcl="rlwrap sbcl" # common lisp
 alias vimg="vim -c 'NvimTreeToggle' -c 'G' -c '1000'" # open with git mode on and go to the last line (1000)
+alias vimv="cd ~/vault && vim Notes/personal-todo.md -c 'NvimTreeToggle' -c 'wincmd l' -c 'NvimTreeFindFile' -c 'wincmd l'" # open vault notes
+
+# Poetry
+alias sp="source \$(poetry env info --path)/bin/activate"
+alias prp="poetry run python"
+alias prs="poetry run start"
+
+# Git aliases
+alias gco="git checkout"
+alias gmo="git merge origin/main 2>/dev/null || git merge origin/master"
+alias gfollow="git log --follow -p"
+alias gsp="git stash pop"
 
 git_change_personal_email_to_work_email() {
   git config --local user.email "andrew.marquez@taxbit.com"
@@ -131,5 +143,6 @@ export LESS="-FRX"
 mkdir -p "$HOME/.cache"
 export LESSHISTFILE=$HOME/.cache/.lesshst
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
+compinit -d "$ZSH/cache"
 
 SAM_CLI_TELEMETRY=0
