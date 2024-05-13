@@ -39,8 +39,7 @@ whichkey.register({
 		},
 		["f"] = {
 			name = "file",
-			["f"] = { U.custom_find_files, "find file" },
-			["r"] = { U.custom_old_files, "recently used" },
+			["e"] = { ":NvimTreeFindFile<cr>", "nvim tree find file" },
 		},
 		["t"] = {
 			name = "terminal",
