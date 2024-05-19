@@ -11,9 +11,7 @@ echo 'installing brew casks...'
 brew tap homebrew/cask-fonts
 
 brew install --cask \
-  alt-tab \
   docker \
-  font-meslo-lg-nerd-font \
   github \
   google-chrome \
   karabiner-elements \
@@ -32,6 +30,7 @@ brew install \
   bat \
   bitwarden-cli \
   fd \
+  font-meslo-lg-nerd-font \
   git-delta \
   imagemagick \
   jq \
