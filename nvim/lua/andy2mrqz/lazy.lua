@@ -82,15 +82,17 @@ lazy.setup({
 	"windwp/nvim-autopairs", -- Autoclose " ' ( {
 	"windwp/nvim-ts-autotag", -- Autoclose html tags
 	"lukas-reineke/indent-blankline.nvim", -- indent guides
-	{
-		"moll/vim-bbye",
-		commit = "25ef93ac5a87526111f43e5110675032dbcacf56",
-	}, -- :Bd doesn't mess up splits
+	"moll/vim-bbye", -- :Bd doesn't mess up splits
 	{
 		"numToStr/Comment.nvim", -- Commenting functionality
 		dependencies = {
 			"JoosepALviste/nvim-ts-context-commentstring", -- Context aware commenting (jsx)
 		},
+		config = function()
+			require("ts_context_commentstring").setup({
+				enable_autocmd = false,
+			})
+		end,
 		lazy = false,
 	},
 })
