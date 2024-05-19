@@ -4,20 +4,19 @@ if not status_ok then
 	return
 end
 
--- todo: move to https://github.com/nvimtools/none-ls.nvim
-
 local lsp_handlers = require("andy2mrqz.lsp.handlers")
 
 null_ls.setup({
 	debug = false,
 	sources = {
+		require("none-ls-shellcheck.code_actions"),
 		null_ls.builtins.formatting.prettier,
 		null_ls.builtins.formatting.stylua,
 		null_ls.builtins.formatting.shfmt.with({
 			extra_args = { "-ci", "-s", "-bn" },
 		}),
-		null_ls.builtins.formatting.rustfmt,
-		null_ls.builtins.diagnostics.shellcheck.with({
+		require("none-ls.formatting.rustfmt"),
+		require("none-ls-shellcheck.diagnostics").with({
 			extra_args = { "--shell=bash" },
 			filetypes = { "zsh", "sh", "bash" },
 		}),
