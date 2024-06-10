@@ -2,7 +2,7 @@
 zmodload zsh/zprof
 
 # Add to PATH
-PRE_PATH=$(tr -d $'\n[:blank:]' <<< "
+POST_PATH=$(tr -d $'\n[:blank:]' <<< "
   $HOME/bin:
   /usr/local/bin:
   /usr/local/sbin:
@@ -10,9 +10,8 @@ PRE_PATH=$(tr -d $'\n[:blank:]' <<< "
   $HOME/.local/share/mise/shims:
   $HOME/.local/bin:
   /opt/homebrew/opt/libiodbc/bin:
-  /Applications/Postgres.app/Contents/Versions/latest/bin:
 ")
-export PATH="$PRE_PATH$PATH"
+export PATH="$PATH:$POST_PATH"
 
 # This runs `mise env` to update the PATH and get things working
 eval "$(mise activate zsh)"
