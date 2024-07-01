@@ -1,21 +1,6 @@
 # shellcheck disable=SC2034
 zmodload zsh/zprof
 
-# Add to PATH
-POST_PATH=$(tr -d $'\n[:blank:]' <<< "
-  $HOME/bin:
-  /usr/local/bin:
-  /usr/local/sbin:
-  $HOME/.emacs.d/bin:
-  $HOME/.local/share/mise/shims:
-  $HOME/.local/bin:
-  /opt/homebrew/opt/libiodbc/bin:
-")
-export PATH="$PATH:$POST_PATH"
-
-# This runs `mise env` to update the PATH and get things working
-eval "$(mise activate zsh)"
-
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -58,7 +43,6 @@ export EDITOR='nvim'
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
-alias copy="pbcopy <"
 alias sz="exec zsh" # "source ~/.zshrc" -- this is the WRONG way (https://blog.mattclemente.com/2020/06/26/oh-my-zsh-slow-to-load.html)
 alias vz="vim ~/.zshrc"
 alias ex="vim -e"
@@ -82,6 +66,9 @@ alias gco="git checkout"
 alias gmo="git merge origin/main 2>/dev/null || git merge origin/master"
 alias gfollow="git log --follow -p"
 alias gsp="git stash pop"
+alias gitcs="git log -n 1 --pretty=format:%H | tee >(pbcopy)"
+
+alias how="gh copilot explain"
 
 git_change_personal_email_to_work_email() {
   git config --local user.email "andrew.marquez@taxbit.com"
