@@ -1,5 +1,7 @@
 #!/bin/bash
 #
+# Usage: group-by-date.sh <directory>
+#
 # Groups files into subdirectories based on creation time.
 # Subdirectories are in format YYYY-MM (e.g. "2022-11")
 
@@ -9,10 +11,11 @@ if [ ! -d "$DIR" ]; then
 	echo "Could not find directory '$DIR'"
 	exit 1
 else
-  echo "Processing '$DIR'"
+	echo "Processing '$DIR'"
 fi
 
 while IFS= read -r -d '' file; do
+  try-update-create-date.sh "$file"
 	YEARMONTH=$(stat -f "%SB" -t "%Y-%m" "$file")
 	SUBDIR="$DIR/$YEARMONTH"
 
@@ -23,4 +26,3 @@ while IFS= read -r -d '' file; do
 
 	mv -- "$file" "$SUBDIR"
 done < <(find "$DIR" -type f -maxdepth 1 -print0)
-# note that the U in "ls -tUr" is only available on macos

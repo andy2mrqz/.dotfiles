@@ -28,11 +28,15 @@ if [ -z "$ts" ]; then
   # If no timestamp is found
   echo 'no timestamp found for: ' "$FILE"
 else
- echo "Updating timestamp for $FILE to $ts"
-  # Update the file's modification timestamp
-  touch -t "$ts" "$FILE"
-  if [ -n "$ts_created" ]; then
-    # If formatted creation date is available, update the file's creation date
-    setfile -d "$ts_created" "$FILE"
+  # Check if the existing creation date is the same as the new timestamp
+  existing_ts=$(stat -f "%SB" -t "%Y%m%d%H%M" "$FILE")
+  if [ "$existing_ts" != "$ts" ]; then
+    echo "Updating timestamp for $FILE to $ts"
+    # Update the file's modification timestamp
+    touch -t "$ts" "$FILE"
+    if [ -n "$ts_created" ]; then
+      # If formatted creation date is available, update the file's creation date
+      setfile -d "$ts_created" "$FILE"
+    fi
   fi
 fi
