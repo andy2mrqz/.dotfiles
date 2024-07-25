@@ -13,6 +13,7 @@
 
 osascript <<EOF
 tell application "Arc"
+    activate
     tell the active tab of its first window
         execute javascript "
 (() => {
@@ -51,14 +52,14 @@ tell application "Arc"
         \"New SQL worksheet button not found\"
       );
       newSqlWorksheetButton.click();
-      await wait(500);
+      await wait(1000);
 
       const roleAndWarehouseSelector = findElement(
         '[data-testid=\"roleAndWarehouseSelector\"]',
         \"Role and Warehouse selector not found\"
       );
       roleAndWarehouseSelector.click();
-      await wait(500);
+      await wait(250);
 
       const sessionContextDiv = findElement(
         'div[name=\"SESSION_CONTEXT\"]',
