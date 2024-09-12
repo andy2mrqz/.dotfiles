@@ -1,5 +1,4 @@
 # shellcheck disable=SC2034
-zmodload zsh/zprof
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -114,6 +113,7 @@ awslogin() {
 
 # vim mode
 bindkey -v
+bindkey '^R' history-incremental-search-backward
 
 # allow enter in terminal
 stty sane
