@@ -40,18 +40,11 @@ tell application "Arc"
   const main = async () => {
     try {
       const newSheetButton = findElement(
-        'svg[aria-label=\"Open new worksheet tab\"]',
+        'svg[aria-label=\"Create SQL worksheet\"]',
         \"New sheet button not found\"
       ).parentElement;
       newSheetButton.click();
 
-      const allDivs = Array.from(document.querySelectorAll(\"div\"));
-      const newSqlWorksheetButton = findElementByText(
-        allDivs,
-        \"SQL Worksheet\",
-        \"New SQL worksheet button not found\"
-      );
-      newSqlWorksheetButton.click();
       await wait(1000);
 
       const roleAndWarehouseSelector = findElement(
@@ -59,7 +52,7 @@ tell application "Arc"
         \"Role and Warehouse selector not found\"
       );
       roleAndWarehouseSelector.click();
-      await wait(250);
+      await wait(1000);
 
       const sessionContextDiv = findElement(
         'div[name=\"SESSION_CONTEXT\"]',

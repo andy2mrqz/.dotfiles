@@ -2,13 +2,15 @@
 
 # Required parameters:
 # @raycast.schemaVersion 1
-# @raycast.title Open Copied ASINs
+# @raycast.title UUID me
 # @raycast.mode silent
 
 # Optional parameters:
-# @raycast.icon 🛍️
+# @raycast.icon 🦑
 
 # Documentation:
 # @raycast.author Andrew Marquez
 
-pbpaste | tr ',' '\n' | awk '{$1=$1};1' | xargs -I {} open "https://www.amazon.com/dp/{}"
+uuid=$(uuidgen | tr '[:upper:]' '[:lower:]')
+echo "Copied $uuid"
+echo -n "$uuid" | pbcopy
