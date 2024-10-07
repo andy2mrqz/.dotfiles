@@ -89,22 +89,7 @@ gmbd() {
 }
 
 awslogin() {
-  # $1 -> profileName
-  if ! aws sts get-caller-identity --profile "$1" >/dev/null 2>&1; then
-    echo "Logging in with profile: $1"
-    if ! aws sso login --profile "$1"; then
-      echo "SSO login failed"
-      return 1
-    fi
-  fi
-  local export_output
-  if export_output=$(aws configure export-credentials --profile "$1" --format env 2>/dev/null); then
-    eval "$export_output"
-    echo "AWS environment variables exported"
-  else
-    echo "Failed to export AWS environment variables"
-    return 1
-  fi
+  source "$HOME/bin/_awslogin" "$1"
 }
 
 # vim mode

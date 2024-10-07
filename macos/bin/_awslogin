@@ -1,0 +1,83 @@
+#!/bin/bash
+
+function export_aws_env() {
+	if export_output=$(aws configure export-credentials --profile "$1" --format env 2>/dev/null); then
+		eval "$export_output"
+		echo "AWS environment variables exported"
+	else
+		echo "Failed to export AWS environment variables"
+		return 1
+	fi
+}
+
+# Case 1: Already authenticated
+if aws sts get-caller-identity --profile "$1" >/dev/null 2>&1; then
+	echo "Already authenticated with profile: $1"
+	export_aws_env "$1"
+	return $?
+fi
+
+# Case 2: Not authenticated
+echo "Logging in with profile: $1"
+aws sso login --profile "$1" &
+
+# Wait a moment for the browser to open
+sleep 1
+
+# Use AppleScript to interact with Arc browser
+osascript <<EOF
+tell application "Arc"
+
+    activate
+
+    delay 1
+
+    tell the active tab of the front window
+        execute javascript "
+            function clickButton(selector) {
+                const button = document.querySelector(selector);
+                if (button) {
+                    button.click();
+                    return true;
+                }
+                return false;
+            }
+            clickButton('#cli_verification_btn');
+        "
+    end tell
+
+    delay 2
+
+    tell the active tab of the front window
+        execute javascript "
+            function clickButton(selector) {
+                const button = document.querySelector(selector);
+                if (button) {
+                    button.click();
+                    return true;
+                }
+                return false;
+            }
+            clickButton('[data-testid=\"allow-access-button\"]');
+        "
+    end tell
+
+    delay 0.25
+
+    tell the front window
+      close the active tab
+    end tell
+end tell
+EOF
+
+# Wait for the login to complete
+wait
+
+# Check if login was successful
+if ! aws sts get-caller-identity --profile "$1" >/dev/null 2>&1; then
+	echo "SSO login failed"
+  return 1
+fi
+
+# Export AWS environment variables
+export_aws_env "$1"
