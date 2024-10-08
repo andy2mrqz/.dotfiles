@@ -21,45 +21,50 @@ fi
 echo "Logging in with profile: $1"
 aws sso login --profile "$1" &
 
-# Wait a moment for the browser to open
-sleep 1
+# Wait until Arc becomes the active application
+osascript <<EOF
+tell application "System Events"
+    repeat until (name of first application process whose frontmost is true) is "Arc"
+        delay 0.125
+    end repeat
+end tell
+EOF
 
-# Use AppleScript to interact with Arc browser
 osascript <<EOF
 tell application "Arc"
+    -- Wait for the initial SSO page to load
+    repeat until (loading of front window's active tab) is false
+        delay 0.125
+    end repeat
 
-    activate
-
-    delay 1
+    -- May not be necessary anymore...
+    -- set initialPageLoaded to false
+    -- repeat until initialPageLoaded
+    --     delay 0.125
+    --     tell the active tab of the front window
+    --         set initialPageLoaded to (execute javascript "
+    --             !!document.querySelector('#cli_verification_btn')
+    --         ") as boolean
+    --     end tell
+    -- end repeat
 
     tell the active tab of the front window
-        execute javascript "
-            function clickButton(selector) {
-                const button = document.querySelector(selector);
-                if (button) {
-                    button.click();
-                    return true;
-                }
-                return false;
-            }
-            clickButton('#cli_verification_btn');
-        "
+        execute javascript "document.querySelector('#cli_verification_btn').click();"
     end tell
 
-    delay 2
+    -- Wait for the next page to load
+    set pageLoaded to false
+    repeat until pageLoaded
+        delay 0.125
+        tell the active tab of the front window
+            set pageLoaded to (execute javascript "
+                !!document.querySelector('[data-testid=\"allow-access-button\"]')
+            ") as boolean
+        end tell
+    end repeat
 
     tell the active tab of the front window
-        execute javascript "
-            function clickButton(selector) {
-                const button = document.querySelector(selector);
-                if (button) {
-                    button.click();
-                    return true;
-                }
-                return false;
-            }
-            clickButton('[data-testid=\"allow-access-button\"]');
-        "
+        execute javascript "document.querySelector('[data-testid=\"allow-access-button\"]').click();"
     end tell
 
     delay 0.25
@@ -76,7 +81,7 @@ wait
 # Check if login was successful
 if ! aws sts get-caller-identity --profile "$1" >/dev/null 2>&1; then
 	echo "SSO login failed"
-  return 1
+	return 1
 fi
 
 # Export AWS environment variables
