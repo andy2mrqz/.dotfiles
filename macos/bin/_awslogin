@@ -21,6 +21,9 @@ fi
 echo "Logging in with profile: $1"
 aws sso login --profile "$1" &
 
+# Save the current application so we can bring it back to the front later
+CURRENT_APP=$(osascript -e 'return short name of (info for (path to frontmost application))')
+
 # Wait until Arc becomes the active application
 osascript <<EOF
 tell application "System Events"
@@ -77,6 +80,9 @@ EOF
 
 # Wait for the login to complete
 wait
+
+# Bring the previous application back to the front
+osascript -e "tell application \"$CURRENT_APP\" to activate"
 
 # Check if login was successful
 if ! aws sts get-caller-identity --profile "$1" >/dev/null 2>&1; then
