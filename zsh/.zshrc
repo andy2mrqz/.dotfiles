@@ -45,6 +45,8 @@ fi
 
 # shellcheck disable=SC1091
 source "$ZSH/oh-my-zsh.sh"
+# unset some aliases from oh-my-zsh
+unalias gb
 
 # User configuration
 
@@ -77,6 +79,7 @@ alias gmo="git merge origin/main 2>/dev/null || git merge origin/master"
 alias gfollow="git log --follow -p"
 alias gsp="git stash pop"
 alias gitcs="git log -n 1 --pretty=format:%H | tee >(pbcopy)"
+alias gb="git branch --sort=-committerdate"
 
 # Run github copilot cli
 alias how="gh copilot explain"
