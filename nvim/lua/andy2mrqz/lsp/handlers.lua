@@ -8,44 +8,44 @@ local M = {}
 
 M.on_attach = function(client)
 	client = client or {}
-	whichkey.register({
-		["<leader>"] = {
-			["F"] = {
-				function()
-					vim.lsp.buf.format({ async = true })
-				end,
-				"Format buffer",
-			},
-			["d"] = {
-				name = "diagnostic",
-				["s"] = {
-					function()
-						vim.diagnostic.open_float()
-					end,
-					"show",
-				},
-				["q"] = {
-					function()
-						vim.diagnostic.setqflist()
-					end,
-					"set quickfix list",
-				},
-			},
-			["r"] = {
-				name = "refactor",
-				["n"] = { vim.lsp.buf.rename, "rename" },
-			},
-			["c"] = {
-				name = "code",
-				["a"] = { vim.lsp.buf.code_action, "actions" },
-			},
+	whichkey.add({
+		-- Leader group
+		{ "<leader>", group = "leader key" },
+		{
+			"<leader>F",
+			function()
+				vim.lsp.buf.format({ async = true })
+			end,
+			desc = "Format buffer",
 		},
-		["g"] = {
-			["d"] = { U.custom_lsp_definitions, "go to definition" },
-			["D"] = { telescope.type_definitions, "go to type definition" },
-			["i"] = { telescope.lsp_implementations, "go to implementations" },
-			["r"] = { U.custom_lsp_references, "go to references" },
+		-- Code group
+		{ "<leader>c", group = "code" },
+		{ "<leader>ca", vim.lsp.buf.code_action, desc = "actions" },
+		-- Diagnostic group
+		{ "<leader>d", group = "diagnostic" },
+		{
+			"<leader>dq",
+			function()
+				vim.diagnostic.setqflist()
+			end,
+			desc = "set quickfix list",
 		},
+		{
+			"<leader>ds",
+			function()
+				vim.diagnostic.open_float()
+			end,
+			desc = "show",
+		},
+		-- Refactor group
+		{ "<leader>r", group = "refactor" },
+		{ "<leader>rn", vim.lsp.buf.rename, desc = "rename" },
+		-- Go to group
+		{ "g", group = "go to" },
+		{ "gd", U.custom_lsp_definitions, desc = "go to definition" },
+		{ "gD", telescope.type_definitions, desc = "go to type definition" },
+		{ "gi", telescope.lsp_implementations, desc = "go to implementations" },
+		{ "gr", U.custom_lsp_references, desc = "go to references" },
 	})
 
 	nnoremap("K", vim.lsp.buf.hover)
