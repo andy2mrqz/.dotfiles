@@ -14,45 +14,33 @@ whichkey.setup({
 	},
 })
 
-whichkey.register({
-	["<leader>"] = {
-		["<leader>"] = { U.custom_find_files, "Find file" },
-		["/"] = { U.custom_live_grep, "Search project" },
-		["b"] = { U.custom_find_buffers, "Find Buffer" },
-		["e"] = { ":NvimTreeToggle<cr>", "Open sidebar" },
-		["w"] = {
-			name = "window",
-			["j"] = { "<C-w>j", "window down" },
-			["k"] = { "<C-w>k", "window up" },
-			["h"] = { "<C-w>h", "window left" },
-			["l"] = { "<C-w>l", "window right" },
-		},
-		["g"] = {
-			name = "git",
-			["b"] = { ":Gitsigns toggle_current_line_blame<cr>", "toggle blame" },
-			["d"] = { ":Gitsigns diffthis<cr>", "diff this" },
-      ["h"] = {
-        name = "hunk",
-        ["r"] = { ":Gitsigns reset_hunk<cr>", "reset hunk" },
-        ["s"] = { ":Gitsigns stage_hunk<cr>", "stage hunk" },
-      },
-		},
-		["f"] = {
-			name = "file",
-			["e"] = { ":NvimTreeFindFile<cr>", "nvim tree find file" },
-		},
-		["t"] = {
-			name = "terminal",
-			["t"] = { ":ToggleTerm direction=horizontal<cr>", "terminal" },
-			["n"] = { ":lua _NODE_TOGGLE()<cr>", "node" },
-			["r"] = { ":lua _CLJREPL_TOGGLE()", "clojure repl" },
-		},
-		["s"] = {
-			name = "search",
-			["h"] = { U.custom_help_tags, "find help" },
-		},
-	},
-	["gx"] = { ':call jobstart(["open", expand("<cfile>")])<cr>', "open in browser" },
-	["]d"] = { ':lua vim.diagnostic.goto_next() <cr>', "next diagnostic" },
-	["[d"] = { ':lua vim.diagnostic.goto_prev() <cr>', "previous diagnostic" },
+whichkey.add({
+	-- Leader group
+	{ "<leader>", group = "leader key" },
+	{ "<leader><leader>", U.custom_find_files, desc = "Find file" },
+	{ "<leader>/", U.custom_live_grep, desc = "Search project" },
+	{ "<leader>b", U.custom_find_buffers, desc = "Find Buffer" },
+	{ "<leader>e", ":NvimTreeToggle<cr>", desc = "Open sidebar" },
+	-- Window group
+	{ "<leader>w", group = "window" },
+	{ "<leader>wj", "<C-w>j", desc = "window down" },
+	{ "<leader>wk", "<C-w>k", desc = "window up" },
+	{ "<leader>wh", "<C-w>h", desc = "window left" },
+	{ "<leader>wl", "<C-w>l", desc = "window right" },
+	-- Git group
+	{ "<leader>g", group = "git" },
+	{ "<leader>gb", ":Gitsigns toggle_current_line_blame<cr>", desc = "toggle blame" },
+	{ "<leader>gd", ":Gitsigns diffthis<cr>", desc = "diff this" },
+	{ "<leader>ghr", ":Gitsigns reset_hunk<cr>", desc = "reset hunk" },
+	{ "<leader>ghs", ":Gitsigns stage_hunk<cr>", desc = "stage hunk" },
+	-- Terminal group
+	{ "<leader>t", group = "terminal" },
+	{ "<leader>tt", ":ToggleTerm direction=horizontal<cr>", desc = "terminal" },
+	{ "<leader>tn", ":lua _NODE_TOGGLE()<cr>", desc = "node" },
+	-- Miscellanous group
+	{ "<leader>fe", ":NvimTreeFindFile<cr>", desc = "nvim tree find file" },
+	{ "<leader>sh", U.custom_help_tags, desc = "find help" },
+	{ "gx", ':call jobstart(["open", expand("<cfile>")])<cr>', desc = "open in browser" },
+	{ "]d", ":lua vim.diagnostic.goto_next() <cr>", desc = "next diagnostic" },
+	{ "[d", ":lua vim.diagnostic.goto_prev() <cr>", desc = "previous diagnostic" },
 })

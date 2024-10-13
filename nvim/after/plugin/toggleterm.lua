@@ -14,9 +14,3 @@ local node = Terminal:new({ cmd = "node", hidden = true })
 function _NODE_TOGGLE()
 	node:toggle()
 end
-
-local cljrepl = Terminal:new({ cmd = "lein repl", hidden = true })
-
-function _CLJREPL_TOGGLE()
-	cljrepl:toggle()
-end
