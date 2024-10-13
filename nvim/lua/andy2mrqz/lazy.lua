@@ -25,7 +25,10 @@ lazy.setup({
 	"lewis6991/impatient.nvim", -- Speeds up lua module loading for better startup time
 	"rebelot/kanagawa.nvim", -- Colorscheme
 	"tpope/vim-fugitive", -- Git in neovim!
-	"github/copilot.vim", -- Github Copilot in neovim!
+	{
+		"github/copilot.vim", -- Github Copilot in neovim!
+		cmd = "Copilot",
+	},
 	{
 		"nvim-treesitter/nvim-treesitter", -- Treesitter for better highlighting/language support
 		build = ":TSUpdate",
