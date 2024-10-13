@@ -1,0 +1,9 @@
+# Ignores commits in git blame for a cleaner history (e.g. showing original author, not who formatted a file)
+# To be picked up by tools like git/vscode, run the following command in the root of this repo:
+#
+# git config blame.ignoreRevsFile .git-blame-ignore-revs
+#
+# See: https://git-scm.com/docs/git-blame#Documentation/git-blame.txt---ignore-revs-fileltfilegt
+
+# Formatted nvim directory
+40d2326b6668e8849c51c8e787af23317f4e0d8f
