@@ -7,5 +7,5 @@ return {
 	--"rust_analyzer",
 	"lua_ls",
 	--"svelte",
-	"tsserver",
+	"ts_ls",
 }
