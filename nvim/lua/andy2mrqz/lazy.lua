@@ -67,7 +67,6 @@ lazy.setup({
 	{
 		-- cmp plugins
 		"hrsh7th/nvim-cmp", -- completion plugin
-		event = "InsertEnter",
 		dependencies = {
 			"hrsh7th/cmp-nvim-lsp", -- complete lsp suggestions
 			"hrsh7th/cmp-nvim-lsp-signature-help", -- show function signature while typing

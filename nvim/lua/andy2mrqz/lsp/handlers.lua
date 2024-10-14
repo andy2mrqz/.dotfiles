@@ -44,7 +44,6 @@ M.on_attach = function(client)
 		{ "g", group = "go to" },
 		{ "gd", U.custom_lsp_definitions, desc = "go to definition" },
 		{ "gD", telescope.type_definitions, desc = "go to type definition" },
-		{ "gi", telescope.lsp_implementations, desc = "go to implementations" },
 		{ "gr", U.custom_lsp_references, desc = "go to references" },
 	})
 
