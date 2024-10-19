@@ -84,6 +84,9 @@ alias gb="git branch --sort=-committerdate"
 # Run github copilot cli
 alias how="gh copilot explain"
 
+# Run snowsql
+alias snowsql=/Applications/SnowSQL.app/Contents/MacOS/snowsql
+
 gmbd() {
     curr=$(git symbolic-ref --short HEAD)
     (git checkout master || git checkout main) && git pull && git branch -d "$curr"
