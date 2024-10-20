@@ -7,6 +7,7 @@
 ```sh
   ln -s ~/Projects/.dotfiles/zsh/.zshrc ~/.zshrc
   ln -s ~/Projects/.dotfiles/zsh/.zshenv ~/.zshenv
+  ln -s ~/Projects/.dotfiles/zsh/.zprofile ~/.zprofile
 ```
 
 ## Useful links
