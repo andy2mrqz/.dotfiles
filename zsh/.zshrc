@@ -1,61 +1,81 @@
-# shellcheck disable=SC2034
+#-----------------------------------------------------------
+# Shellcheck configuration
+#-----------------------------------------------------------
 
-# Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
+# shellcheck disable=2034   # disables check for unused variables
 
-# Theme
-ZSH_THEME="robbyrussell"
+#-----------------------------------------------------------
+# General configuration
+#-----------------------------------------------------------
 
-# Random options
-HYPHEN_INSENSITIVE="true"
-# - Uncomment the following line if pasting URLs and other text is messed up.
-DISABLE_MAGIC_FUNCTIONS=true
-# - Uncomment the following line to display red dots whilst waiting for completion.
-COMPLETION_WAITING_DOTS="true"
-# - Unique history
-HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE="true"
-# - Async mode for zsh autosuggestions, and disabling automatic widget re-binding
-ZSH_AUTOSUGGEST_USE_ASYNC="true"
-ZSH_AUTOSUGGEST_MANUAL_REBIND="true"
+typeset -U PATH                   # Ensure uniqueness within the PATH env variable
+autoload colors; colors;          # Ensure color support is loaded for the terminal
+export HOMEBREW_NO_AUTO_UPDATE=1  # Don't update homebrew on every package install
+export ZSH="$HOME/.zsh.d"         # Add zsh-specific directory for configuration files
 
-# Don't update homebrew on every package install
-export HOMEBREW_NO_AUTO_UPDATE=1
+# Export common dumps to places better than $HOME
+[ -d "$HOME/.cache" ] || mkdir -p "$HOME/.cache"
+export LESSHISTFILE=$HOME/.cache/.lesshst
 
-# - Which plugins would you like to load?
-plugins=(
-    git
-    git-open
-    z
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    history-substring-search
-)
+#-----------------------------------------------------------
+# Keybindings
+#-----------------------------------------------------------
+
+bindkey -v                                        # vim keybindings
+bindkey '^R' history-incremental-search-backward  # history search
+
+#-----------------------------------------------------------
+# History
+#-----------------------------------------------------------
+
+HISTFILE=$HOME/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+
+setopt INC_APPEND_HISTORY     # Immediately append to history file.
+setopt EXTENDED_HISTORY       # Record timestamp in history.
+setopt HIST_EXPIRE_DUPS_FIRST # Expire duplicate entries first when trimming history.
+setopt HIST_IGNORE_DUPS       # Dont record an entry that was just recorded again.
+setopt HIST_IGNORE_ALL_DUPS   # Delete old recorded entry if new entry is a duplicate.
+setopt HIST_FIND_NO_DUPS      # Do not display a line previously found.
+setopt HIST_IGNORE_SPACE      # Dont record an entry starting with a space.
+setopt HIST_SAVE_NO_DUPS      # Dont write duplicate entries in the history file.
+setopt SHARE_HISTORY          # Share history between all sessions.
+
+
+#-----------------------------------------------------------
+# Completion
+#-----------------------------------------------------------
 
 # Add completions installed through Homebrew packages
 # See: https://docs.brew.sh/Shell-Completion
 if type brew &>/dev/null; then
-  FPATH="/opt/homebrew/share/zsh/site-functions:$FPATH"
+  FPATH=/usr/local/share/zsh/site-functions:$FPATH
 fi
 
-# fzf
-if type fzf &>/dev/null; then
-  # shellcheck disable=SC1090
-  source <(fzf --zsh)
-fi
+autoload -Uz compinit 
+export ZSH_CACHEDIR="$ZSH/cache"
+export ZSH_COMPDUMP="$ZSH_CACHEDIR/.zcompdump"
 
-# shellcheck disable=SC1091
-source "$ZSH/oh-my-zsh.sh"
-# unset some aliases from oh-my-zsh
-unalias gb
+# Speed up completion init, see: https://gist.github.com/ctechols/ca1035271ad134841284
+# compinit -d "$ZSH_CACHEDIR"
+# for dump in "$ZSH_COMPDUMP"(N.mh+24); do
+#   compinit
+# done
+# compinit -C
 
-# User configuration
+unsetopt flowcontrol      # Disable use of ctrl-s and ctrl-q for flow control
+setopt auto_menu          # Show completion menu on successive tab press
+setopt complete_in_word   # Allow completion within a word, not just at the end
+setopt always_to_end      # Move cursor to the end of a completed word
+setopt auto_pushd         # Automatically push directories onto the directory stack
 
-export EDITOR='nvim'
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' # Case-insensitive completion
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
+#-----------------------------------------------------------
+# Aliases
+#-----------------------------------------------------------
+
 alias sz="exec zsh" # "source ~/.zshrc" -- this is the WRONG way (https://blog.mattclemente.com/2020/06/26/oh-my-zsh-slow-to-load.html)
 alias vz="vim ~/.zshrc"
 # alias ex="vim -e"
@@ -87,6 +107,10 @@ alias how="gh copilot explain"
 # Run snowsql
 alias snowsql=/Applications/SnowSQL.app/Contents/MacOS/snowsql
 
+#-----------------------------------------------------------
+# Functions
+#-----------------------------------------------------------
+
 gmbd() {
     curr=$(git symbolic-ref --short HEAD)
     (git checkout master || git checkout main) && git pull && git branch -d "$curr"
@@ -95,27 +119,6 @@ gmbd() {
 }
 
 awslogin() {
+  # shellcheck disable=1091
   source "$HOME/bin/_awslogin" "$1"
 }
-
-# vim mode
-bindkey -v
-bindkey '^R' history-incremental-search-backward
-
-# allow enter in terminal
-stty sane
-
-# Helps so that `git branch` doesn't use less if content can be viewed on one screen
-# See here: https://stackoverflow.com/a/60498979
-export LESS="-FRX"
-
-#
-# Export common dumps to better places than $HOME
-#
-
-mkdir -p "$HOME/.cache"
-export LESSHISTFILE=$HOME/.cache/.lesshst
-export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
-compinit -d "$ZSH/cache"
-
-SAM_CLI_TELEMETRY=0
