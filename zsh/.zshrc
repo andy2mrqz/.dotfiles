@@ -24,6 +24,9 @@ export LESSHISTFILE=$HOME/.cache/.lesshst
 bindkey -v                                        # vim keybindings
 bindkey '^R' history-incremental-search-backward  # history search
 
+bindkey '^[[A' history-substring-search-up        # substring history search (from plugin)
+bindkey '^[[B' history-substring-search-down      # substring history search (from plugin)
+
 #-----------------------------------------------------------
 # History
 #-----------------------------------------------------------
@@ -53,16 +56,8 @@ if type brew &>/dev/null; then
   FPATH=/usr/local/share/zsh/site-functions:$FPATH
 fi
 
-autoload -Uz compinit 
-export ZSH_CACHEDIR="$ZSH/cache"
-export ZSH_COMPDUMP="$ZSH_CACHEDIR/.zcompdump"
-
-# Speed up completion init, see: https://gist.github.com/ctechols/ca1035271ad134841284
-# compinit -d "$ZSH_CACHEDIR"
-# for dump in "$ZSH_COMPDUMP"(N.mh+24); do
-#   compinit
-# done
-# compinit -C
+# Load and initialize the completion system
+autoload -Uz compinit && compinit -C -d "$ZSH/cache/.zcompdump"
 
 unsetopt flowcontrol      # Disable use of ctrl-s and ctrl-q for flow control
 setopt auto_menu          # Show completion menu on successive tab press
@@ -122,3 +117,27 @@ awslogin() {
   # shellcheck disable=1091
   source "$HOME/bin/_awslogin" "$1"
 }
+
+#-----------------------------------------------------------
+# Prompt
+#-----------------------------------------------------------
+
+setopt prompt_subst # Allow command substitution in prompt string
+
+#-----------------------------------------------------------
+# Env
+#-----------------------------------------------------------
+
+
+#-----------------------------------------------------------
+# Plugins
+#-----------------------------------------------------------
+
+# shellcheck disable=1091
+source "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+# shellcheck disable=1091
+source "$HOMEBREW_PREFIX/share/zsh-history-substring-search/zsh-history-substring-search.zsh"
+# shellcheck disable=1091
+source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+# shellcheck disable=1091
+source "$HOMEBREW_PREFIX/etc/profile.d/z.sh"
