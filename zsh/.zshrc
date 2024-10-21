@@ -2,7 +2,9 @@
 # Shellcheck configuration
 #-----------------------------------------------------------
 
-# shellcheck disable=2034   # disables check for unused variables
+# shellcheck disable=2034   # [...] appears unused. Verify use (or export if used externally).
+# shellcheck disable=2154   # [...] is referenced but not assigned.
+# shellcheck disable=2168   # 'local' is only valid in functions.
 
 #-----------------------------------------------------------
 # General configuration
@@ -137,7 +139,31 @@ awslogin() {
 # Prompt
 #-----------------------------------------------------------
 
-setopt prompt_subst # Allow command substitution in prompt string
+# Allow prompt substitution.  Docs: https://zsh.sourceforge.io/Doc/Release/Prompt-Expansion.html
+setopt prompt_subst
+
+git_prompt_info() {
+  local dirstatus="%{${fg_bold[green]}%}✓%{${reset_color}%}"
+  local dirty="%{${fg_bold[yellow]}%}✗%{${reset_color}%}"
+  
+  if [[ -n $(git status --porcelain 2> /dev/null | tail -n1) ]]; then
+    dirstatus=$dirty
+  fi
+
+  ref=$(git symbolic-ref HEAD 2> /dev/null) || \
+  ref=$(git rev-parse --short HEAD 2> /dev/null) || return
+
+  local git_prompt_prefix="%{${fg_bold[blue]}%}git:(%{${fg_bold[red]}%}"
+  local git_prompt_suffix="%{${fg_bold[blue]}%})${dirstatus:+ ${dirstatus}}%{${reset_color}%}"
+  echo " ${git_prompt_prefix}${ref#refs/heads/}${git_prompt_suffix}"
+}
+
+local exit_code_indicator="%(?.%{${fg_bold[green]}%}%1{➜%}.%{${fg_bold[red]}%}%1{➜%}) %{${reset_color}%}"
+local dir_info="%{${fg_bold[cyan]}%}%c%{${reset_color}%}"
+
+# shellcheck disable=2016
+# Enclose in single quotes since it is evaluated for each prompt - double quotes evaluates once
+PROMPT='${exit_code_indicator} ${dir_info}$(git_prompt_info) '
 
 #-----------------------------------------------------------
 # Plugins
