@@ -10,12 +10,24 @@
 
 typeset -U PATH                   # Ensure uniqueness within the PATH env variable
 autoload colors; colors;          # Ensure color support is loaded for the terminal
-export HOMEBREW_NO_AUTO_UPDATE=1  # Don't update homebrew on every package install
+
+#-----------------------------------------------------------
+# Env
+#-----------------------------------------------------------
+
 export ZSH="$HOME/.zsh.d"         # Add zsh-specific directory for configuration files
 
 # Export common dumps to places better than $HOME
 [ -d "$HOME/.cache" ] || mkdir -p "$HOME/.cache"
 export LESSHISTFILE=$HOME/.cache/.lesshst
+
+# PATH updates
+export PATH="$HOME/bin:$PATH"                       # personal scripts
+export PATH="$HOME/.local/bin:$PATH"                # some scripts get installed here (mise, poetry)
+export PATH="$HOME/.local/share/mise/shims:$PATH"   # mise shims
+
+export KEYTIMEOUT=1                 # Reduce delay for key combinations in order to change to vi mode faster
+export HOMEBREW_NO_AUTO_UPDATE=1    # Don't update homebrew on every package install
 
 #-----------------------------------------------------------
 # Keybindings
@@ -66,6 +78,9 @@ setopt always_to_end      # Move cursor to the end of a completed word
 setopt auto_pushd         # Automatically push directories onto the directory stack
 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' # Case-insensitive completion
+
+# Completion plugins
+eval "$(mise completion zsh)"       # Enable completions for mise
 
 #-----------------------------------------------------------
 # Aliases
@@ -123,11 +138,6 @@ awslogin() {
 #-----------------------------------------------------------
 
 setopt prompt_subst # Allow command substitution in prompt string
-
-#-----------------------------------------------------------
-# Env
-#-----------------------------------------------------------
-
 
 #-----------------------------------------------------------
 # Plugins
