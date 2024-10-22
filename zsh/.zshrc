@@ -110,6 +110,12 @@ awslogin() {
 # Completion
 #-----------------------------------------------------------
 
+# Add completions installed through Homebrew packages
+# See: https://docs.brew.sh/Shell-Completion
+if type brew &>/dev/null; then
+  FPATH=/opt/homebrew/share/zsh/site-functions:$FPATH
+fi
+
 # Load and initialize the completion system
 autoload -Uz compinit && compinit -C -d "$ZSH/cache/.zcompdump"
 
@@ -129,6 +135,8 @@ _lazy_load gh   "gh completion -s zsh"    # Lazy load completions for gh
 # Aliases
 #-----------------------------------------------------------
 
+alias ls="eza"
+alias ll="eza -l"
 alias sz="exec zsh" # "source ~/.zshrc" -- this is the WRONG way (https://blog.mattclemente.com/2020/06/26/oh-my-zsh-slow-to-load.html)
 alias vz="vim ~/.zshrc"
 # alias ex="vim -e"
