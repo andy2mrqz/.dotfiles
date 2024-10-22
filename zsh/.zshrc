@@ -14,8 +14,10 @@ typeset -U PATH                   # Ensure uniqueness within the PATH env variab
 autoload colors; colors;          # Ensure color support is loaded for the terminal
 
 #-----------------------------------------------------------
-# Env
+# Environment
 #-----------------------------------------------------------
+
+export EDITOR="nvim"
 
 export ZSH="$HOME/.zsh.d"         # Add zsh-specific directory for configuration files
 
@@ -27,6 +29,7 @@ export LESSHISTFILE=$HOME/.cache/.lesshst
 export PATH="$HOME/bin:$PATH"                       # personal scripts
 export PATH="$HOME/.local/bin:$PATH"                # some scripts get installed here (mise, poetry)
 export PATH="$HOME/.local/share/mise/shims:$PATH"   # mise shims
+eval "$(mise activate zsh)"                         # Activate mise within PATH; must come after shims
 
 export KEYTIMEOUT=1                 # Reduce delay for key combinations in order to change to vi mode faster
 export HOMEBREW_NO_AUTO_UPDATE=1    # Don't update homebrew on every package install
@@ -59,6 +62,56 @@ setopt HIST_IGNORE_SPACE      # Dont record an entry starting with a space.
 setopt HIST_SAVE_NO_DUPS      # Dont write duplicate entries in the history file.
 setopt SHARE_HISTORY          # Share history between all sessions.
 
+#-----------------------------------------------------------
+# Functions
+#-----------------------------------------------------------
+
+_lazy_load() { # https://github.com/goarano/zsh-lazy-load
+    func_name=$1
+    comp_cmd=$2
+
+    if [ "${commands[$func_name]}" ]; then
+        eval "
+        function _init_$func_name() {
+            unfunction \"\$0\"
+            unfunction \"$func_name\"
+            unfunction \"_$func_name\"
+            unset \"_comps[$func_name]\"
+            source <($comp_cmd) # Load auto-completion
+        }
+
+        function $func_name() {
+            _init_$func_name
+            \$0 \"\$@\" # Execute original command
+        }
+
+        #compdef $func_name
+        function _$func_name() {
+            _init_$func_name
+            eval \$_comps[$func_name] \"\$@\" # Execute completion function
+            if [[ -z \"\$_comps[$func_name]\" ]]; then
+                compdef _$func_name $func_name # Needed if the comp_cmd uses autoload
+            fi
+        }
+
+        if [[ \"\$(basename -- \${(%):-%x})\" != \"_$func_name\" ]]; then
+            compdef _$func_name $func_name
+        fi
+        "
+    fi
+}
+
+gmbd() {
+    curr=$(git symbolic-ref --short HEAD)
+    (git checkout master || git checkout main) && git pull && git branch -d "$curr"
+    git remote prune origin
+    unset curr
+}
+
+awslogin() {
+  # shellcheck disable=1091
+  source "$HOME/bin/_awslogin" "$1"
+}
 
 #-----------------------------------------------------------
 # Completion
@@ -82,7 +135,8 @@ setopt auto_pushd         # Automatically push directories onto the directory st
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' # Case-insensitive completion
 
 # Completion plugins
-eval "$(mise completion zsh)"       # Enable completions for mise
+_lazy_load mise "mise completion zsh"     # Lazy load completions for mise
+_lazy_load gh   "gh completion -s zsh"    # Lazy load completions for gh
 
 #-----------------------------------------------------------
 # Aliases
@@ -118,22 +172,6 @@ alias how="gh copilot explain"
 
 # Run snowsql
 alias snowsql=/Applications/SnowSQL.app/Contents/MacOS/snowsql
-
-#-----------------------------------------------------------
-# Functions
-#-----------------------------------------------------------
-
-gmbd() {
-    curr=$(git symbolic-ref --short HEAD)
-    (git checkout master || git checkout main) && git pull && git branch -d "$curr"
-    git remote prune origin
-    unset curr
-}
-
-awslogin() {
-  # shellcheck disable=1091
-  source "$HOME/bin/_awslogin" "$1"
-}
 
 #-----------------------------------------------------------
 # Prompt
