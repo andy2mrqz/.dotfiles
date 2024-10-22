@@ -11,7 +11,6 @@
 #-----------------------------------------------------------
 
 typeset -U PATH                   # Ensure uniqueness within the PATH env variable
-autoload colors; colors;          # Ensure color support is loaded for the terminal
 
 #-----------------------------------------------------------
 # Environment
@@ -165,13 +164,12 @@ alias snowsql=/Applications/SnowSQL.app/Contents/MacOS/snowsql
 # Prompt
 #-----------------------------------------------------------
 
-# Allow prompt substitution.  Docs: https://zsh.sourceforge.io/Doc/Release/Prompt-Expansion.html
-setopt prompt_subst
+setopt prompt_subst       # Docs: https://zsh.sourceforge.io/Doc/Release/Prompt-Expansion.html
 
 git_prompt_info() {
-  local dirstatus="%{${fg_bold[green]}%}✓%{${reset_color}%}"
-  local dirty="%{${fg_bold[yellow]}%}✗%{${reset_color}%}"
-  
+  local dirstatus="%B%F{green}✓%b%f"
+  local dirty="%B%F{yellow}✗%b%f"
+
   if [[ -n $(git status --porcelain 2> /dev/null | tail -n1) ]]; then
     dirstatus=$dirty
   fi
@@ -179,13 +177,11 @@ git_prompt_info() {
   ref=$(git symbolic-ref HEAD 2> /dev/null) || \
   ref=$(git rev-parse --short HEAD 2> /dev/null) || return
 
-  local git_prompt_prefix="%{${fg_bold[blue]}%}git:(%{${fg_bold[red]}%}"
-  local git_prompt_suffix="%{${fg_bold[blue]}%})${dirstatus:+ ${dirstatus}}%{${reset_color}%}"
-  echo " ${git_prompt_prefix}${ref#refs/heads/}${git_prompt_suffix}"
+  echo " %B%F{blue}git:(%F{red}${ref#refs/heads/}%F{blue}) ${dirstatus}%f%b"
 }
 
-local exit_code_indicator="%(?.%{${fg_bold[green]}%}%1{➜%}.%{${fg_bold[red]}%}%1{➜%}) %{${reset_color}%}"
-local dir_info="%{${fg_bold[cyan]}%}%c%{${reset_color}%}"
+local exit_code_indicator="%B%(?.%F{green}%1{➜%}.%F{red}%1{➜%}) %b%f"
+local dir_info="%B%F{cyan}%c%b%f"
 
 # shellcheck disable=2016
 # Enclose in single quotes since it is evaluated for each prompt - double quotes evaluates once
