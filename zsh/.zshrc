@@ -18,10 +18,11 @@ typeset -U PATH                   # Ensure uniqueness within the PATH env variab
 
 # PATH is defined in ~/.zprofile
 
-export ZSH="$HOME/.zsh.d"           # Add zsh-specific directory for configuration files
-export EDITOR="nvim"                # Set editor to neovim
-export KEYTIMEOUT=1                 # Reduce delay for key combinations in order to change to vi mode faster
-export HOMEBREW_NO_AUTO_UPDATE=1    # Don't update homebrew on every package install
+export ZSH="$HOME/.zsh.d"                   # Add zsh-specific directory for configuration files
+export EDITOR="nvim"                        # Set editor to neovim
+export KEYTIMEOUT=1                         # Reduce delay for key combinations in order to change to vi mode faster
+export HOMEBREW_NO_AUTO_UPDATE=1            # Don't update homebrew on every package install
+export EZA_CONFIG_DIR="$HOME/.config/eza"   # Add config directory for eza (ls replacement)
 
 # Export common dumps to places better than $HOME
 [ -d "$HOME/.cache" ] || mkdir -p "$HOME/.cache"
