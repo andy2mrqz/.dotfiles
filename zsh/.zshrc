@@ -1,61 +1,143 @@
-# shellcheck disable=SC2034
+#-----------------------------------------------------------
+# Shellcheck configuration
+#-----------------------------------------------------------
 
-# Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
+# shellcheck disable=2034   # [...] appears unused. Verify use (or export if used externally).
+# shellcheck disable=2154   # [...] is referenced but not assigned.
+# shellcheck disable=2168   # 'local' is only valid in functions.
 
-# Theme
-ZSH_THEME="robbyrussell"
+#-----------------------------------------------------------
+# General configuration
+#-----------------------------------------------------------
 
-# Random options
-HYPHEN_INSENSITIVE="true"
-# - Uncomment the following line if pasting URLs and other text is messed up.
-DISABLE_MAGIC_FUNCTIONS=true
-# - Uncomment the following line to display red dots whilst waiting for completion.
-COMPLETION_WAITING_DOTS="true"
-# - Unique history
-HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE="true"
-# - Async mode for zsh autosuggestions, and disabling automatic widget re-binding
-ZSH_AUTOSUGGEST_USE_ASYNC="true"
-ZSH_AUTOSUGGEST_MANUAL_REBIND="true"
+typeset -U PATH                   # Ensure uniqueness within the PATH env variable
 
-# Don't update homebrew on every package install
-export HOMEBREW_NO_AUTO_UPDATE=1
+#-----------------------------------------------------------
+# Environment
+#-----------------------------------------------------------
 
-# - Which plugins would you like to load?
-plugins=(
-    git
-    git-open
-    z
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    history-substring-search
-)
+# PATH is defined in ~/.zprofile
+
+export ZSH="$HOME/.zsh.d"                   # Add zsh-specific directory for configuration files
+export EDITOR="nvim"                        # Set editor to neovim
+export KEYTIMEOUT=1                         # Reduce delay for key combinations in order to change to vi mode faster
+export HOMEBREW_NO_AUTO_UPDATE=1            # Don't update homebrew on every package install
+export EZA_CONFIG_DIR="$HOME/.config/eza"   # Add config directory for eza (ls replacement)
+
+# Export common dumps to places better than $HOME
+[ -d "$HOME/.cache" ] || mkdir -p "$HOME/.cache"
+export LESSHISTFILE=$HOME/.cache/.lesshst
+
+#-----------------------------------------------------------
+# Keybindings
+#-----------------------------------------------------------
+
+bindkey -v                                        # vim keybindings
+bindkey '^R' history-incremental-search-backward  # history search
+
+bindkey '^[[A' history-substring-search-up        # substring history search (from plugin)
+bindkey '^[[B' history-substring-search-down      # substring history search (from plugin)
+
+#-----------------------------------------------------------
+# History
+#-----------------------------------------------------------
+
+HISTFILE=$HOME/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+
+setopt INC_APPEND_HISTORY     # Immediately append to history file.
+setopt EXTENDED_HISTORY       # Record timestamp in history.
+setopt HIST_EXPIRE_DUPS_FIRST # Expire duplicate entries first when trimming history.
+setopt HIST_IGNORE_DUPS       # Dont record an entry that was just recorded again.
+setopt HIST_IGNORE_ALL_DUPS   # Delete old recorded entry if new entry is a duplicate.
+setopt HIST_FIND_NO_DUPS      # Do not display a line previously found.
+setopt HIST_IGNORE_SPACE      # Dont record an entry starting with a space.
+setopt HIST_SAVE_NO_DUPS      # Dont write duplicate entries in the history file.
+setopt SHARE_HISTORY          # Share history between all sessions.
+
+#-----------------------------------------------------------
+# Functions
+#-----------------------------------------------------------
+
+_lazy_load() { # https://github.com/goarano/zsh-lazy-load
+    func_name=$1
+    comp_cmd=$2
+
+    if [ "${commands[$func_name]}" ]; then
+        eval "
+        function _init_$func_name() {
+            unfunction \"\$0\"
+            unfunction \"$func_name\"
+            unfunction \"_$func_name\"
+            unset \"_comps[$func_name]\"
+            source <($comp_cmd) # Load auto-completion
+        }
+
+        function $func_name() {
+            _init_$func_name
+            \$0 \"\$@\" # Execute original command
+        }
+
+        #compdef $func_name
+        function _$func_name() {
+            _init_$func_name
+            eval \$_comps[$func_name] \"\$@\" # Execute completion function
+            if [[ -z \"\$_comps[$func_name]\" ]]; then
+                compdef _$func_name $func_name # Needed if the comp_cmd uses autoload
+            fi
+        }
+
+        if [[ \"\$(basename -- \${(%):-%x})\" != \"_$func_name\" ]]; then
+            compdef _$func_name $func_name
+        fi
+        "
+    fi
+}
+
+gmbd() {
+    curr=$(git symbolic-ref --short HEAD)
+    (git checkout master || git checkout main) && git pull && git branch -d "$curr"
+    git remote prune origin
+    unset curr
+}
+
+awslogin() {
+  # shellcheck disable=1091
+  source "$HOME/bin/_awslogin" "$1"
+}
+
+#-----------------------------------------------------------
+# Completion
+#-----------------------------------------------------------
 
 # Add completions installed through Homebrew packages
 # See: https://docs.brew.sh/Shell-Completion
 if type brew &>/dev/null; then
-  FPATH="/opt/homebrew/share/zsh/site-functions:$FPATH"
+  FPATH=/opt/homebrew/share/zsh/site-functions:$FPATH
 fi
 
-# fzf
-if type fzf &>/dev/null; then
-  # shellcheck disable=SC1090
-  source <(fzf --zsh)
-fi
+# Load and initialize the completion system
+autoload -Uz compinit && compinit -C -d "$ZSH/cache/.zcompdump"
 
-# shellcheck disable=SC1091
-source "$ZSH/oh-my-zsh.sh"
-# unset some aliases from oh-my-zsh
-unalias gb
+unsetopt flowcontrol      # Disable use of ctrl-s and ctrl-q for flow control
+setopt auto_menu          # Show completion menu on successive tab press
+setopt complete_in_word   # Allow completion within a word, not just at the end
+setopt always_to_end      # Move cursor to the end of a completed word
+setopt auto_pushd         # Automatically push directories onto the directory stack
 
-# User configuration
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' # Case-insensitive completion
 
-export EDITOR='nvim'
+# Completion plugins
+_lazy_load mise "mise completion zsh"     # Lazy load completions for mise
+_lazy_load gh   "gh completion -s zsh"    # Lazy load completions for gh
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
+#-----------------------------------------------------------
+# Aliases
+#-----------------------------------------------------------
+
+alias ls="eza"
+alias ll="eza -l"
 alias sz="exec zsh" # "source ~/.zshrc" -- this is the WRONG way (https://blog.mattclemente.com/2020/06/26/oh-my-zsh-slow-to-load.html)
 alias vz="vim ~/.zshrc"
 # alias ex="vim -e"
@@ -87,35 +169,42 @@ alias how="gh copilot explain"
 # Run snowsql
 alias snowsql=/Applications/SnowSQL.app/Contents/MacOS/snowsql
 
-gmbd() {
-    curr=$(git symbolic-ref --short HEAD)
-    (git checkout master || git checkout main) && git pull && git branch -d "$curr"
-    git remote prune origin
-    unset curr
+#-----------------------------------------------------------
+# Prompt
+#-----------------------------------------------------------
+
+setopt prompt_subst       # Docs: https://zsh.sourceforge.io/Doc/Release/Prompt-Expansion.html
+
+git_prompt_info() {
+  local dirstatus="%B%F{green}✓%b%f"
+  local dirty="%B%F{yellow}✗%b%f"
+
+  if [[ -n $(git status --porcelain 2> /dev/null | tail -n1) ]]; then
+    dirstatus=$dirty
+  fi
+
+  ref=$(git symbolic-ref HEAD 2> /dev/null) || \
+  ref=$(git rev-parse --short HEAD 2> /dev/null) || return
+
+  echo " %B%F{blue}git:(%F{red}${ref#refs/heads/}%F{blue}) ${dirstatus}%f%b"
 }
 
-awslogin() {
-  source "$HOME/bin/_awslogin" "$1"
-}
+local exit_code_indicator="%B%(?.%F{green}%1{➜%}.%F{red}%1{➜%}) %b%f"
+local dir_info="%B%F{cyan}%c%b%f"
 
-# vim mode
-bindkey -v
-bindkey '^R' history-incremental-search-backward
+# shellcheck disable=2016
+# Enclose in single quotes since it is evaluated for each prompt - double quotes evaluates once
+PROMPT='${exit_code_indicator} ${dir_info}$(git_prompt_info) '
 
-# allow enter in terminal
-stty sane
+#-----------------------------------------------------------
+# Plugins
+#-----------------------------------------------------------
 
-# Helps so that `git branch` doesn't use less if content can be viewed on one screen
-# See here: https://stackoverflow.com/a/60498979
-export LESS="-FRX"
-
-#
-# Export common dumps to better places than $HOME
-#
-
-mkdir -p "$HOME/.cache"
-export LESSHISTFILE=$HOME/.cache/.lesshst
-export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
-compinit -d "$ZSH/cache"
-
-SAM_CLI_TELEMETRY=0
+# shellcheck disable=1091
+source "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+# shellcheck disable=1091
+source "$HOMEBREW_PREFIX/share/zsh-history-substring-search/zsh-history-substring-search.zsh"
+# shellcheck disable=1091
+source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+# shellcheck disable=1091
+source "$HOMEBREW_PREFIX/etc/profile.d/z.sh"
