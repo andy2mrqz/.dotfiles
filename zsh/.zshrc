@@ -111,12 +111,6 @@ awslogin() {
 # Completion
 #-----------------------------------------------------------
 
-# Add completions installed through Homebrew packages
-# See: https://docs.brew.sh/Shell-Completion
-if type brew &>/dev/null; then
-  FPATH=/usr/local/share/zsh/site-functions:$FPATH
-fi
-
 # Load and initialize the completion system
 autoload -Uz compinit && compinit -C -d "$ZSH/cache/.zcompdump"
 
