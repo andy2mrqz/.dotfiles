@@ -60,41 +60,6 @@ setopt SHARE_HISTORY          # Share history between all sessions.
 # Functions
 #-----------------------------------------------------------
 
-_lazy_load() { # https://github.com/goarano/zsh-lazy-load
-    func_name=$1
-    comp_cmd=$2
-
-    if [ "${commands[$func_name]}" ]; then
-        eval "
-        function _init_$func_name() {
-            unfunction \"\$0\"
-            unfunction \"$func_name\"
-            unfunction \"_$func_name\"
-            unset \"_comps[$func_name]\"
-            source <($comp_cmd) # Load auto-completion
-        }
-
-        function $func_name() {
-            _init_$func_name
-            \$0 \"\$@\" # Execute original command
-        }
-
-        #compdef $func_name
-        function _$func_name() {
-            _init_$func_name
-            eval \$_comps[$func_name] \"\$@\" # Execute completion function
-            if [[ -z \"\$_comps[$func_name]\" ]]; then
-                compdef _$func_name $func_name # Needed if the comp_cmd uses autoload
-            fi
-        }
-
-        if [[ \"\$(basename -- \${(%):-%x})\" != \"_$func_name\" ]]; then
-            compdef _$func_name $func_name
-        fi
-        "
-    fi
-}
-
 gmbd() {
     curr=$(git symbolic-ref --short HEAD)
     (git checkout master || git checkout main) && git pull && git branch -d "$curr"
@@ -117,6 +82,11 @@ if type brew &>/dev/null; then
   FPATH=/opt/homebrew/share/zsh/site-functions:$FPATH
 fi
 
+# Add manually compiled completion plugins
+# mise completion zsh > ~/.zsh.d/site-functions/_mise
+# gh completion -s zsh > ~/.zsh.d/site-functions/_gh
+FPATH=$HOME/.zsh.d/site-functions:$FPATH
+
 # Load and initialize the completion system
 autoload -Uz compinit && compinit -C -d "$ZSH/cache/.zcompdump"
 
@@ -127,10 +97,6 @@ setopt always_to_end      # Move cursor to the end of a completed word
 setopt auto_pushd         # Automatically push directories onto the directory stack
 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' # Case-insensitive completion
-
-# Completion plugins
-_lazy_load mise "mise completion zsh"     # Lazy load completions for mise
-_lazy_load gh   "gh completion -s zsh"    # Lazy load completions for gh
 
 #-----------------------------------------------------------
 # Aliases
