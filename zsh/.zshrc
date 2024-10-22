@@ -17,22 +17,16 @@ autoload colors; colors;          # Ensure color support is loaded for the termi
 # Environment
 #-----------------------------------------------------------
 
-export EDITOR="nvim"
+# PATH is defined in ~/.zprofile
 
-export ZSH="$HOME/.zsh.d"         # Add zsh-specific directory for configuration files
+export ZSH="$HOME/.zsh.d"           # Add zsh-specific directory for configuration files
+export EDITOR="nvim"                # Set editor to neovim
+export KEYTIMEOUT=1                 # Reduce delay for key combinations in order to change to vi mode faster
+export HOMEBREW_NO_AUTO_UPDATE=1    # Don't update homebrew on every package install
 
 # Export common dumps to places better than $HOME
 [ -d "$HOME/.cache" ] || mkdir -p "$HOME/.cache"
 export LESSHISTFILE=$HOME/.cache/.lesshst
-
-# PATH updates
-export PATH="$HOME/bin:$PATH"                       # personal scripts
-export PATH="$HOME/.local/bin:$PATH"                # some scripts get installed here (mise, poetry)
-export PATH="$HOME/.local/share/mise/shims:$PATH"   # mise shims
-eval "$(mise activate zsh)"                         # Activate mise within PATH; must come after shims
-
-export KEYTIMEOUT=1                 # Reduce delay for key combinations in order to change to vi mode faster
-export HOMEBREW_NO_AUTO_UPDATE=1    # Don't update homebrew on every package install
 
 #-----------------------------------------------------------
 # Keybindings
