@@ -139,7 +139,7 @@ _lazy_load gh   "gh completion -s zsh"    # Lazy load completions for gh
 alias ls="eza"
 alias ll="eza -l"
 alias sz="exec zsh" # "source ~/.zshrc" -- this is the WRONG way (https://blog.mattclemente.com/2020/06/26/oh-my-zsh-slow-to-load.html)
-alias vz="vim ~/.zshrc"
+alias vz="vim ~/Projects/.dotfiles/zsh/.zshrc"
 # alias ex="vim -e"
 alias vim="nvim"
 # alias repl="lein repl :connect"
