@@ -26,7 +26,7 @@ export EZA_CONFIG_DIR="$HOME/.config/eza"   # Add config directory for eza (ls r
 
 # Export common dumps to places better than $HOME
 [ -d "$HOME/.cache" ] || mkdir -p "$HOME/.cache"
-export LESSHISTFILE=$HOME/.cache/.lesshst
+export LESSHISTFILE="$HOME/.cache/.lesshst"
 
 #-----------------------------------------------------------
 # Keybindings
@@ -42,7 +42,7 @@ bindkey '^[[B' history-substring-search-down      # substring history search (fr
 # History
 #-----------------------------------------------------------
 
-HISTFILE=$HOME/.zsh_history
+HISTFILE="$HOME/.zsh_history"
 HISTSIZE=50000
 SAVEHIST=50000
 
@@ -59,41 +59,6 @@ setopt SHARE_HISTORY          # Share history between all sessions.
 #-----------------------------------------------------------
 # Functions
 #-----------------------------------------------------------
-
-_lazy_load() { # https://github.com/goarano/zsh-lazy-load
-    func_name=$1
-    comp_cmd=$2
-
-    if [ "${commands[$func_name]}" ]; then
-        eval "
-        function _init_$func_name() {
-            unfunction \"\$0\"
-            unfunction \"$func_name\"
-            unfunction \"_$func_name\"
-            unset \"_comps[$func_name]\"
-            source <($comp_cmd) # Load auto-completion
-        }
-
-        function $func_name() {
-            _init_$func_name
-            \$0 \"\$@\" # Execute original command
-        }
-
-        #compdef $func_name
-        function _$func_name() {
-            _init_$func_name
-            eval \$_comps[$func_name] \"\$@\" # Execute completion function
-            if [[ -z \"\$_comps[$func_name]\" ]]; then
-                compdef _$func_name $func_name # Needed if the comp_cmd uses autoload
-            fi
-        }
-
-        if [[ \"\$(basename -- \${(%):-%x})\" != \"_$func_name\" ]]; then
-            compdef _$func_name $func_name
-        fi
-        "
-    fi
-}
 
 gmbd() {
     curr=$(git symbolic-ref --short HEAD)
@@ -114,8 +79,15 @@ awslogin() {
 # Add completions installed through Homebrew packages
 # See: https://docs.brew.sh/Shell-Completion
 if type brew &>/dev/null; then
-  FPATH=/opt/homebrew/share/zsh/site-functions:$FPATH
+  FPATH="/opt/homebrew/share/zsh/site-functions:$FPATH"
 fi
+
+# Completion plugins
+# Manually compile completion plugins
+#   mise completion  zsh  > $ZSH/site-functions/_mise
+#   gh completion -s zsh  > $ZSH/site-functions/_gh
+#   docker completion zsh > $ZSH/site-functions/_docker
+FPATH="$ZSH/site-functions:$FPATH"
 
 # Load and initialize the completion system
 autoload -Uz compinit && compinit -C -d "$ZSH/cache/.zcompdump"
@@ -127,10 +99,6 @@ setopt always_to_end      # Move cursor to the end of a completed word
 setopt auto_pushd         # Automatically push directories onto the directory stack
 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' # Case-insensitive completion
-
-# Completion plugins
-_lazy_load mise "mise completion zsh"     # Lazy load completions for mise
-_lazy_load gh   "gh completion -s zsh"    # Lazy load completions for gh
 
 #-----------------------------------------------------------
 # Aliases
