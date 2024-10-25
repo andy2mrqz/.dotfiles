@@ -11,6 +11,7 @@
 #-----------------------------------------------------------
 
 typeset -U PATH                   # Ensure uniqueness within the PATH env variable
+unsetopt BEEP                     # Turn off all beeps
 
 #-----------------------------------------------------------
 # Environment
@@ -32,7 +33,10 @@ export LESSHISTFILE="$HOME/.cache/.lesshst"
 # Keybindings
 #-----------------------------------------------------------
 
-bindkey -v                                        # vim keybindings
+bindkey -v                                                  # vim keybindings
+autoload -U edit-command-line && zle -N edit-command-line   # enable line editing with vim
+bindkey -M vicmd v edit-command-line                        # press 'v' to open current line in $EDITOR
+
 bindkey '^R' history-incremental-search-backward  # history search
 
 bindkey '^[[A' history-substring-search-up        # substring history search (from plugin)
@@ -84,9 +88,11 @@ fi
 
 # Completion plugins
 # Manually compile completion plugins
-#   mise completion  zsh  > $ZSH/site-functions/_mise
-#   gh completion -s zsh  > $ZSH/site-functions/_gh
-#   docker completion zsh > $ZSH/site-functions/_docker
+#   mise completion                zsh  > $ZSH/site-functions/_mise
+#   gh completion -s               zsh  > $ZSH/site-functions/_gh
+#   docker completion              zsh  > $ZSH/site-functions/_docker
+#   poetry completions             zsh  > $ZSH/site-functions/_poetry
+#   ruff generate-shell-completion zsh  > $ZSH/site-functions/_ruff
 FPATH="$ZSH/site-functions:$FPATH"
 
 # Load and initialize the completion system
@@ -129,7 +135,7 @@ alias gmo="git merge origin/main 2>/dev/null || git merge origin/master"
 alias gfollow="git log --follow -p"
 alias gsp="git stash pop"
 alias gitcs="git log -n 1 --pretty=format:%H | tee >(pbcopy)"
-alias gb="git branch --sort=-committerdate"
+alias gb="git branch --sort=-committerdate --format='%(HEAD) %(if)%(HEAD)%(then)%(color:green)%(end)%(refname:short) | %(committerdate:relative)'"
 
 # Run github copilot cli
 alias how="gh copilot explain"
