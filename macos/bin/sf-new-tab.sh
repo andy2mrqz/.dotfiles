@@ -37,6 +37,22 @@ tell application "Arc"
     return element;
   };
 
+  const findAndClickInSessionContext = (text) => {
+    const sessionContextDiv = findElement(
+      'div[name=\"SESSION_CONTEXT\"]',
+      \"Session context not found\"
+    );
+    const allDivsInContext = Array.from(
+      sessionContextDiv.querySelectorAll(\"div\")
+    );
+    const divToFind = findElementByText(
+      allDivsInContext,
+      text,
+      \`\${text} not found\`
+    );
+    divToFind.click();
+  }
+
   const main = async () => {
     try {
       const newSheetButton = findElement(
@@ -54,19 +70,12 @@ tell application "Arc"
       roleAndWarehouseSelector.click();
       await wait(1000);
 
-      const sessionContextDiv = findElement(
-        'div[name=\"SESSION_CONTEXT\"]',
-        \"Session context not found\"
-      );
-      const allDivsInContext = Array.from(
-        sessionContextDiv.querySelectorAll(\"div\")
-      );
-      const dataScienceRoleDiv = findElementByText(
-        allDivsInContext,
-        \"DATA_SCIENCE_ROLE\",
-        \"DATA_SCIENCE_ROLE not found\"
-      );
-      dataScienceRoleDiv.click();
+      // choose which role and warehouse to use
+      findAndClickInSessionContext(\"DATA_SCIENCE_ROLE\");
+      await wait(1500);
+      findAndClickInSessionContext(\"ADHOC_WH\");
+
+      // close the role and warehouse menu
       roleAndWarehouseSelector.click();
     } catch (error) {
       console.error(\"An error occurred:\", error);

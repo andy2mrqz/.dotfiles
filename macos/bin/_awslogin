@@ -40,17 +40,6 @@ tell application "Arc"
         delay 0.125
     end repeat
 
-    -- May not be necessary anymore...
-    -- set initialPageLoaded to false
-    -- repeat until initialPageLoaded
-    --     delay 0.125
-    --     tell the active tab of the front window
-    --         set initialPageLoaded to (execute javascript "
-    --             !!document.querySelector('#cli_verification_btn')
-    --         ") as boolean
-    --     end tell
-    -- end repeat
-
     tell the active tab of the front window
         execute javascript "document.querySelector('#cli_verification_btn').click();"
     end tell

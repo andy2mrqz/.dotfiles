@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Required parameters:
+# @raycast.schemaVersion 1
+# @raycast.title uri_encode
+# @raycast.mode silent
+
+# Optional parameters:
+# @raycast.icon 🌐
+# @raycast.argument1 { "type": "text", "placeholder": "http://..." }
+
+# Documentation:
+# @raycast.author Andrew Marquez
+
 URL="$1"
 
 res=$(echo -n "$URL" | jq -sRr @uri)
