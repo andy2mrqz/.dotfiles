@@ -125,11 +125,16 @@ alias vimg="vim -c 'NvimTreeToggle' -c 'G' -c '1000'" # open with git mode on an
 alias vimv="cd ~/vault && vim Notes/personal-todo.md -c 'NvimTreeToggle' -c 'wincmd l' -c 'NvimTreeFindFile' -c 'wincmd l'" # open vault notes
 
 # Poetry
-alias sp="source \$(poetry env info --path 2>/dev/null)/bin/activate &>/dev/null || source venv/bin/activate"
+alias sp="
+  source \$(poetry env info --path 2>/dev/null)/bin/activate &>/dev/null ||
+  source venv/bin/activate &>/dev/null ||
+  (echo 'sp: failed to activate virtualenv!' && return 1)
+"
 alias prp="poetry run python"
 alias prs="poetry run start"
 
 # Git aliases
+alias G="git"
 alias gco="git checkout"
 alias gmo="git merge origin/main 2>/dev/null || git merge origin/master"
 alias gfollow="git log --follow -p"
