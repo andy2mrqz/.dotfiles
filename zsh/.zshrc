@@ -24,6 +24,7 @@ export EDITOR="nvim"                        # Set editor to neovim
 export KEYTIMEOUT=1                         # Reduce delay for key combinations in order to change to vi mode faster
 export HOMEBREW_NO_AUTO_UPDATE=1            # Don't update homebrew on every package install
 export EZA_CONFIG_DIR="$HOME/.config/eza"   # Add config directory for eza (ls replacement)
+export XDG_CONFIG_HOME="$HOME/.config"
 
 # Export common dumps to places better than $HOME
 [ -d "$HOME/.cache" ] || mkdir -p "$HOME/.cache"
@@ -35,7 +36,6 @@ export LESSHISTFILE="$HOME/.cache/.lesshst"
 
 bindkey -v                                                  # vim keybindings
 autoload -U edit-command-line && zle -N edit-command-line   # enable line editing with vim
-bindkey -M vicmd v edit-command-line                        # press 'v' to open current line in $EDITOR
 
 bindkey '^R' history-incremental-search-backward  # history search
 
