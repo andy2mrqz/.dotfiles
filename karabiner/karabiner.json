@@ -62,7 +62,7 @@
                             {
                                 "conditions": [
                                     {
-                                        "file_paths": ["/Applications/kitty.app", "/Applications/Visual Studio Code.app/"],
+                                        "file_paths": ["/Applications/kitty.app", "/Applications/Visual Studio Code.app/", "/Applications/Ghostty.app/"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -181,12 +181,6 @@
             ],
             "name": "Default profile",
             "selected": true,
-            "simple_modifications": [
-                {
-                    "from": { "key_code": "caps_lock" },
-                    "to": [{ "key_code": "escape" }]
-                }
-            ],
             "virtual_hid_keyboard": {
                 "country_code": 0,
                 "keyboard_type_v2": "ansi"
