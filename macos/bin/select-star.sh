@@ -12,7 +12,7 @@
 # @raycast.author Andrew Marquez
 
 table_name=$(pbpaste | awk '{print toupper($1)}')
-echo -en "SELECT\n*\nFROM $table_name\nLIMIT 100" | pbcopy
+echo -en "SELECT\n*\nFROM $table_name\nLIMIT 100;" | pbcopy
 
 osascript <<EOF
 tell application "System Events"
