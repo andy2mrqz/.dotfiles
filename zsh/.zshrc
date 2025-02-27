@@ -114,13 +114,10 @@ alias ls="eza"
 alias ll="eza -l"
 alias sz="exec zsh" # "source ~/.zshrc" -- this is the WRONG way (https://blog.mattclemente.com/2020/06/26/oh-my-zsh-slow-to-load.html)
 alias vz="vim ~/Projects/.dotfiles/zsh/.zshrc"
-# alias ex="vim -e"
 alias vim="nvim"
-# alias repl="lein repl :connect"
 alias pk="kill -9"
-# alias ts-swc="ts-node --swc"
 alias vimdiff="nvim -d"
-# alias sbcl="rlwrap sbcl" # common lisp
+alias cloc="scc"
 alias vimg="vim -c 'NvimTreeToggle' -c 'G' -c '1000'" # open with git mode on and go to the last line (1000)
 alias vimv="cd ~/vault && vim Notes/personal-todo.md -c 'NvimTreeToggle' -c 'wincmd l' -c 'NvimTreeFindFile' -c 'wincmd l'" # open vault notes
 
@@ -145,8 +142,7 @@ alias gb="git branch --sort=-committerdate --format='%(HEAD) %(if)%(HEAD)%(then)
 # Run github copilot cli
 alias how="gh copilot explain"
 
-# Run snowsql
-alias snowsql=/Applications/SnowSQL.app/Contents/MacOS/snowsql
+alias code="/Applications/Visual\ Studio\ Code\ -\ Insiders.app/Contents/Resources/app/bin/code"
 
 #-----------------------------------------------------------
 # Prompt
@@ -187,3 +183,13 @@ source "$HOMEBREW_PREFIX/share/zsh-history-substring-search/zsh-history-substrin
 source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 # shellcheck disable=1091
 source "$HOMEBREW_PREFIX/etc/profile.d/z.sh"
+
+# pnpm
+export PNPM_HOME="/Users/andrewmarquez/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+export PATH="/Users/andrewmarquez/.config/herd-lite/bin:$PATH"
+export PHP_INI_SCAN_DIR="/Users/andrewmarquez/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
