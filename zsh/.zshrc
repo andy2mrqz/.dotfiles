@@ -119,7 +119,11 @@ alias pk="kill -9"
 alias vimdiff="nvim -d"
 alias cloc="scc"
 alias vimg="vim -c 'NvimTreeToggle' -c 'G' -c '1000'" # open with git mode on and go to the last line (1000)
-alias vimv="cd ~/vault && vim Notes/personal-todo.md -c 'NvimTreeToggle' -c 'wincmd l' -c 'NvimTreeFindFile' -c 'wincmd l'" # open vault notes
+alias zdots="z .dotfiles"
+
+# Obsidian notes
+alias todo="(cd ~/vault && vim Notes/personal-todo.md -c 'NvimTreeToggle' -c 'wincmd l' -c 'NvimTreeFindFile' -c 'wincmd l')"
+alias jo="journal"
 
 # Poetry
 alias sp="
