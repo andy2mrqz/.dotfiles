@@ -36,8 +36,14 @@ EOF
 osascript <<EOF
 tell application "Arc"
     -- Wait for the initial SSO page to load
-    repeat until (loading of front window's active tab) is false
+    set pageLoaded to false
+    repeat until pageLoaded
         delay 0.125
+        tell the active tab of the front window
+            set pageLoaded to (execute javascript "
+                !!document.querySelector('#cli_verification_btn')
+            ") as boolean
+        end tell
     end repeat
 
     tell the active tab of the front window
