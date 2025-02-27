@@ -55,6 +55,9 @@ read -p "Ready to rebuild Neovim? (y/n) " -n 1 -r
 echo # Move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]; then
 	# Rebuild
+  SDKROOT=$(xcrun --show-sdk-path)
+  export SDKROOT
+  export CPATH=$SDKROOT/usr/include
 	make CMAKE_BUILD_TYPE=RelWithDebInfo
 	sudo make install
 	echo "Update complete. If you need to revert, use: git checkout $TAG_NAME"
