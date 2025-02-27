@@ -27,7 +27,7 @@ lazy.setup({
 	"tpope/vim-fugitive", -- Git in neovim!
 	{
 		"github/copilot.vim", -- Github Copilot in neovim!
-		cmd = "Copilot",
+		-- cmd = "Copilot",
 	},
 	{
 		"nvim-treesitter/nvim-treesitter", -- Treesitter for better highlighting/language support
