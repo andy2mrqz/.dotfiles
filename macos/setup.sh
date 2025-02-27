@@ -55,15 +55,9 @@ brew install --cask session-manager-plugin
 pip3 install aws-ssm-tools
 
 
-if ! command -v rtx &> /dev/null; then
-  echo 'installing rtx (runtime executor)...'
-  brew install jdxcode/tap/rtx
-  echo 'eval "$(~/bin/rtx activate zsh)"' >> ~/.zshrc
-fi
-
-if ! command -v omz &> /dev/null; then
-  echo 'installing omz...'
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+if ! command -v mise &> /dev/null; then
+  echo 'installing mise (runtime executor)...'
+  brew install mise
 fi
 
 if [[ ! -d  "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions" ]]; then
