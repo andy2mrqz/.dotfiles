@@ -62,7 +62,7 @@
                             {
                                 "conditions": [
                                     {
-                                        "file_paths": ["/Applications/kitty.app", "/Applications/Visual Studio Code.app/", "/Applications/Ghostty.app/"],
+                                        "file_paths": ["/Applications/kitty.app", "/Applications/Visual Studio Code.app/", "/Applications/Ghostty.app/", "/Applications/Cursor.app/", "/Applications/Visual Studio Code - Insiders.app/"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
