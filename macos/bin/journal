@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Go into vault directory so NvimTree doesn't open the whole home directory
+cd ~/vault || exit
+
+# Create today's date file in the correct format
+JOURNAL_ENTRY_NAME=$(date '+%Y-%m-%d %a.md')
+JOURNAL_ENTRY_PATH=~/vault/Journal/"$JOURNAL_ENTRY_NAME"
+touch "$JOURNAL_ENTRY_PATH"
+
+# Open the journal entry in nvim and toggle NvimTree, focusing on the file
+nvim "$JOURNAL_ENTRY_PATH" -c 'NvimTreeToggle' -c 'wincmd l' -c 'NvimTreeFindFile' -c 'wincmd l'
