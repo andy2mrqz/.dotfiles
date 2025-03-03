@@ -1,0 +1,44 @@
+#!/bin/bash -l
+
+# Required parameters:
+# @raycast.schemaVersion 1
+# @raycast.title html2md
+# @raycast.mode silent
+
+# Optional parameters:
+# @raycast.icon 🖋️
+
+# Documentation:
+# @raycast.author Andrew Marquez
+
+# Use AppleScript to get the HTML body from the active tab in Arc
+body_html=$(osascript -e 'tell application "Arc"
+    tell the active tab of its first window
+        set bodyHTML to execute javascript "document.body.outerHTML"
+    end tell
+end tell')
+
+# Check if we got HTML content
+if [[ -z $body_html ]]; then
+	echo "Error: Could not retrieve HTML body."
+	exit 1
+fi
+
+# Decode Unicode escape sequences using Python
+cleaned_html=$(echo "$body_html" | python3 -c "import sys; import json; print(json.loads(sys.stdin.read()))")
+echo "$cleaned_html" >/tmp/debug_body.html
+
+# Convert HTML to Markdown using htmd
+converted_md=$(echo "$cleaned_html" | htmd --ignored-tags "head,script,style,noscript")
+
+# Check if the conversion was successful
+if [[ -z $converted_md ]]; then
+	echo "Error: Failed to convert HTML to Markdown."
+	exit 1
+fi
+
+# Copy the converted Markdown to clipboard
+echo "$converted_md" | pbcopy
+
+# Print confirmation message
+echo "HTML body converted to Markdown and copied to clipboard."
