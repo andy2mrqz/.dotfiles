@@ -1,5 +1,8 @@
 #!/bin/bash -l
 
+# TODO: Support tables (maybe switch to turndown.js)
+# TODO: Use alt-text instead of base64 images
+
 # Required parameters:
 # @raycast.schemaVersion 1
 # @raycast.title html2md
@@ -11,29 +14,59 @@
 # Documentation:
 # @raycast.author Andrew Marquez
 
-# Use AppleScript to get the HTML body from the active tab in Arc
-body_html=$(osascript -e 'tell application "Arc"
+# Use AppleScript to get the active URL first
+active_url=$(osascript -e 'tell application "Arc"
     tell the active tab of its first window
-        set bodyHTML to execute javascript "document.body.outerHTML"
+        set theURL to URL
     end tell
 end tell')
 
+# Set the JavaScript code based on the URL
+case "$active_url" in
+	*twitter.com* | *x.com*)
+		# Twitter/X specific selector
+		js_code="
+            const primaryColumn = document.querySelector('[data-testid=primaryColumn]');
+            primaryColumn ? primaryColumn.outerHTML : document.body.outerHTML;
+        "
+		;;
+	*github.com*)
+		# GitHub specific selector
+		js_code="
+            const repoContainer = document.getElementById('js-repo-pjax-container');
+            repoContainer ? repoContainer.outerHTML : document.body.outerHTML;
+        "
+		;;
+	*)
+		# Default for other websites
+		js_code="document.body.outerHTML;"
+		;;
+esac
+
+# Get the HTML using the appropriate selector
+body_html=$(osascript -e "tell application \"Arc\"
+    tell the active tab of its first window
+        execute javascript \"$js_code\"
+    end tell
+end tell")
+
 # Check if we got HTML content
 if [[ -z $body_html ]]; then
-	echo "Error: Could not retrieve HTML body."
+	echo "🚨 Error: Could not retrieve HTML body."
 	exit 1
 fi
 
 # Decode Unicode escape sequences using Python
 cleaned_html=$(echo "$body_html" | python3 -c "import sys; import json; print(json.loads(sys.stdin.read()))")
-echo "$cleaned_html" >/tmp/debug_body.html
+# DEBUG
+# echo "$cleaned_html" >/tmp/debug_body.html
 
 # Convert HTML to Markdown using htmd
 converted_md=$(echo "$cleaned_html" | htmd --ignored-tags "head,script,style,noscript")
 
 # Check if the conversion was successful
 if [[ -z $converted_md ]]; then
-	echo "Error: Failed to convert HTML to Markdown."
+	echo "🚨 Error: Failed to convert HTML to Markdown."
 	exit 1
 fi
 
@@ -41,4 +74,4 @@ fi
 echo "$converted_md" | pbcopy
 
 # Print confirmation message
-echo "HTML body converted to Markdown and copied to clipboard."
+echo "🎉 html2md - copied to clipboard."
