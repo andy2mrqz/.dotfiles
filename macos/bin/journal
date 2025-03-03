@@ -9,4 +9,9 @@ JOURNAL_ENTRY_PATH=~/vault/Journal/"$JOURNAL_ENTRY_NAME"
 touch "$JOURNAL_ENTRY_PATH"
 
 # Open the journal entry in nvim and toggle NvimTree, focusing on the file
-nvim "$JOURNAL_ENTRY_PATH" -c 'NvimTreeToggle' -c 'wincmd l' -c 'NvimTreeFindFile' -c 'wincmd l'
+nvim "$JOURNAL_ENTRY_PATH" \
+	-c 'NvimTreeToggle' \
+	-c 'wincmd l' \
+	-c 'NvimTreeFindFile' \
+	-c 'wincmd l' \
+  -c 'Copilot disable'
