@@ -18,7 +18,13 @@ vim.opt.cursorline = true -- highlight current line
 vim.opt.pumheight = 10 -- limit popup window to 10 items
 vim.opt.splitbelow = true -- always open splits below
 vim.opt.splitright = true -- always open splits to the right
-vim.opt.statusline = "%F %m %h %r bufn=%n line=%l/%L=%p%% col=%v words=%{wordcount().cursor_words}/%{wordcount().words}" -- :help statusline
+vim.opt.statusline = "%F %m %h %r " -- file info
+	.. "bufn=%n " -- buffer number
+	.. "line=%l/%L=%p%% " -- line info
+	.. "col=%v " -- column info
+	.. "words=%{mode() =~# '^[vV]' ? " -- word count
+	.. "wordcount().visual_words : " -- if in visual mode, show visual word count
+	.. "wordcount().cursor_words}/%{wordcount().words}" -- if not in visual mode, show cursor word count
 vim.opt.laststatus = 3 -- only show one statusline when many are open
 vim.opt.clipboard = "unnamed" -- yank to system clipboard
 vim.opt.list = true -- show tabs and spaces in special ways :help options, search nolist
@@ -47,5 +53,20 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 	pattern = "*.gitignore",
 	callback = function()
 		vim.api.nvim_set_option_value("filetype", "gitignore", { scope = "local" })
+	end,
+})
+
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+	group = vim.api.nvim_create_augroup("FORMAT_ON_SAVE", {}),
+	pattern = "*.md",
+	callback = function()
+		-- Save cursor position
+		local cursor_pos = vim.api.nvim_win_get_cursor(0)
+
+		-- Run Prettier
+		vim.cmd("silent! %!prettier --parser markdown --print-width 80 --prose-wrap always")
+
+		-- Restore cursor position
+		vim.api.nvim_win_set_cursor(0, cursor_pos)
 	end,
 })
