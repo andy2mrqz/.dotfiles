@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Required parameters:
+# @raycast.schemaVersion 1
+# @raycast.title uri_decode
+# @raycast.mode silent
+
+# Optional parameters:
+# @raycast.icon 🌐
+# @raycast.argument1 { "type": "text", "placeholder": "http%3A%2F%2F..." }
+
+# Documentation:
+# @raycast.author Andrew Marquez
+
+URL="$1"
+
+res=$(echo -n "$URL" | python3 -c "import sys, urllib.parse; print(urllib.parse.unquote(sys.stdin.read()), end='')")
+
+echo -n "$res" | pbcopy
+echo "Copied! $res"
