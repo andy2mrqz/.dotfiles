@@ -46,9 +46,9 @@ bindkey '^[[B' history-substring-search-down      # substring history search (fr
 # History
 #-----------------------------------------------------------
 
-HISTFILE="$HOME/.zsh_history"
-HISTSIZE=50000
-SAVEHIST=50000
+export HISTFILE=$HOME/.zsh_history
+export HISTSIZE=50000
+export SAVEHIST=50000
 
 setopt INC_APPEND_HISTORY     # Immediately append to history file.
 setopt EXTENDED_HISTORY       # Record timestamp in history.
@@ -144,7 +144,7 @@ alias gitcs="git log -n 1 --pretty=format:%H | tee >(pbcopy)"
 alias gb="git branch --sort=-committerdate --format='%(HEAD) %(if)%(HEAD)%(then)%(color:green)%(end)%(refname:short) | %(committerdate:relative)'"
 
 # Run github copilot cli
-alias how="gh copilot explain"
+alias how="brain --new"
 
 alias code="/Applications/Visual\ Studio\ Code\ -\ Insiders.app/Contents/Resources/app/bin/code"
 
