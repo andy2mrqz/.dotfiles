@@ -42,10 +42,6 @@ lazy.setup({
 		end,
 	},
 	{
-		"goolord/alpha-nvim",
-		dependencies = { "kyazdani42/nvim-web-devicons" },
-	},
-	{
 		"kyazdani42/nvim-tree.lua", -- File tree
 		dependencies = { "kyazdani42/nvim-web-devicons" },
 	},
@@ -74,12 +70,9 @@ lazy.setup({
 			"hrsh7th/cmp-buffer", -- complete within buffer
 			"hrsh7th/cmp-path", -- complete paths
 			"hrsh7th/cmp-cmdline", -- completions for commandline
-			"saadparwaiz1/cmp_luasnip", -- complete snippets
 		},
 	},
 	"nvim-telescope/telescope.nvim", -- fuzzy finding searcher
-	-- snippets
-	"L3MON4D3/LuaSnip", -- snippet engine
 	"lewis6991/gitsigns.nvim", -- Git gutter, blame, etc.
 	{
 		"kylechui/nvim-surround", -- Easier surrounding (e.g. cs"')
