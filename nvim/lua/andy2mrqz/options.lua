@@ -22,9 +22,9 @@ vim.opt.statusline = "%F %m %h %r " -- file info
 	.. "bufn=%n " -- buffer number
 	.. "line=%l/%L=%p%% " -- line info
 	.. "col=%v " -- column info
-	.. "words=%{mode() =~# '^[vV]' ? " -- word count
-	.. "wordcount().visual_words : " -- if in visual mode, show visual word count
-	.. "wordcount().cursor_words}/%{wordcount().words}" -- if not in visual mode, show cursor word count
+	.. "words=%{mode() =~# '^[vV\x16]' ? " -- if in visual mode (v,V,CTRL-V)
+	.. "wordcount().visual_words : " -- show visual word count
+	.. "wordcount().cursor_words}/%{wordcount().words}" -- else, show cursor word count
 vim.opt.laststatus = 3 -- only show one statusline when many are open
 vim.opt.clipboard = "unnamed" -- yank to system clipboard
 vim.opt.list = true -- show tabs and spaces in special ways :help options, search nolist
