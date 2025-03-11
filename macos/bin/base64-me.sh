@@ -38,6 +38,19 @@ decode_base64() {
 	echo "$part" | tr '_-' '/+' | base64 -d 2>/dev/null
 }
 
+# Function to pretty-print JSON if valid, otherwise return the original string
+pretty_print_json() {
+    local input="$1"
+    # Check if the input is valid JSON
+    if echo "$input" | jq -e . >/dev/null 2>&1; then
+        # It's valid JSON, pretty-print it
+        echo "$input" | jq .
+    else
+        # Not valid JSON, return as-is
+        echo "$input"
+    fi
+}
+
 # Determine if the input looks like a JWT (i.e. three parts separated by two dots)
 dot_count=$(awk -F'.' '{print NF-1}' <<<"$TOKEN")
 output=""
@@ -51,16 +64,22 @@ if [ "$dot_count" -eq 2 ]; then
 	decoded_header=$(decode_base64 "$header")
 	decoded_payload=$(decode_base64 "$payload")
 
+	# Pretty-print the header and payload if they're JSON
+	formatted_header=$(pretty_print_json "$decoded_header")
+	formatted_payload=$(pretty_print_json "$decoded_payload")
+
 	# Store the results in the output variable.
 	output="HEADER:
-$decoded_header
+$formatted_header
 
 PAYLOAD:
-$decoded_payload"
+$formatted_payload"
 else
 	# Otherwise, treat the input as a simple base64 encoded string.
 	decoded=$(decode_base64 "$TOKEN")
-	output="$decoded"
+	# Pretty-print if it's JSON
+	formatted=$(pretty_print_json "$decoded")
+	output="$formatted"
 fi
 
 # The only echoed output is at the very end.
