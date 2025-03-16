@@ -60,6 +60,11 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 	group = vim.api.nvim_create_augroup("FORMAT_ON_SAVE", {}),
 	pattern = "*.md",
 	callback = function()
+		-- Skip formatting for files in worknotes directory
+		if vim.fn.expand("%:p"):match("WorkNotes") then
+			return
+		end
+
 		-- Save cursor position
 		local cursor_pos = vim.api.nvim_win_get_cursor(0)
 
