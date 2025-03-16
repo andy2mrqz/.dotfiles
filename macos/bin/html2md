@@ -45,8 +45,10 @@ case "$active_url" in
     "
 		;;
 	*)
-		# Default for other websites
-		js_code="document.body.outerHTML;"
+		# Prompt for CSS selector
+		bash "$HOME/bin/css-selector"
+		js_code="document.querySelector('$(pbpaste)').outerHTML;"
+		echo "$js_code"
 		;;
 esac
 

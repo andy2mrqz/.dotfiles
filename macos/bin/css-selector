@@ -1,0 +1,48 @@
+#!/bin/bash -l
+
+# @raycast.schemaVersion 1
+# @raycast.title Get CSS Selector
+# @raycast.mode silent
+# @raycast.icon 🎯
+
+JS_FILE="$HOME/bin/js/selector.js"
+
+# Get the selector by injecting the script and waiting for result
+osascript <<EOF >/dev/null &
+-- Read the javascript file
+set jsFile to POSIX file "$JS_FILE"
+set jsContents to read jsFile
+
+-- Execute the script in the active tab of the first window
+tell application "Arc"
+  tell the active tab of its first window
+    execute javascript jsContents
+  end tell
+end tell
+EOF
+
+# Store initial clipboard content to detect changes
+initial_clipboard=$(pbpaste)
+echo "👆 Please click on an element in the browser..."
+
+# Poll the clipboard until it changes
+selector=""
+while true; do
+	current_clipboard=$(pbpaste)
+	if [[ $current_clipboard != "$initial_clipboard" ]]; then
+		selector="$current_clipboard"
+		break
+	fi
+	sleep 0.5
+done
+
+# Check if we got a selector
+if [[ -z $selector ]]; then
+	echo "❌ No selector was selected"
+	exit 1
+fi
+
+# Copy to clipboard (redundant since script already does this, but just to be sure)
+echo "$selector" | pbcopy
+
+echo "✅ Selector copied: $selector"
