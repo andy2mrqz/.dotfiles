@@ -1,0 +1,22 @@
+#!/bin/sh
+# Required parameters:
+# @raycast.schemaVersion 1
+# @raycast.title epoch2date
+# @raycast.icon 📅
+# @raycast.mode fullOutput
+
+# Optional parameters:
+# @raycast.argument1 { "type": "text", "placeholder": "Unix timestamp" }
+
+# Documentation:
+# @raycast.description Convert Unix timestamp to human-readable date
+# @raycast.author Andrew Marquez
+
+timestamp=$1
+if [ -z "$timestamp" ]; then
+	echo "Please provide a Unix timestamp"
+	exit 1
+fi
+
+# Convert to date
+date -r "$timestamp" "+%A, %B %d, %Y at %I:%M:%S %p"
