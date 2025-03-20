@@ -7,5 +7,5 @@ TASK_ARN=$(aws ecs list-tasks --cluster "$TARGET" --service-name "$TARGET" --des
 echo "Running the following command:"
 echo "aws ecs execute-command --cluster $TARGET --task $TASK_ARN --container $TARGET --command \"/bin/bash\" --interactive"
 
-aws ecs execute-command --cluster "$TARGET" --task "$TASK_ARN" --container "$TARGET" --command "/bin/bash" --interactive
+aws ecs execute-command --cluster "$TARGET" --task "$TASK_ARN" --container "$TARGET" --command "/bin/sh" --interactive
 
