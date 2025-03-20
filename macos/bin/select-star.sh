@@ -15,7 +15,9 @@ table_name=$(pbpaste | awk '{print toupper($1)}')
 echo -en "SELECT\n*\nFROM $table_name\nLIMIT 100;" | pbcopy
 
 osascript <<EOF
-tell application "System Events"
-    keystroke "v" using {command down}
+tell application "System Events" to tell application process "Arc"
+  click menu item "Paste" of menu "Edit" of menu bar 1
 end tell
+return
 EOF
+
