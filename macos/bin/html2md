@@ -14,43 +14,10 @@
 # Documentation:
 # @raycast.author Andrew Marquez
 
-# Use AppleScript to get the active URL first
-active_url=$(osascript -e 'tell application "Arc"
-    tell the active tab of its first window
-        set theURL to URL
-    end tell
-end tell')
-
-# Set the JavaScript code based on the URL
-case "$active_url" in
-	*twitter.com* | *x.com*)
-		# Twitter/X specific selector
-		js_code="
-            const primaryColumn = document.querySelector('[data-testid=primaryColumn]');
-            primaryColumn ? primaryColumn.outerHTML : document.body.outerHTML;
-        "
-		;;
-	*github.com*)
-		# GitHub specific selector
-		js_code="
-            const repoContainer = document.getElementById('js-repo-pjax-container');
-            repoContainer ? repoContainer.outerHTML : document.body.outerHTML;
-        "
-		;;
-	*snowflake.com*)
-		# Snowflake specific selector
-		js_code="
-            const mainContent = document.getElementById('scrolltarget');
-            mainContent ? mainContent.outerHTML : document.body.outerHTML;
-    "
-		;;
-	*)
-		# Prompt for CSS selector
-		bash "$HOME/bin/css-selector"
-		js_code="document.querySelector('$(pbpaste)').outerHTML;"
-		echo "$js_code"
-		;;
-esac
+# Prompt for CSS selector
+bash "$HOME/bin/css-selector"
+js_code="document.querySelector('$(pbpaste)').outerHTML;"
+echo "$js_code"
 
 # Get the HTML using the appropriate selector
 body_html=$(osascript -e "tell application \"Arc\"
