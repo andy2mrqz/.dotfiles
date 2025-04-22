@@ -66,7 +66,7 @@ setopt SHARE_HISTORY          # Share history between all sessions.
 
 gmbd() {
     curr=$(git symbolic-ref --short HEAD)
-    (git checkout master || git checkout main) && git pull && git branch -d "$curr"
+    (git checkout main || git checkout master) && git pull && git branch -d "$curr"
     git remote prune origin
     unset curr
 }
@@ -142,6 +142,7 @@ alias gfollow="git log --follow -p"
 alias gsp="git stash pop"
 alias gitcs="git log -n 1 --pretty=format:%H | tee >(pbcopy)"
 alias gb="git branch --sort=-committerdate --format='%(HEAD) %(if)%(HEAD)%(then)%(color:green)%(end)%(refname:short) | %(committerdate:relative)'"
+alias gbd="git branch -D"
 
 # Run github copilot cli
 alias how="brain --new"
