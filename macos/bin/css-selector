@@ -25,10 +25,18 @@ EOF
 initial_clipboard=$(pbpaste)
 echo "👆 Please click on an element in the browser..."
 
+if [[ $initial_clipboard == "canceled" ]]; then
+	echo "not canceled" | pbcopy
+fi
+
 # Poll the clipboard until it changes
 selector=""
 while true; do
 	current_clipboard=$(pbpaste)
+	if [[ $current_clipboard == "canceled" ]]; then
+		echo "❌ Selection was canceled"
+		exit 130
+	fi
 	if [[ $current_clipboard != "$initial_clipboard" ]]; then
 		selector="$current_clipboard"
 		break
