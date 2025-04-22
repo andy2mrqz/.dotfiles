@@ -12,3 +12,5 @@
 # @raycast.author Andrew Marquez
 
 pbpaste | xargs -I {} echo "'{}'" | paste -sd, - | pbcopy
+
+echo "Successfully listified and copied to clipboard 🎉"
