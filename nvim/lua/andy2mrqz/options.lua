@@ -71,7 +71,11 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 		-- Run Prettier
 		vim.cmd("silent! %!prettier --parser markdown --print-width 80 --prose-wrap always")
 
+		-- Clamp the cursor position to the last line of the buffer (if previous line was deleted)
+		local last_line = vim.api.nvim_buf_line_count(0)
+		local restored_line = math.min(cursor_pos[1], last_line)
+
 		-- Restore cursor position
-		vim.api.nvim_win_set_cursor(0, cursor_pos)
+		vim.api.nvim_win_set_cursor(0, { restored_line, cursor_pos[2] })
 	end,
 })
