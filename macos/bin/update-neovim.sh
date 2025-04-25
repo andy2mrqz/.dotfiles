@@ -45,7 +45,7 @@ read -p "Press Enter to continue or Ctrl+C to exit..." -r
 DATE=$(date +%Y%m%d)
 TAG_PREFIX="andrew-stable-build-"
 TAG_NAME="$TAG_PREFIX-$DATE"
-git tag "$TAG_NAME"
+git tag "$TAG_NAME" || echo "Continuing with the update." # Ignore error if tag already exists
 
 # Pull latest changes
 git pull origin master
