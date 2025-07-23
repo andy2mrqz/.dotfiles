@@ -1,0 +1,93 @@
+#!/bin/bash
+
+# snip - Extract a byte snippet from a file based on a regex match
+# Usage: snip PATTERN -f FILE [-b BYTES] [-m MATCH]
+
+print_usage() {
+	echo "Usage: $(basename "$0") PATTERN -f FILE [-b BYTES] [-m MATCH]"
+	echo ""
+	echo "  PATTERN            Regex pattern to search for (required, first positional argument)"
+	echo "  -f, --file FILE    File to search (required)"
+	echo "  -b, --bytes N      Number of bytes to extract (default: 1000)"
+	echo "  -m, --match N      Match number to use (1-based index, default: 1)"
+	echo "  -h, --help         Show this help message"
+	exit 1
+}
+
+# Defaults
+BYTES=1000
+MATCH_INDEX=1
+
+# Extract pattern
+if [[ "$1" != -* && -n "$1" ]]; then
+	PATTERN="$1"
+	shift
+else
+	echo "Error: Missing PATTERN as the first argument."
+	print_usage
+fi
+
+# Parse flags
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		-f|--file)
+			FILE="$2"
+			shift 2
+			;;
+		--file=*)
+			FILE="${1#*=}"
+			shift
+			;;
+		-b|--bytes)
+			BYTES="$2"
+			shift 2
+			;;
+		--bytes=*)
+			BYTES="${1#*=}"
+			shift
+			;;
+		-m|--match)
+			MATCH_INDEX="$2"
+			shift 2
+			;;
+		--match=*)
+			MATCH_INDEX="${1#*=}"
+			shift
+			;;
+		-h|--help)
+			print_usage
+			;;
+		*)
+			echo "Unknown option: $1"
+			print_usage
+			;;
+	esac
+done
+
+# Validate required args
+[ -z "$PATTERN" ] && echo "Error: PATTERN is required." && print_usage
+[ -z "$FILE" ] && echo "Error: --file/-f is required." && print_usage
+[ ! -f "$FILE" ] && echo "Error: File '$FILE' not found." && exit 1
+
+# Get all matches and count
+# shellcheck disable=SC2207
+MATCHES=($(rg -b -o "$PATTERN" "$FILE"))
+NUM_MATCHES=${#MATCHES[@]}
+
+if (( NUM_MATCHES == 0 )); then
+	echo "No matches found for pattern '$PATTERN'."
+	exit 1
+fi
+
+if (( MATCH_INDEX < 1 || MATCH_INDEX > NUM_MATCHES )); then
+	echo "Error: Match index $MATCH_INDEX is out of range. Found $NUM_MATCHES match(es)."
+	exit 1
+fi
+
+# Show status
+echo "Using match #$MATCH_INDEX of $NUM_MATCHES"
+
+# Extract and snip
+MATCH="${MATCHES[$((MATCH_INDEX-1))]}"
+OFFSET=${MATCH%%:*}
+dd if="$FILE" bs=1 skip="$OFFSET" count="$BYTES" status=none
