@@ -120,6 +120,7 @@ alias vimdiff="nvim -d"
 alias cloc="scc"
 alias vimg="vim -c 'NvimTreeToggle' -c 'G' -c '1000'" # open with git mode on and go to the last line (1000)
 alias zdots="z .dotfiles"
+alias statsize="stat -f%z" # Get file size in bytes
 
 # Obsidian notes
 alias todo="(cd ~/vault && vim Notes/personal-todo.md -c 'NvimTreeToggle' -c 'wincmd l' -c 'NvimTreeFindFile' -c 'wincmd l')"
