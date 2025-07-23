@@ -1,30 +1,32 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function export_aws_env() {
 	if export_output=$(aws configure export-credentials --profile "$1" --format env 2>/dev/null); then
 		eval "$export_output"
 		echo "AWS environment variables exported"
 	else
-		echo "Failed to export AWS environment variables"
+		echo "Failed to export AWS environment variables" >&2
 		return 1
 	fi
 }
 
+PROFILE="$1"
+
 # Case 1: Already authenticated
-if aws sts get-caller-identity --profile "$1" >/dev/null 2>&1; then
-	echo "Already authenticated with profile: $1"
-	export_aws_env "$1"
+if aws sts get-caller-identity --profile "$PROFILE" >/dev/null 2>&1; then
+	echo "Already authenticated with profile: $PROFILE"
+	export_aws_env "$PROFILE"
 	return $?
 fi
 
-# Case 2: Not authenticated
-echo "Logging in with profile: $1"
-aws sso login --profile "$1" &
+# Case 2: Kick off SSO login
+echo "Logging in with profile: $PROFILE"
+aws sso login --profile "$PROFILE" &
 
-# Save the current application so we can bring it back to the front later
+# Remember the frontmost app so we can switch back later
 CURRENT_APP=$(osascript -e 'return short name of (info for (path to frontmost application))')
 
-# Wait until Arc becomes the active application
+# Wait for Arc to come to the front
 osascript <<EOF
 tell application "System Events"
     repeat until (name of first application process whose frontmost is true) is "Arc"
@@ -33,57 +35,55 @@ tell application "System Events"
 end tell
 EOF
 
+# In Arc, wait for load + handle both flows
 osascript <<EOF
 tell application "Arc"
-    -- Wait for the initial SSO page to load
-    set pageLoaded to false
-    repeat until pageLoaded
+    -- 1) wait for the tab to finish loading
+    repeat until (loading of front window's active tab) is false
         delay 0.125
-        tell the active tab of the front window
-            set pageLoaded to (execute javascript "
-                !!document.querySelector('#cli_verification_btn')
-            ") as boolean
+    end repeat
+
+    -- 2) poll until either the allow-access button OR the approved marker shows up
+    set allowFound to false
+    set approvedFound to false
+    repeat until (allowFound or approvedFound)
+        delay 0.125
+        tell front window's active tab
+            set allowFound    to (execute javascript "!!document.querySelector('[data-testid=\"allow-access-button\"]')") as boolean
+            set approvedFound to (execute javascript "!!document.getElementById('approved-auth')") as boolean
         end tell
     end repeat
 
-    tell the active tab of the front window
-        execute javascript "document.querySelector('#cli_verification_btn').click();"
-    end tell
-
-    -- Wait for the next page to load
-    set pageLoaded to false
-    repeat until pageLoaded
-        delay 0.125
-        tell the active tab of the front window
-            set pageLoaded to (execute javascript "
-                !!document.querySelector('[data-testid=\"allow-access-button\"]')
-            ") as boolean
+    -- 3) if we saw the button, click it, then wait for the “approved” marker
+    if allowFound then
+        tell front window's active tab
+            execute javascript "document.querySelector('[data-testid=\"allow-access-button\"]').click();"
         end tell
-    end repeat
+        repeat until approvedFound
+            delay 0.125
+            tell front window's active tab
+                set approvedFound to (execute javascript "!!document.getElementById('approved-auth')") as boolean
+            end tell
+        end repeat
+    end if
 
-    tell the active tab of the front window
-        execute javascript "document.querySelector('[data-testid=\"allow-access-button\"]').click();"
-    end tell
-
-    delay 0.25
-
-    tell the front window
-      close the active tab
+    -- 4) close the SSO tab
+    tell front window
+        close active tab
     end tell
 end tell
 EOF
 
-# Wait for the login to complete
+# 5) wait for aws sso login to actually finish
 wait
 
-# Bring the previous application back to the front
+# 6) restore your previous frontmost app
 osascript -e "tell application \"$CURRENT_APP\" to activate"
 
-# Check if login was successful
-if ! aws sts get-caller-identity --profile "$1" >/dev/null 2>&1; then
-	echo "SSO login failed"
-	return 1
+# 7) make sure the login really worked, and export creds
+if ! aws sts get-caller-identity --profile "$PROFILE" >/dev/null 2>&1; then
+	echo "SSO login failed" >&2
+	exit 1
 fi
 
-# Export AWS environment variables
-export_aws_env "$1"
+export_aws_env "$PROFILE"
