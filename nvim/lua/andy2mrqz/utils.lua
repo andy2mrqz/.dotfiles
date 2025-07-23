@@ -38,7 +38,7 @@ M.custom_help_tags = function()
 end
 
 M.custom_lsp_definitions = function()
-	local params = vim.lsp.util.make_position_params()
+	local params = vim.lsp.util.make_position_params(0, "utf-8")
 
 	vim.lsp.buf_request(0, "textDocument/definition", params, function(err, result)
 		if err then
