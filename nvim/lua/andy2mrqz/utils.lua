@@ -38,7 +38,25 @@ M.custom_help_tags = function()
 end
 
 M.custom_lsp_definitions = function()
-	telescope.lsp_definitions(themes.get_dropdown())
+	local params = vim.lsp.util.make_position_params()
+
+	vim.lsp.buf_request(0, "textDocument/definition", params, function(err, result)
+		if err then
+			vim.notify("LSP error: " .. err.message, vim.log.levels.ERROR)
+			return
+		end
+		if not result or vim.tbl_isempty(result) then
+			vim.notify("No definition found", vim.log.levels.INFO)
+			return
+		end
+
+		if #result == 1 then
+			vim.lsp.util.jump_to_location(result[1], "utf-8")
+			vim.cmd("normal! zz")
+		else
+			telescope.lsp_definitions(themes.get_dropdown())
+		end
+	end)
 end
 
 M.custom_lsp_references = function()
