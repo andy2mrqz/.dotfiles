@@ -58,7 +58,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   SDKROOT=$(xcrun --show-sdk-path)
   export SDKROOT
   export CPATH=$SDKROOT/usr/include
-	make CMAKE_BUILD_TYPE=RelWithDebInfo
+	sudo make CMAKE_BUILD_TYPE=RelWithDebInfo
 	sudo make install
 	echo "Update complete. If you need to revert, use: git checkout $TAG_NAME"
 else
