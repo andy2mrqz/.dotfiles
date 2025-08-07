@@ -76,6 +76,23 @@ awslogin() {
   source "$HOME/bin/_awslogin" "$1"
 }
 
+
+statsize() {
+  for file in "$@"; do
+    # get the human‑readable size, measuring apparent-size in bytes
+    human=$(gdu -bh "$file" 2>/dev/null | cut -f1)
+    # get the raw byte count
+    bytes=$(stat -f%z -- "$file" 2>/dev/null)
+    # print them plus the filename
+    printf "%s %s %s\n" "$human" "$bytes" "$file"
+  done
+}
+
+
+ssm-get-parameter() {
+  aws ssm get-parameter --name "$1" --with-decryption --query "Parameter" | jq -r '.Value'
+}
+
 #-----------------------------------------------------------
 # Completion
 #-----------------------------------------------------------
@@ -120,7 +137,6 @@ alias vimdiff="nvim -d"
 alias cloc="scc"
 alias vimg="vim -c 'NvimTreeToggle' -c 'G' -c '1000'" # open with git mode on and go to the last line (1000)
 alias zdots="z .dotfiles"
-alias statsize="stat -f%z" # Get file size in bytes
 
 # Obsidian notes
 alias todo="(cd ~/vault && vim Notes/personal-todo.md -c 'NvimTreeToggle' -c 'wincmd l' -c 'NvimTreeFindFile' -c 'wincmd l')"
