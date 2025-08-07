@@ -31,6 +31,26 @@ whichkey.add({
 	{ "<leader>g", group = "git" },
 	{ "<leader>gb", ":Gitsigns toggle_current_line_blame<cr>", desc = "toggle blame" },
 	{ "<leader>gd", ":Gitsigns diffthis<cr>", desc = "diff this" },
+	{
+		"<leader>gs",
+		function()
+			-- Open split and run git-stats in terminal
+			vim.cmd("split")
+			vim.cmd("term bash -c 'git-stats; sleep 5'")
+
+			-- Get the buffer number of the terminal
+			local term_buf = vim.api.nvim_get_current_buf()
+
+			-- Defer closing just that buffer
+			vim.defer_fn(function()
+				-- Check if the buffer is still valid (not already closed)
+				if vim.api.nvim_buf_is_valid(term_buf) then
+					vim.api.nvim_buf_delete(term_buf, { force = true })
+				end
+			end, 5000)
+		end,
+		desc = "Show git stats briefly in bottom split",
+	},
 	{ "<leader>ghr", ":Gitsigns reset_hunk<cr>", desc = "reset hunk" },
 	{ "<leader>ghs", ":Gitsigns stage_hunk<cr>", desc = "stage hunk" },
 	-- Terminal group
