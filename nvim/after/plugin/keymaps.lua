@@ -10,3 +10,6 @@ tnoremap("<esc>", "<C-\\><C-n>") -- <esc> goes to normal mode in terminal
 -- Buffer navigation
 nnoremap("<S-l>", ":bn<cr>")
 nnoremap("<S-h>", ":bp<cr>")
+
+-- Clear search highlights
+nnoremap("q,", ':let @/ = ""<cr>')

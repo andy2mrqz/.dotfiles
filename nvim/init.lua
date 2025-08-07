@@ -10,3 +10,6 @@ vim.g.loaded_netrwPlugin = 1
 -- Map leader to <Space>
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+
+-- Disable Matchit for performance reasons (and I don't use it)
+vim.cmd("MatchDisable")

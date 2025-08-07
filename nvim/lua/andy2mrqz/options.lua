@@ -5,7 +5,6 @@ vim.opt.tabstop = 2 -- actual tabs display as this many spaces
 vim.opt.softtabstop = 2 -- tabs become spaces
 vim.opt.shiftwidth = 2 -- width to shift from >> key
 vim.opt.expandtab = true -- tabs become spaces in insert mode
-vim.opt.hlsearch = false -- don't highlight all instances of a search
 vim.opt.ignorecase = true -- ignore case when searching
 vim.opt.smartcase = true -- respects case in searching if uppercase present
 vim.opt.wrap = true -- text wrapping
@@ -30,6 +29,7 @@ vim.opt.clipboard = "unnamed" -- yank to system clipboard
 vim.opt.list = true -- show tabs and spaces in special ways :help options, search nolist
 vim.opt.listchars:append("trail:⋅") -- :help listchars
 vim.g.copilot_filetypes = { gitcommit = true } -- enable copilot for gitcommit filetype
+vim.opt.mps:append("<:>") -- match pairs for % key (adds <:> for HTML tags)
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	group = vim.api.nvim_create_augroup("HIGHLIGHTED_YANK", {}),

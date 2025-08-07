@@ -18,9 +18,6 @@ M.on_attach = function(client)
 			end,
 			desc = "Format buffer",
 		},
-		-- Code group
-		{ "<leader>c", group = "code" },
-		{ "<leader>ca", vim.lsp.buf.code_action, desc = "actions" },
 		-- Diagnostic group
 		{ "<leader>d", group = "diagnostic" },
 		{
@@ -36,6 +33,20 @@ M.on_attach = function(client)
 				vim.diagnostic.open_float()
 			end,
 			desc = "show",
+		},
+		-- Quickfix/code
+		{ "<leader>c", group = "quickifx/code" },
+		{ "<leader>cn", function() vim.cmd("cnext") end, desc = "next quickfix item" },
+		{ "<leader>cp", function() vim.cmd("cprev") end, desc = "previous quickfix item" },
+		{ "<leader>cc", function() vim.cmd("cclose") end, desc = "close quickfix list" },
+		{ "<leader>co", function() vim.cmd("copen") end, desc = "open quickfix list" },
+		{ "<leader>cl", function() vim.cmd("clist") end, desc = "list quickfix items" },
+		{
+			"<leader>ca",
+			function()
+				vim.lsp.buf.code_action()
+			end,
+			desc = "code action",
 		},
 		-- Refactor group
 		{ "<leader>r", group = "refactor" },
