@@ -83,7 +83,7 @@ osascript -e "tell application \"$CURRENT_APP\" to activate"
 # 7) make sure the login really worked, and export creds
 if ! aws sts get-caller-identity --profile "$PROFILE" >/dev/null 2>&1; then
 	echo "SSO login failed" >&2
-	exit 1
+	return 1
 fi
 
 export_aws_env "$PROFILE"
