@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Exit silently if not in a git repo
+git rev-parse --is-inside-work-tree &>/dev/null || exit 1
+
+# Get the stats from the staged changes
+git diff --cached --numstat \
+	| awk '{
+      adds+=$1; dels+=$2
+    } END {
+      # ANSI escape codes:
+      # Bold = \033[1m, Reset = \033[0m
+      # Green = \033[32m, Red = \033[31m, Yellow = \033[33m
+      printf "\033[1;32m+%d\033[0m, \033[1;31m-%d\033[0m, \033[1;33m⇅%d\033[0m\n", adds, dels, adds - dels
+    }'
