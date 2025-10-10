@@ -6,8 +6,9 @@ return {
 	"gopls",
 	"pylsp",
 	--"rust_analyzer",
-  "ruby_lsp",
+	"ruby_lsp",
 	"lua_ls",
 	--"svelte",
 	"ts_ls",
+	"zls",
 }

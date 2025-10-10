@@ -16,6 +16,7 @@ export PATH="$HOME/bin/nogitsync:$PATH"             # personal scripts
 export PATH="$HOME/.local/bin:$PATH"                # some scripts get installed here (mise, poetry)
 export PATH="$HOME/.rd/bin:$PATH"                   # Add rancher desktop binaries (docker, docker-compose)
 export PATH="$HOME/Projects/ziglang:$PATH"          # ziglang binaries
+export PATH="$HOME/Projects/zls/zig-out/bin:$PATH"  # zls (zig language server) binaries
 
 # START eval "$(mise activate zsh)"
 # shellcheck disable=2199,2206,2300
@@ -73,3 +74,4 @@ export PATH="$HOME/Projects/ziglang:$PATH"          # ziglang binaries
       }
   fi
 } # END
+export PATH="/Users/andrewmarquez/bin:$PATH"
