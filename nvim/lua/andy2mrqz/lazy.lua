@@ -48,10 +48,13 @@ lazy.setup({
 	{
 		"williamboman/mason.nvim", -- lsp/linter package manager
 		dependencies = {
-			"williamboman/mason-lspconfig.nvim", -- bridges mason and lspconfig
 			"neovim/nvim-lspconfig", -- nvim builtin lsp
-			"simrat39/rust-tools.nvim", -- rust tools for better rust-analyzer and inlay hints
 		},
+	},
+	{
+		"mrcjkb/rustaceanvim",
+		version = "^6",
+		lazy = false, -- This plugin is already lazy
 	},
 	{
 		"nvimtools/none-ls.nvim", -- for formatters/linters
