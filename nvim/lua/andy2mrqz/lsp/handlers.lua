@@ -3,10 +3,11 @@ local telescope = require("telescope.builtin")
 local nnoremap = require("andy2mrqz.keymaps").nnoremap
 local inoremap = require("andy2mrqz.keymaps").inoremap
 local U = require("andy2mrqz.utils")
+local links = require("andy2mrqz.document_links")
 
 local M = {}
 
-M.on_attach = function(client)
+M.on_attach = function(client, bufnr)
 	client = client or {}
 	whichkey.add({
 		-- Leader group
@@ -36,11 +37,13 @@ M.on_attach = function(client)
 		},
 		-- Quickfix/code
 		{ "<leader>c", group = "quickifx/code" },
-		{ "<leader>cn", function() vim.cmd("cnext") end, desc = "next quickfix item" },
-		{ "<leader>cp", function() vim.cmd("cprev") end, desc = "previous quickfix item" },
-		{ "<leader>cc", function() vim.cmd("cclose") end, desc = "close quickfix list" },
-		{ "<leader>co", function() vim.cmd("copen") end, desc = "open quickfix list" },
-		{ "<leader>cl", function() vim.cmd("clist") end, desc = "list quickfix items" },
+		{
+			"<leader>co",
+			function()
+				vim.cmd("copen")
+			end,
+			desc = "open quickfix list",
+		},
 		{
 			"<leader>ca",
 			function()
@@ -55,11 +58,26 @@ M.on_attach = function(client)
 		{ "g", group = "go to" },
 		{ "gd", U.custom_lsp_definitions, desc = "go to definition" },
 		{ "gD", telescope.type_definitions, desc = "go to type definition" },
-		{ "gr", U.custom_lsp_references, desc = "go to references" },
+		{ "gx", links.open, desc = "open document link" },
+		-- Document links group
+		{ "<leader>l", group = "document links" },
+		{ "<leader>lh", links.hover, desc = "hover document link" },
+		{ "<leader>ln", links.next, desc = "next document link" },
+		{ "<leader>lp", links.prev, desc = "previous document link" },
 	})
 
-	nnoremap("K", vim.lsp.buf.hover)
+	nnoremap("K", function()
+		local link = links.under_cursor()
+		if link then
+			links.hover(link)
+		else
+			vim.lsp.buf.hover()
+		end
+	end)
 	inoremap("<C-k>", vim.lsp.buf.signature_help)
+
+	-- Setup document link highlighting and caching
+	links.setup(bufnr)
 end
 
 local status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
