@@ -217,3 +217,10 @@ esac
 export PATH="/Users/andrewmarquez/.config/herd-lite/bin:$PATH"
 export PHP_INI_SCAN_DIR="/Users/andrewmarquez/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
 export PATH="/Users/andrewmarquez/bin:$PATH"
+
+# bun completions
+[ -s "/Users/andrewmarquez/.bun/_bun" ] && source "/Users/andrewmarquez/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
