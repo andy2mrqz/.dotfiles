@@ -29,7 +29,24 @@ whichkey.add({
 	{ "<leader>wl", "<C-w>l", desc = "window right" },
 	-- Git group
 	{ "<leader>g", group = "git" },
-	{ "<leader>gb", ":Gitsigns toggle_current_line_blame<cr>", desc = "toggle blame" },
+	{
+		"<leader>gb",
+		function()
+			-- Look for an existing gitsigns-blame buffer
+			for _, win in ipairs(vim.api.nvim_list_wins()) do
+				local buf = vim.api.nvim_win_get_buf(win)
+				local ft = vim.api.nvim_get_option_value("filetype", { buf = buf })
+				if ft == "gitsigns-blame" then
+					-- Found it!  Close the window now
+					vim.api.nvim_win_close(win, true)
+					return
+				end
+			end
+			-- Not open, so open it!
+			vim.cmd("Gitsigns blame")
+		end,
+		desc = "toggle blame sidebar",
+	},
 	{ "<leader>gd", ":Gitsigns diffthis<cr>", desc = "diff this" },
 	{
 		"<leader>gs",
