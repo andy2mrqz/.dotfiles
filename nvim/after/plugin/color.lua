@@ -6,3 +6,5 @@ require("kanagawa").setup({
 	end,
 })
 vim.cmd("colorscheme kanagawa")
+
+vim.opt.colorcolumn = "80,120" -- set rulers for lines
