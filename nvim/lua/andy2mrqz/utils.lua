@@ -10,21 +10,18 @@ end
 
 M.custom_find_files = function()
 	if M.maybe_git_root() ~= nil then
-		telescope.git_files(themes.get_dropdown({
+		telescope.git_files({
 			show_untracked = true,
-		}))
+		})
 	else
-		telescope.find_files(themes.get_dropdown())
+		telescope.find_files()
 	end
 end
 
 M.custom_live_grep = function()
-	telescope.live_grep(themes.get_dropdown({
+	telescope.live_grep({
 		cwd = M.maybe_git_root(),
-		additional_args = function()
-			return { "--hidden" }
-		end,
-	}))
+	})
 end
 
 M.custom_find_buffers = function()
@@ -50,17 +47,50 @@ M.custom_lsp_definitions = function()
 			return
 		end
 
-		if #result == 1 then
-			vim.lsp.util.jump_to_location(result[1], "utf-8")
+		-- Normalize + dedupe results (same file and line)
+		local seen = {}
+		local deduped = {}
+		for _, def in ipairs(result) do
+			local uri = def.targetUri
+			local range = def.targetSelectionRange
+
+			if uri and range and range.start and range.start.line then
+				local key = uri .. ":" .. range.start.line
+				if not seen[key] then
+					seen[key] = true
+					table.insert(deduped, def)
+				end
+			else
+				table.insert(deduped, def)
+			end
+		end
+
+		if #deduped == 1 then
+			local def = deduped[1]
+			-- target vs bare variants - can be either depending on context
+			local uri = def.targetUri or def.uri
+			local range = def.targetSelectionRange or def.range
+
+			-- current buffer + position
+			local cur_buf = vim.api.nvim_get_current_buf()
+			local cur_name = vim.api.nvim_buf_get_name(cur_buf)
+			local cur_pos = vim.api.nvim_win_get_cursor(0) -- {line, col}, 1-based line
+
+			-- target buffer + position from LSP result
+			local target_fname = vim.uri_to_fname(uri)
+			local target_line = range.start.line + 1
+
+			-- If we're already at the definition, show references instead
+			if cur_name == target_fname and cur_pos[1] == target_line then
+				telescope.lsp_references()
+			end
+
+			vim.lsp.util.show_document(result[1], "utf-8")
 			vim.cmd("normal! zz")
 		else
-			telescope.lsp_definitions(themes.get_dropdown())
+			telescope.lsp_definitions()
 		end
 	end)
-end
-
-M.custom_lsp_references = function()
-	telescope.lsp_references(themes.get_dropdown())
 end
 
 return M
