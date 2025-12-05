@@ -22,18 +22,30 @@ end
 -- Plugins to install
 lazy.setup({
 	"nvim-lua/plenary.nvim", -- Common dependency fns
+	{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 	"lewis6991/impatient.nvim", -- Speeds up lua module loading for better startup time
 	"rebelot/kanagawa.nvim", -- Colorscheme
 	"tpope/vim-fugitive", -- Git in neovim!
 	{
 		"github/copilot.vim", -- Github Copilot in neovim!
-		-- cmd = "Copilot",
+		cmd = "Copilot",
 	},
 	{
 		"nvim-treesitter/nvim-treesitter", -- Treesitter for better highlighting/language support
 		build = ":TSUpdate",
 	},
 	"folke/which-key.nvim", -- show command options as you type
+	{
+		"rmagatti/auto-session", -- session manager
+		lazy = false,
+		opts = {
+			suppressed_dirs = {
+				"~/",
+				"~/Downloads",
+				"/",
+			},
+		},
+	},
 	"akinsho/toggleterm.nvim", -- better terminal support
 	{
 		"karb94/neoscroll.nvim", -- smooth scrolling
@@ -75,7 +87,13 @@ lazy.setup({
 			"hrsh7th/cmp-cmdline", -- completions for commandline
 		},
 	},
-	"nvim-telescope/telescope.nvim", -- fuzzy finding searcher
+	{
+		"nvim-telescope/telescope.nvim", -- fuzzy finding searcher
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"telescope-fzf-native.nvim",
+		},
+	},
 	"lewis6991/gitsigns.nvim", -- Git gutter, blame, etc.
 	{
 		"kylechui/nvim-surround", -- Easier surrounding (e.g. cs"')
@@ -87,4 +105,5 @@ lazy.setup({
 	"windwp/nvim-ts-autotag", -- Autoclose html tags
 	"lukas-reineke/indent-blankline.nvim", -- indent guides
 	"moll/vim-bbye", -- :Bd doesn't mess up splits
+	{ "kevinhwang91/nvim-bqf", ft = "qf" }, -- better quickfix window in nvim
 })
