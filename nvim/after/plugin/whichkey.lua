@@ -77,7 +77,6 @@ whichkey.add({
 	-- Miscellanous group
 	{ "<leader>fe", ":NvimTreeFindFile<cr>", desc = "nvim tree find file" },
 	{ "<leader>sh", U.custom_help_tags, desc = "find help" },
-	{ "gx", ':call jobstart(["open", expand("<cfile>")])<cr>', desc = "open in browser" },
 	{ "]d", ":lua vim.diagnostic.goto_next() <cr>", desc = "next diagnostic" },
 	{ "[d", ":lua vim.diagnostic.goto_prev() <cr>", desc = "previous diagnostic" },
 })

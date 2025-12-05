@@ -4,7 +4,7 @@ require("andy2mrqz")
 -- It is strongly advised to eagerly disable netrw, due to race conditions at vim
 -- startup. Set the following at the very beginning of your init.lua
 
-vim.g.loaded = 1
+vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 -- Map leader to <Space>
