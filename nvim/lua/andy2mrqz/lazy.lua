@@ -82,8 +82,25 @@ lazy.setup({
 		},
 	},
 	{
+		"folke/lazydev.nvim", -- Can sometimes help with function completion
+		ft = "lua",
+		opts = {
+			library = {
+				"lazy.nvim",
+				"~/.local/share/nvim/lazy/",
+			},
+		},
+	},
+	{
 		-- cmp plugins
 		"hrsh7th/nvim-cmp", -- completion plugin
+		opts = function(_, opts)
+			opts.sources = opts.sources or {}
+			table.insert(opts.sources, {
+				name = "lazydev",
+				group_index = 0, -- set group index to 0 to skip loading LuaLS completions
+			})
+		end,
 		dependencies = {
 			"hrsh7th/cmp-nvim-lsp", -- complete lsp suggestions
 			"hrsh7th/cmp-nvim-lsp-signature-help", -- show function signature while typing
@@ -112,4 +129,18 @@ lazy.setup({
 	"lukas-reineke/indent-blankline.nvim", -- indent guides
 	"moll/vim-bbye", -- :Bd doesn't mess up splits
 	{ "kevinhwang91/nvim-bqf", ft = "qf" }, -- better quickfix window in nvim
+	{
+		"folke/snacks.nvim",
+		priority = 1000,
+		lazy = false,
+		---@type snacks.Config
+		opts = {
+			bigfile = {
+				enabled = true,
+			},
+			gitbrowse = {
+				enabled = true,
+			},
+		},
+	},
 })
