@@ -32,6 +32,7 @@ vim.opt.listchars:append("trail:⋅") -- :help listchars
 vim.g.copilot_filetypes = { gitcommit = true } -- enable copilot for gitcommit filetype
 vim.opt.mps:append("<:>") -- match pairs for % key (adds <:> for HTML tags)
 vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+vim.opt.shellcmdflag = "-ic" -- Adds -i which runs it in interactive mode to load aliases
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	group = vim.api.nvim_create_augroup("HIGHLIGHTED_YANK", {}),
