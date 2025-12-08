@@ -5,6 +5,10 @@ if not status_ok then
 end
 
 local U = require("andy2mrqz.utils")
+local gitsigns_status_ok, gs = pcall(require, "gitsigns")
+if not gitsigns_status_ok then
+	return
+end
 
 whichkey.setup({
 	icons = {
@@ -43,11 +47,11 @@ whichkey.add({
 				end
 			end
 			-- Not open, so open it!
-			vim.cmd("Gitsigns blame")
+			gs.blame()
 		end,
 		desc = "toggle blame sidebar",
 	},
-	{ "<leader>gd", ":Gitsigns diffthis<cr>", desc = "diff this" },
+	{ "<leader>gd", gs.diffthis, desc = "diff this" },
 	{
 		"<leader>gs",
 		function()
@@ -68,8 +72,25 @@ whichkey.add({
 		end,
 		desc = "Show git stats briefly in bottom split",
 	},
-	{ "<leader>ghr", ":Gitsigns reset_hunk<cr>", desc = "reset hunk" },
-	{ "<leader>ghs", ":Gitsigns stage_hunk<cr>", desc = "stage hunk" },
+	-- (git) Hunk group
+	{ "<leader>h", group = "hunk" },
+	{ "<leader>hr", gs.reset_hunk, desc = "reset hunk" },
+	{ "<leader>hs", gs.stage_hunk, desc = "stage hunk" },
+	{ "<leader>hv", gs.preview_hunk, desc = "view hunk" },
+	{
+		"<leader>hn",
+		function()
+			gs.nav_hunk("next", { preview = true, greedy = false, target = "all" })
+		end,
+		desc = "next hunk",
+	},
+	{
+		"<leader>hp",
+		function()
+			gs.nav_hunk("prev", { preview = true, greedy = false, target = "all" })
+		end,
+		desc = "previous hunk",
+	},
 	-- Terminal group
 	{ "<leader>t", group = "terminal" },
 	{ "<leader>tt", ":ToggleTerm direction=horizontal<cr>", desc = "terminal" },
