@@ -34,6 +34,12 @@ lazy.setup({
 		"nvim-treesitter/nvim-treesitter", -- Treesitter for better highlighting/language support
 		build = ":TSUpdate",
 	},
+	{
+		"nvim-treesitter/nvim-treesitter-context",
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter",
+		},
+	},
 	"folke/which-key.nvim", -- show command options as you type
 	{
 		"rmagatti/auto-session", -- session manager

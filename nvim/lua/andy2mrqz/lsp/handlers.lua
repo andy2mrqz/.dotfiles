@@ -35,6 +35,20 @@ M.on_attach = function(client, bufnr)
 			end,
 			desc = "show",
 		},
+		{
+			"<leader>dn",
+			function()
+				vim.diagnostic.goto_next()
+			end,
+			desc = "go to next diagnostic",
+		},
+		{
+			"<leader>dp",
+			function()
+				vim.diagnostic.goto_prev()
+			end,
+			desc = "go to previous diagnostic",
+		},
 		-- Quickfix/code
 		{ "<leader>c", group = "quickifx/code" },
 		{
@@ -56,6 +70,13 @@ M.on_attach = function(client, bufnr)
 		{ "<leader>rn", vim.lsp.buf.rename, desc = "rename" },
 		-- Go to group
 		{ "g", group = "go to" },
+		{
+			"[c",
+			function()
+				require("treesitter-context").go_to_context(vim.v.count1)
+			end,
+			desc = "go to context",
+		},
 		{ "gd", U.custom_lsp_definitions, desc = "go to definition" },
 		{ "gD", telescope.type_definitions, desc = "go to type definition" },
 		{ "gx", links.open, desc = "open document link" },
