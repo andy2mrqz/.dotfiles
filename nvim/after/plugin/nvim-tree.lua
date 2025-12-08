@@ -10,6 +10,13 @@ nvim_tree.setup({
 	update_focused_file = {
 		enable = true,
 	},
+	renderer = {
+		full_name = true, -- shows full name in floating window overlapping with buffer
+		indent_width = 1,
+		indent_markers = {
+			enable = true,
+		},
+	},
 	git = { enable = true, ignore = false },
 	filters = { dotfiles = false },
 })
