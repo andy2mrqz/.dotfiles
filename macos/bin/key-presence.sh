@@ -1,18 +1,28 @@
 #!/usr/bin/env bash
 
-columns=""
+column=""
 example_count=5
+missing=false
+verbose=false
 json_file=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --columns)
-      columns="$2"
+    --column)
+      column="$2"
       shift 2
       ;;
     --example-count)
       example_count="$2"
       shift 2
+      ;;
+    --missing)
+      missing=true
+      shift
+      ;;
+    --verbose)
+      verbose=true
+      shift
       ;;
     *)
       json_file="$1"
@@ -22,24 +32,40 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ -z "$json_file" ]]; then
-  echo "Usage: $0 [--columns col1,col2,...] [--example-count N] <json-file>"
+  echo "Usage: $0 [--column col] [--example-count N] [--missing] [--verbose] <json-file>"
   exit 1
 fi
 
-if [[ -n "$columns" ]]; then
-  # Output example rows for specified columns as CSV
-  # Filter for rows where ALL specified columns have non-null/non-empty values
-  jq -r --arg cols "$columns" --argjson n "$example_count" '
-    ($cols | split(",")) as $keys
-    | ($keys | join(","))
-    , (
-        [.[] | select(all(.[$keys[]]; . != null and . != ""))]
-        | limit($n; .[])
-        | [.[$keys[]]]
-        | map(tostring)
-        | join(",")
-      )
-  ' "$json_file"
+# --missing implies --verbose (showing full records makes sense when column is empty)
+if [[ "$missing" == "true" ]]; then
+  verbose=true
+fi
+
+if [[ -n "$column" ]]; then
+  if [[ "$missing" == "true" ]]; then
+    # Show entire records where the column is missing/empty
+    jq --arg col "$column" --argjson n "$example_count" '
+      [.[] | select(.[$col] == null or .[$col] == "")]
+      | limit($n; .[])
+    ' "$json_file"
+  elif [[ "$verbose" == "true" ]]; then
+    # Show entire records where the column is present
+    jq --arg col "$column" --argjson n "$example_count" '
+      [.[] | select(.[$col] != null and .[$col] != "")]
+      | limit($n; .[])
+    ' "$json_file"
+  else
+    # Show just column values for records that have the column
+    jq -r --arg col "$column" --argjson n "$example_count" '
+      $col
+      , (
+          [.[] | select(.[$col] != null and .[$col] != "")]
+          | limit($n; .[])
+          | .[$col]
+          | tostring
+        )
+    ' "$json_file"
+  fi
 else
   # Original behavior: show key presence statistics
   jq -r '
