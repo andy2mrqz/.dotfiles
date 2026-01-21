@@ -15,7 +15,12 @@ M.on_attach = function(client, bufnr)
 		{
 			"<leader>F",
 			function()
-				vim.lsp.buf.format({ async = true })
+				vim.lsp.buf.format({
+					async = true,
+					filter = function(c)
+            return true
+					end,
+				})
 			end,
 			desc = "Format buffer",
 		},
@@ -38,14 +43,14 @@ M.on_attach = function(client, bufnr)
 		{
 			"<leader>dn",
 			function()
-				vim.diagnostic.goto_next()
+				vim.diagnostic.jump({ count = 1 })
 			end,
 			desc = "go to next diagnostic",
 		},
 		{
 			"<leader>dp",
 			function()
-				vim.diagnostic.goto_prev()
+				vim.diagnostic.jump({ count = -1 })
 			end,
 			desc = "go to previous diagnostic",
 		},
