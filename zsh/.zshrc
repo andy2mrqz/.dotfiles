@@ -93,6 +93,10 @@ ssm-get-parameter() {
   aws ssm get-parameter --name "$1" --with-decryption --query "Parameter" | jq -r '.Value'
 }
 
+mkcd() {
+  \mkdir -p "$1" && cd "$1" || exit 1
+}
+
 #-----------------------------------------------------------
 # Completion
 #-----------------------------------------------------------
