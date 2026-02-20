@@ -73,7 +73,7 @@ gmbd() {
 
 awslogin() {
   # shellcheck disable=1091
-  source "$HOME/bin/_awslogin" "$1"
+  source "$HOME/bin/_awslogin_headless" "$@"
 }
 
 

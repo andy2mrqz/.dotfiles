@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+eval "$(uv run --script "$HOME/bin/_awslogin_pw.py" "$@")"

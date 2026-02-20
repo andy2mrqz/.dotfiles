@@ -10,78 +10,94 @@ function export_aws_env() {
 	fi
 }
 
-PROFILE="$1"
+FORCE=false
+PROFILE=""
+for arg in "$@"; do
+	case "$arg" in
+		-f|--force) FORCE=true ;;
+		*) PROFILE="$arg" ;;
+	esac
+done
 
-# Case 1: Already authenticated
-if aws sts get-caller-identity --profile "$PROFILE" >/dev/null 2>&1; then
+if [[ -z "$PROFILE" ]]; then
+	echo "Usage: awslogin [-f|--force] <profile>" >&2
+	return 1
+fi
+
+# Case 1: Already authenticated (skip if --force)
+if [[ "$FORCE" != true ]] && aws sts get-caller-identity --profile "$PROFILE" >/dev/null 2>&1; then
 	echo "Already authenticated with profile: $PROFILE"
 	export_aws_env "$PROFILE"
 	return $?
 fi
 
-# Case 2: Kick off SSO login
+if [[ "$FORCE" == true ]]; then
+	rm -f ~/.aws/sso/cache/*.json 2>/dev/null
+fi
+
 echo "Logging in with profile: $PROFILE"
-aws sso login --profile "$PROFILE" &
 
 # Remember the frontmost app so we can switch back later
 CURRENT_APP=$(osascript -e 'return short name of (info for (path to frontmost application))')
 
-# Wait for Arc to come to the front
-osascript <<EOF
-tell application "System Events"
-    repeat until (name of first application process whose frontmost is true) is "Arc"
-        delay 0.125
-    end repeat
-end tell
-EOF
+aws sso login --profile "$PROFILE" &
+SSO_PID=$!
 
-# In Arc, wait for load + handle both flows
-osascript <<EOF
+# Give the browser a moment to open and start redirecting
+sleep 2
+
+# Poll: try to auto-click "Allow access" in Arc while waiting for the CLI to finish.
+# The new AWS SSO flow (OAuth2 PKCE) redirects through Microsoft Entra ID for auth,
+# then lands on the AWS SSO consent page. Once approved, the browser redirects to a
+# localhost callback and the CLI completes automatically.
+while kill -0 "$SSO_PID" 2>/dev/null; do
+	osascript <<'APPLESCRIPT' 2>/dev/null
 tell application "Arc"
-    -- 1) wait for the tab to finish loading
-    repeat until (loading of front window's active tab) is false
-        delay 0.125
-    end repeat
-
-    -- 2) poll until either the allow-access button OR the approved marker shows up
-    set allowFound to false
-    set approvedFound to false
-    repeat until (allowFound or approvedFound)
-        delay 0.125
+    if (count of windows) > 0 then
         tell front window's active tab
-            set allowFound    to (execute javascript "!!document.querySelector('[data-testid=\"allow-access-button\"]')") as boolean
-            set approvedFound to (execute javascript "!!document.getElementById('approved-auth')") as boolean
+            execute javascript "
+                (function() {
+                    var btns = document.querySelectorAll('button');
+                    for (var i = 0; i < btns.length; i++) {
+                        if (btns[i].textContent.trim() === 'Allow access' && !btns[i].disabled) {
+                            btns[i].click();
+                            return;
+                        }
+                    }
+                })();
+            "
         end tell
-    end repeat
-
-    -- 3) if we saw the button, click it, then wait for the “approved” marker
-    if allowFound then
-        tell front window's active tab
-            execute javascript "document.querySelector('[data-testid=\"allow-access-button\"]').click();"
-        end tell
-        repeat until approvedFound
-            delay 0.125
-            tell front window's active tab
-                set approvedFound to (execute javascript "!!document.getElementById('approved-auth')") as boolean
-            end tell
-        end repeat
     end if
-
-    -- 4) close the SSO tab
-    tell front window
-        close active tab
-    end tell
 end tell
-EOF
+APPLESCRIPT
+	sleep 1
+done
 
-# 5) wait for aws sso login to actually finish
-wait
+wait "$SSO_PID"
+SSO_EXIT=$?
 
-# 6) restore your previous frontmost app
+# Give the browser a moment to settle on the callback page
+sleep 0.5
+
+# Close the SSO/callback tab in Arc (matches any URL from the auth redirect chain)
+osascript <<'APPLESCRIPT' 2>/dev/null
+tell application "Arc"
+    if (count of windows) > 0 then
+        tell front window
+            set tabURL to URL of active tab
+            if tabURL contains "127.0.0.1" or tabURL contains "awsapps.com" or tabURL contains "amazonaws.com" or tabURL contains "microsoftonline.com" then
+                close active tab
+            end if
+        end tell
+    end if
+end tell
+APPLESCRIPT
+
+# Restore your previous frontmost app
 osascript -e "tell application \"$CURRENT_APP\" to activate"
 
-# 7) make sure the login really worked, and export creds
-if ! aws sts get-caller-identity --profile "$PROFILE" >/dev/null 2>&1; then
+# Verify login
+if [[ $SSO_EXIT -ne 0 ]] || ! aws sts get-caller-identity --profile "$PROFILE" >/dev/null 2>&1; then
 	echo "SSO login failed" >&2
 	return 1
 fi
