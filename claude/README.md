@@ -8,6 +8,10 @@ Configuration for [Claude Code](https://claude.ai/code).
 ln -sf ~/Projects/.dotfiles/claude/.claude/settings.json ~/.claude/settings.json
 ln -sf ~/Projects/.dotfiles/claude/.claude/keybindings.json ~/.claude/keybindings.json
 ln -sf ~/Projects/.dotfiles/claude/.claude/statusline-command.sh ~/.claude/statusline-command.sh
+
+# Skills (symlink each individually — directory symlinks are not followed)
+mkdir -p ~/.claude/skills
+ln -sf ~/Projects/.dotfiles/claude/.claude/skills/agent-browser ~/.claude/skills/agent-browser
 ```
 
 ## Notes

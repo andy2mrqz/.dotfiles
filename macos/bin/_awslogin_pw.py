@@ -13,6 +13,7 @@ import os
 import re
 import subprocess
 import sys
+import threading
 from pathlib import Path
 
 PLAYWRIGHT_DIR = str(Path.home() / ".cache" / "awslogin-playwright")
@@ -57,11 +58,21 @@ def start_sso_login(profile):
     )
 
     url = None
-    for line in iter(proc.stdout.readline, ""):
-        m = re.search(r"(https://\S+)", line)
-        if m:
-            url = m.group(1)
-            break
+    found = threading.Event()
+
+    def read_url():
+        nonlocal url
+        for line in iter(proc.stdout.readline, ""):
+            m = re.search(r"(https://\S+)", line)
+            if m:
+                url = m.group(1)
+                found.set()
+                return
+        found.set()  # EOF without finding a URL
+
+    reader = threading.Thread(target=read_url, daemon=True)
+    reader.start()
+    found.wait(timeout=30)
 
     return proc, url
 
@@ -77,40 +88,41 @@ def automate_browser(url, headless=True):
             PLAYWRIGHT_DIR, headless=headless,
             args=["--disable-blink-features=AutomationControlled"],
         )
-        page = ctx.pages[0] if ctx.pages else ctx.new_page()
-        page.goto(url, wait_until="domcontentloaded")
+        try:
+            page = ctx.pages[0] if ctx.pages else ctx.new_page()
+            page.goto(url, wait_until="domcontentloaded")
 
-        # Let initial redirects settle
-        page.wait_for_timeout(3000)
+            # Let initial redirects settle
+            page.wait_for_timeout(3000)
 
-        if "127.0.0.1" in page.url:
-            ctx.close()
+            if "127.0.0.1" in page.url:
+                return "done"
+
+            # Headless but no Microsoft session — bail so we can retry headed
+            if headless and "microsoftonline.com" in page.url:
+                return "need_auth"
+
+            # Wait for the "Allow access" button.
+            # In headed mode this can take a while if the user is authenticating with Microsoft.
+            timeout_ms = 120_000 if not headless else 30_000
+            try:
+                btn = page.get_by_role("button", name="Allow access")
+                btn.wait_for(state="visible", timeout=timeout_ms)
+                btn.click()
+            except Exception:
+                return "timeout"
+
+            # Wait for the localhost redirect that completes the PKCE flow
+            try:
+                page.wait_for_url("**/127.0.0.1**", timeout=15_000)
+            except Exception:
+                pass
+
+            # Give the callback request time to reach the aws sso login server
+            page.wait_for_timeout(2000)
             return "done"
-
-        # Headless but no Microsoft session — bail so we can retry headed
-        if headless and "microsoftonline.com" in page.url:
+        finally:
             ctx.close()
-            return "need_auth"
-
-        # Wait for the "Allow access" button.
-        # In headed mode this can take a while if the user is authenticating with Microsoft.
-        timeout_ms = 120_000 if not headless else 30_000
-        try:
-            btn = page.get_by_role("button", name="Allow access")
-            btn.wait_for(state="visible", timeout=timeout_ms)
-            btn.click()
-        except Exception:
-            ctx.close()
-            return "timeout"
-
-        # Wait for the localhost redirect that completes the PKCE flow
-        try:
-            page.wait_for_url("**/127.0.0.1**", timeout=15_000)
-        except Exception:
-            pass
-
-        ctx.close()
-        return "done"
 
 
 def main():
@@ -158,7 +170,15 @@ def main():
             return
         result = automate_browser(url, headless=False)
 
-    proc.wait()
+    if result != "done":
+        proc.terminate()
+
+    try:
+        proc.wait(timeout=15)
+    except subprocess.TimeoutExpired:
+        log("aws sso login did not exit in time, killing")
+        proc.kill()
+        proc.wait()
 
     if proc.returncode != 0 or result != "done":
         shell('echo "SSO login failed" >&2; return 1')
