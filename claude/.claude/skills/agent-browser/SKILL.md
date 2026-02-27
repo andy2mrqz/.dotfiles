@@ -17,4 +17,12 @@ Use `agent-browser` (installed via brew) to visually inspect browser flows.
 5. Repeat screenshot/snapshot after each transition until flow completes
 6. `agent-browser close` when done
 
+## Authenticated flows
+
+Use `--session-name` to persist auth (cookies/storage) across runs:
+1. First run (user authenticates): `agent-browser --headed --session-name <name> open <url>`
+2. Subsequent runs reuse the session headlessly
+
+State saved to `~/.agent-browser/sessions/`. See `agent-browser state --help` for manual save/load/cleanup.
+
 Run `agent-browser --help` for full command reference.

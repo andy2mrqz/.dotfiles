@@ -11,7 +11,7 @@ ln -sf ~/Projects/.dotfiles/claude/.claude/statusline-command.sh ~/.claude/statu
 
 # Skills (symlink each individually — directory symlinks are not followed)
 mkdir -p ~/.claude/skills
-ln -sf ~/Projects/.dotfiles/claude/.claude/skills/agent-browser ~/.claude/skills/agent-browser
+find ~/Projects/.dotfiles/claude/.claude/skills -mindepth 1 -maxdepth 1 -type d -exec ln -sf {} ~/.claude/skills/ \;
 ```
 
 ## Notes
