@@ -2,6 +2,7 @@
 
 # Streaming JSON array analyzer - handles files of any size without OOM
 # Uses jq --stream to process incrementally
+# DEPRECATED: Prefer ~/Projects/key-presence/ now - rust implementation with SIMD acceleration
 
 column=""
 example_count=5

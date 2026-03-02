@@ -20,8 +20,9 @@ MAGENTA=$'\033[0;35m'
 BOLD=$'\033[1m'
 RESET=$'\033[0m'
 
-# --- Directory (basename, like %c in zsh prompt) ---
-dir=$(basename "$cwd")
+# --- Directory (full path, ~ for $HOME prefix) ---
+tilde='~'
+dir="${cwd/#$HOME/$tilde}"
 
 # --- Git info (branch + clean/dirty), skipping optional locks ---
 git_info=""

@@ -8,7 +8,9 @@
     "command": "bash /Users/andrewmarquez/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
-    "slack@claude-plugins-official": true
+    "slack@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true
   },
   "skipDangerousModePermissionPrompt": true
 }
