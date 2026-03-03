@@ -20,6 +20,8 @@ Instead, use streaming tools:
 For JSON specifically: use `jq --stream` or the Rust key-presence tool, never
 `json.load()` or `JSON.parse()` on files over ~500MB.
 
+For detailed usage, size thresholds, and examples: read `~/.claude/docs/large-file-tools.md`
+
 ## Work-Specific Config
 
 Work-specific settings (AWS profiles, account IDs, internal endpoints) are in

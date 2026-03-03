@@ -1,8 +1,3 @@
----
-name: large-file-tools
-description: Tools for working with large files (1GB+) without running out of memory. Use when processing JSON dumps, log files, or any file too large for JSON.parse/json.load.
----
-
 # Large File Tools
 
 This machine has 36GB RAM. Files in ~/Projects/pxm-db/data/ can be 50-100GB+. NEVER load them into memory with JSON.parse(), json.load(), or similar. Use these streaming tools instead.

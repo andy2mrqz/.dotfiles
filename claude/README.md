@@ -9,6 +9,10 @@ ln -sf ~/Projects/.dotfiles/claude/.claude/settings.json ~/.claude/settings.json
 ln -sf ~/Projects/.dotfiles/claude/.claude/keybindings.json ~/.claude/keybindings.json
 ln -sf ~/Projects/.dotfiles/claude/.claude/statusline-command.sh ~/.claude/statusline-command.sh
 
+# Docs (reference files pointed to from CLAUDE.md)
+mkdir -p ~/.claude/docs
+find ~/Projects/.dotfiles/claude/.claude/docs -type f -exec ln -sf {} ~/.claude/docs/ \;
+
 # Skills (symlink each individually — directory symlinks are not followed)
 mkdir -p ~/.claude/skills
 find ~/Projects/.dotfiles/claude/.claude/skills -mindepth 1 -maxdepth 1 -type d -exec ln -sf {} ~/.claude/skills/ \;
