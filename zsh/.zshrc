@@ -140,7 +140,7 @@ alias vim="nvim"
 alias pk="kill -9"
 alias vimdiff="nvim -d"
 alias cloc="scc"
-alias vimg="vim --cmd 'let g:auto_session_enabled = v:false' -c 'AutoSession restore' -c 'NvimTreeToggle' -c 'G' -c '1000'" # open with git mode on and go to the last line (1000)
+alias vimg="vim --cmd 'let g:auto_session_enabled = v:false' -c 'silent! AutoSession restore' -c 'NvimTreeToggle' -c 'G' -c '1000'" # open with git mode on and go to the last line (1000)
 alias zdots="z .dotfiles"
 
 # Obsidian notes

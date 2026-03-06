@@ -28,12 +28,16 @@ vim.diagnostic.config({
 	},
 })
 
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-	border = "rounded",
-	width = 60,
-})
+vim.lsp.buf.hover = (function(original)
+	return function(opts)
+		opts = vim.tbl_extend("force", { border = "rounded", width = 60 }, opts or {})
+		return original(opts)
+	end
+end)(vim.lsp.buf.hover)
 
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-	border = "rounded",
-	width = 60,
-})
+vim.lsp.buf.signature_help = (function(original)
+	return function(opts)
+		opts = vim.tbl_extend("force", { border = "rounded", width = 60 }, opts or {})
+		return original(opts)
+	end
+end)(vim.lsp.buf.signature_help)
