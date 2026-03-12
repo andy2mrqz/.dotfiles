@@ -12,7 +12,7 @@
 
 typeset -U PATH                   # Ensure uniqueness within the PATH env variable
 unsetopt BEEP                     # Turn off all beeps
-stty -ixon                        # Disable XON/XOFF so Ctrl+S is free for tmux prefix
+[[ -t 0 ]] && stty -ixon          # Disable XON/XOFF so Ctrl+S is free for tmux prefix
 
 #-----------------------------------------------------------
 # Environment
