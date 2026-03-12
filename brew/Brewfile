@@ -1,0 +1,84 @@
+# ─── Taps ────────────────────────────────────────────────────────────────────
+
+tap "aws/tap"
+tap "hashicorp/tap"
+tap "datadog-labs/pack"
+
+# ─── Core CLI Tools ──────────────────────────────────────────────────────────
+
+brew "bat"                  # cat with syntax highlighting
+brew "coreutils"            # GNU core utilities
+brew "curl"                 # newer than macOS built-in
+brew "eza"                  # modern ls replacement
+brew "fd"                   # find alternative
+brew "fzf"                  # fuzzy finder
+brew "htop"                 # interactive process viewer
+brew "jq"                   # JSON processor
+brew "ripgrep"              # fast grep
+brew "tree"                 # directory tree view
+brew "z"                    # frecency-based directory jumper
+
+# ─── Dev Tools ───────────────────────────────────────────────────────────────
+
+brew "cmake"
+brew "gh"                     # GitHub CLI
+brew "git-delta"              # better git diffs
+brew "git-filter-repo"        # git history rewriting
+brew "git-lfs"                # git large file storage
+brew "hyperfine"              # CLI benchmarking
+brew "ninja"                  # build system (used by neovim build system)
+brew "pipx"                   # isolated Python CLI tools
+brew "scc"                    # code line counter
+brew "shellcheck"             # shell script linter
+brew "shfmt"                  # shell script formatter
+brew "stylua"                 # Lua formatter
+brew "tmux"                   # terminal multiplexer
+brew "redis"
+brew "agent-browser"          # playwright-enabled tool for agents
+brew "datadog-labs/pack/pup"  # datadog cli
+
+cask "codex"
+cask "figma"
+cask "postman"
+
+# ─── Shell / Zsh ─────────────────────────────────────────────────────────────
+
+brew "zsh-autosuggestions"
+brew "zsh-history-substring-search"
+brew "zsh-syntax-highlighting"
+
+# ─── AWS ─────────────────────────────────────────────────────────────────────
+
+brew "awscli"
+cask "session-manager-plugin" # used for ecs execute ability in aws cli
+
+# ─── Infrastructure ──────────────────────────────────────────────────────────
+
+brew "hashicorp/tap/terraform"
+brew "terraform-docs"
+
+# ─── Media & Documents ──────────────────────────────────────────────────────
+
+brew "exiftool"             # image/media metadata
+brew "mpv"                  # media player
+brew "chromaprint"          # audio fingerprinting (used by mpv)
+brew "pandoc"               # document converter
+brew "vips"                 # image processing library
+
+# ─── Productivity & Utils ────────────────────────────────────────────────────
+
+brew "bitwarden-cli"
+brew "plantuml"             # UML diagrams
+
+# ─── Casks: Productivity ─────────────────────────────────────────────────────
+
+cask "karabiner-elements"
+cask "obsidian"
+cask "raycast"
+cask "slack"
+cask "zoom"
+
+# ─── Casks: Fonts ───────────────────────────────────────────────────────────
+
+cask "font-meslo-lg-nerd-font"
+
