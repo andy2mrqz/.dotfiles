@@ -1,0 +1,13 @@
+[tools]
+go = "1.23.2"
+ruby = "3"
+python = "3.12.7"
+usage = "latest"
+node = "latest"
+"npm:vscode-langservers-extracted" = "latest"
+"npm:gh-actions-language-server" = "latest"
+java = "temurin"
+
+[settings]
+disable_hints = ["python_multi"]
+experimental = true

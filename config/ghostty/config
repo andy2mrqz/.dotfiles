@@ -1,0 +1,32 @@
+# https://ghostty.org/docs/config/reference
+
+# theme / appearance
+theme = Wez
+## for theme, also like: deep / GitHub Dark / xcodedarkhc / Kanagawa Wave
+font-size = 15.0
+# titlebar
+macos-titlebar-style = tabs
+macos-titlebar-proxy-icon = hidden
+## icon
+macos-icon = chalkboard
+
+# splits
+## create
+keybind = ctrl+shift+h=new_split:left
+keybind = ctrl+shift+j=new_split:down
+keybind = ctrl+shift+k=new_split:up
+keybind = ctrl+shift+l=new_split:right
+## navigate
+keybind = ctrl+option+h=goto_split:left
+keybind = ctrl+option+j=goto_split:bottom
+keybind = ctrl+option+k=goto_split:top
+keybind = ctrl+option+l=goto_split:right
+
+# window
+window-inherit-working-directory = false
+tab-inherit-working-directory = false
+split-inherit-working-directory = false
+keybind = shift+enter=text:\n
+
+# updates
+auto-update-channel = tip
