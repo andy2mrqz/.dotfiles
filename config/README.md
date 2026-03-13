@@ -5,4 +5,5 @@ Configs that live under `~/.config/`. Symlink each subdirectory:
 ```sh
 ln -s ~/Projects/.dotfiles/config/ghostty ~/.config/ghostty
 ln -s ~/Projects/.dotfiles/config/mise ~/.config/mise
+ln -s ~/Projects/.dotfiles/config/eza ~/.config/eza
 ```
