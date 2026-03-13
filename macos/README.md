@@ -2,6 +2,7 @@
 
 ## Setup
 
+- symlink the bin directory: `ln -s ~/Projects/.dotfiles/macos/bin ~/bin`
 - install [ghostty](https://ghostty.org/download)
 - install homebrew, then use the brew/Brewfile to install all packages
 - neovim (built from source):
