@@ -36,10 +36,16 @@ brew "tmux"                   # terminal multiplexer
 brew "redis"
 brew "agent-browser"          # playwright-enabled tool for agents
 brew "datadog-labs/pack/pup"  # datadog cli
+brew "libyaml"                # required for ruby
 
 cask "codex"
 cask "figma"
 cask "postman"
+
+brew "colima"
+brew "docker"
+brew "docker-compose"
+brew "docker-credential-helper"
 
 # ─── Shell / Zsh ─────────────────────────────────────────────────────────────
 

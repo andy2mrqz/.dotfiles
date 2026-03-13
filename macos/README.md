@@ -10,7 +10,8 @@
   `update-neovim.sh -f` to build and install
 - install mise
 - install
-  [claude code](https://code.claude.com/docs/en/quickstart#step-1-install-claude-code)
+  [claude code](https://code.claude.com/docs/en/quickstart#step-1-install-claude-code),
+  then follow `claude/README.md` to symlink settings
 
 ### other
 

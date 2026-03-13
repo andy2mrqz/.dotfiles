@@ -18,8 +18,6 @@ ms-python.debugpy
 ms-python.python
 redhat.vscode-yaml
 rust-lang.rust-analyzer
-scala-lang.scala
 shopify.ruby-lsp
 tamasfe.even-better-toml
 vscodevim.vim
-ziglang.vscode-zig
