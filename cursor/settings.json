@@ -1,0 +1,194 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always",
+  },
+  // "git.blame.editorDecoration.enabled": true,
+  // "git.blame.editorDecoration.template": "${authorName}, ${authorDateAgo} • ${subject}",
+  "go.alternateTools": {
+    "go": "/Users/andrewmarquez/.local/share/mise/shims/go",
+  },
+  "[go]": {
+    "editor.defaultFormatter": "golang.go",
+    "editor.tabSize": 8,
+  },
+  "[python]": {
+    "editor.tabSize": 4,
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+    },
+  },
+  "[toml]": {
+    "editor.defaultFormatter": "tamasfe.even-better-toml",
+  },
+  "[astro]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
+  "[terraform-vars]": {
+    "editor.defaultFormatter": "hashicorp.terraform",
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
+  "notebook.defaultFormatter": "charliermarsh.ruff",
+  "files.trimTrailingWhitespace": true,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.tabSize": 2,
+  "editor.stickyScroll.defaultModel": "indentationModel",
+  "editor.stickyScroll.maxLineCount": 10,
+  "editor.minimap.enabled": false,
+  "editor.renderWhitespace": "trailing",
+  "editor.fontSize": 13,
+  "editor.smoothScrolling": true,
+  "editor.padding.bottom": 4,
+  "editor.suggest.showMethods": true,
+  "editor.acceptSuggestionOnEnter": "on",
+  "editor.snippetSuggestions": "top",
+  "editor.suggest.preview": true,
+  "editor.rulers": [
+    {
+      "column": 80,
+      "color": "#252525",
+    },
+    {
+      "column": 120,
+      "color": "#252525",
+    },
+  ],
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": true,
+    "strings": true,
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/*.code-search": true,
+  },
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/.git": true,
+    "**/.hg": true,
+    "**/.svn": true,
+    "**/CVS": true,
+    "**/node_modules": true,
+    "**/Thumbs.db": true,
+    "node_modules": true,
+  },
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "git.autofetch": true,
+  "editor.accessibilitySupport": "on",
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": ["u"],
+      "after": [],
+      "commands": [
+        {
+          "command": "undo",
+        },
+      ],
+    },
+    {
+      "before": ["<C-r>"],
+      "after": [],
+      "commands": [
+        {
+          "command": "redo",
+        },
+      ],
+    },
+  ],
+  "vim.useSystemClipboard": true,
+  "git.openRepositoryInParentFolders": "never",
+  "editor.inlineSuggest.enabled": true,
+  "[terraform]": {
+    "editor.defaultFormatter": "hashicorp.terraform",
+  },
+  "yaml.customTags": [
+    "!Base64 scalar",
+    "!Cidr scalar",
+    "!And sequence",
+    "!Equals sequence",
+    "!If sequence",
+    "!Not sequence",
+    "!Or sequence",
+    "!Condition scalar",
+    "!FindInMap sequence",
+    "!GetAtt scalar",
+    "!GetAtt sequence",
+    "!GetAZs scalar",
+    "!ImportValue scalar",
+    "!Join sequence",
+    "!Select sequence",
+    "!Split sequence",
+    "!Sub scalar",
+    "!Transform mapping",
+    "!Ref scalar",
+  ],
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
+  "workbench.editorAssociations": {
+    "git-rebase-todo": "default",
+  },
+  "vim.leader": "<space>",
+  "vim.normalModeKeyBindings": [
+    {
+      "before": ["<leader>", "r", "n"],
+      "commands": ["editor.action.rename"],
+    },
+    {
+      "before": ["<leader>", "r", "f"],
+      "commands": ["fileutils.renameFile"],
+    },
+  ],
+  "explorer.confirmDelete": false,
+  "cursor.cpp.disabledLanguages": ["plaintext", "scminput"],
+  "workbench.colorTheme": "Default Dark+",
+  "workbench.colorCustomizations": {
+    "git.blame.editorDecorationForeground": "#3C4148",
+  },
+  "redhat.telemetry.enabled": false,
+  "extensions.ignoreRecommendations": true,
+  "projectManager.projectsLocation": "/Users/andrewmarquez/.config/projectmanager",
+  "projectManager.openInNewWindowWhenClickingInStatusBar": true,
+  "diffEditor.maxComputationTime": 0,
+  "cursor.windowSwitcher.sidebarHoverCollapsed": true,
+  "json.schemaDownload.enable": true,
+  "[dockercompose]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.autoIndent": "advanced",
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+  },
+  "go.toolsManagement.autoUpdate": true,
+  "accessibility.signalOptions.volume": 0,
+  "zig.zls.enabled": "on",
+  "git.confirmSync": false,
+  "plantuml.java": "/Users/andrewmarquez/.local/share/mise/installs/java/temurin-25.0.1+8.0.LTS/bin/java",
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features",
+  },
+  "gitlens.currentLine.enabled": true,
+  "prettier.enableDebugLogs": true,
+  "files.associations": {
+    "justfile": "makefile",
+  },
+  "go.diagnostic.vulncheck": "Imports",
+  "http.systemCertificates": true,
+  "yaml.schemas": {
+    "/Users/andrewmarquez/.config/yaml-schemas/compose-spec.json": "{compose.yml,compose.yaml,docker-compose.yml,**/compose.yml,**/compose.yaml,**/docker-compose.yml}",
+  },
+  "datadog.staticAnalysis.notification.suppressOnboarding": true,
+}
