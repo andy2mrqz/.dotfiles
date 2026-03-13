@@ -3,7 +3,7 @@
 # Required parameters:
 # @raycast.schemaVersion 1
 # @raycast.title clone pattern git repo
-# @raycast.mode fullOutput
+# @raycast.mode compact
 # @raycast.argument2 { "type": "text", "placeholder": "repo name" }
 #
 # Optional parameters:
@@ -20,4 +20,4 @@ if [ ! -d "${REPO_NAME}" ]; then
 	git clone "https://github.com/patterninc/${REPO_NAME}.git"
 fi
 
-cd "${REPO_NAME}" && cursor . || exit
+cd "${REPO_NAME}" && "$HOME/bin/cursor" . || exit

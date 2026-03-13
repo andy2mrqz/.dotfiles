@@ -176,7 +176,7 @@
   "accessibility.signalOptions.volume": 0,
   "zig.zls.enabled": "on",
   "git.confirmSync": false,
-  "plantuml.java": "/Users/andrewmarquez/.local/share/mise/installs/java/temurin-25.0.1+8.0.LTS/bin/java",
+  "plantuml.java": "/Users/andrewmarquez/.local/share/mise/installs/java/temurin/bin/java",
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features",
   },

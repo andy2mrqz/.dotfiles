@@ -3,7 +3,7 @@
 # Required parameters:
 # @raycast.schemaVersion 1
 # @raycast.title clone ampmedia git repo (ghostty)
-# @raycast.mode silent
+# @raycast.mode compact
 # @raycast.argument1 { "type": "text", "placeholder": "repo name" }
 #
 # Optional parameters:
@@ -20,4 +20,4 @@ if [ ! -d "${REPO_NAME}" ]; then
 	git clone "https://github.com/ampmedia/${REPO_NAME}.git"
 fi
 
-cd "${REPO_NAME}" && cursor . || exit
+cd "${REPO_NAME}" && "$HOME/bin/cursor" . || exit

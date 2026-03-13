@@ -5,6 +5,7 @@ Configuration for [Claude Code](https://claude.ai/code).
 ## Setup
 
 ```bash
+ln -sf ~/Projects/.dotfiles/claude/.claude/CLAUDE.md ~/.claude/CLAUDE.md
 ln -sf ~/Projects/.dotfiles/claude/.claude/settings.json ~/.claude/settings.json
 ln -sf ~/Projects/.dotfiles/claude/.claude/keybindings.json ~/.claude/keybindings.json
 ln -sf ~/Projects/.dotfiles/claude/.claude/statusline-command.sh ~/.claude/statusline-command.sh

@@ -2,9 +2,9 @@
   "env": {
     "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "69",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-    "ENABLE_CLAUDEAI_MCP_SERVERS": false
+    "ENABLE_CLAUDEAI_MCP_SERVERS": "false"
   },
-  "model": "opus",
+  "model": "opus[1m]",
   "statusLine": {
     "type": "command",
     "command": "bash /Users/andrewmarquez/.claude/statusline-command.sh"
@@ -13,7 +13,7 @@
     "slack@claude-plugins-official": false,
     "rust-analyzer-lsp@claude-plugins-official": false,
     "pyright-lsp@claude-plugins-official": false,
-    "ptrn@ptrn-github": false
+    "pattern@ptrn-github": true
   },
   "extraKnownMarketplaces": {
     "ptrn-github": {

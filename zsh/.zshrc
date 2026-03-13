@@ -7,6 +7,16 @@
 # shellcheck disable=2168   # 'local' is only valid in functions.
 
 #-----------------------------------------------------------
+# Cleanup orphaned nvim processes (parent = launchd/PID 1)
+# These accumulate when terminal tabs close without cleanly exiting nvim
+#-----------------------------------------------------------
+
+{
+  orphans=$(ps -eo pid,ppid,comm | awk '$3 ~ /nvim$/ && $2 == 1 { print $1 }')
+  [[ -n "$orphans" ]] && kill $=orphans 2>/dev/null
+} &!
+
+#-----------------------------------------------------------
 # General configuration
 #-----------------------------------------------------------
 
@@ -170,7 +180,7 @@ alias gbd="git branch -D"
 # Run github copilot cli
 alias how="brain --new"
 
-alias code="/Applications/Visual\ Studio\ Code\ -\ Insiders.app/Contents/Resources/app/bin/code"
+alias cursor="/Applications/Cursor.app/Contents/Resources/app/bin/code"
 
 #-----------------------------------------------------------
 # Prompt
