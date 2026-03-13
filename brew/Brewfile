@@ -50,6 +50,7 @@ brew "zsh-syntax-highlighting"
 # ─── AWS ─────────────────────────────────────────────────────────────────────
 
 brew "awscli"
+cask "aws-vpn-client"
 cask "session-manager-plugin" # used for ecs execute ability in aws cli
 
 # ─── Infrastructure ──────────────────────────────────────────────────────────
@@ -67,6 +68,7 @@ brew "vips"                 # image processing library
 
 # ─── Productivity & Utils ────────────────────────────────────────────────────
 
+cask "bitwarden"
 brew "bitwarden-cli"
 brew "plantuml"             # UML diagrams
 
