@@ -176,9 +176,9 @@
   "accessibility.signalOptions.volume": 0,
   "zig.zls.enabled": "on",
   "git.confirmSync": false,
-  "plantuml.java": "/Users/andrewmarquez/.local/share/mise/installs/java/temurin/bin/java",
+  "plantuml.java": "/Users/andrewmarquez/.local/share/mise/installs/java/temurin-25/bin/java",
   "[typescript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "gitlens.currentLine.enabled": true,
   "prettier.enableDebugLogs": true,

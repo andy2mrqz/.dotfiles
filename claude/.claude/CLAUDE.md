@@ -15,10 +15,17 @@ Instead, use streaming tools:
   files. Example: `statsize *.json`
 - **Rust key-presence tool** (`~/Projects/key-presence/target/release/key-presence`):
   SIMD-accelerated JSON field analysis. Handles 100GB+ files at 1.4 GB/s. Modes:
-  stats, `--column`, `--verbose`, `--missing`. Run `key-presence --help` for usage.
+  stats, `--column`, `--verbose`, `--missing`, `--value`. Use `--root` to drill
+  into nested JSON. Run `key-presence --help` for full usage. Key combos:
+  - `--column COL --value VAL --verbose --example-count 1`: find a record by
+    key-value pair (early exit on first match — ideal for huge files)
+  - `--column COL --value VAL`: extract matching values
+  - `--column COL --verbose`: dump records that have a field
 
 For JSON specifically: use `jq --stream` or the Rust key-presence tool, never
-`json.load()` or `JSON.parse()` on files over ~500MB.
+`json.load()` or `JSON.parse()` on files over ~500MB. To find a specific record
+by key-value pair, prefer `key-presence --column --value --verbose` over `snip`
+(key-presence understands JSON record boundaries; snip gives raw byte slices).
 
 For detailed usage, size thresholds, and examples: read `~/.claude/docs/large-file-tools.md`
 
