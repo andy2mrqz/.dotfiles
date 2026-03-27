@@ -95,6 +95,56 @@ whichkey.add({
 	{ "<leader>t", group = "terminal" },
 	{ "<leader>tt", ":ToggleTerm direction=horizontal<cr>", desc = "terminal" },
 	{ "<leader>tn", ":lua _NODE_TOGGLE()<cr>", desc = "node" },
+	-- Yank group
+	{ "<leader>y", group = "yank" },
+	{
+		"<leader>yp",
+		function()
+			local line = vim.fn.line(".")
+			local result = U.file_ref(line, line)
+			vim.fn.setreg("+", result)
+			vim.notify(result, vim.log.levels.INFO)
+		end,
+		desc = "copy relative path:line",
+	},
+	{
+		"<leader>yp",
+		function()
+			local line1 = vim.fn.line("v")
+			local line2 = vim.fn.line(".")
+			local result = U.file_ref(math.min(line1, line2), math.max(line1, line2))
+			vim.fn.setreg("+", result)
+			vim.schedule(function()
+				vim.notify(result, vim.log.levels.INFO)
+			end)
+		end,
+		mode = "v",
+		desc = "copy relative path:lines",
+	},
+	{
+		"<leader>yP",
+		function()
+			local line = vim.fn.line(".")
+			local result = U.file_ref(line, line, { relative = false })
+			vim.fn.setreg("+", result)
+			vim.notify(result, vim.log.levels.INFO)
+		end,
+		desc = "copy absolute path:line",
+	},
+	{
+		"<leader>yP",
+		function()
+			local line1 = vim.fn.line("v")
+			local line2 = vim.fn.line(".")
+			local result = U.file_ref(math.min(line1, line2), math.max(line1, line2), { relative = false })
+			vim.fn.setreg("+", result)
+			vim.schedule(function()
+				vim.notify(result, vim.log.levels.INFO)
+			end)
+		end,
+		mode = "v",
+		desc = "copy absolute path:lines",
+	},
 	-- Miscellanous group
 	{ "<leader>fe", ":NvimTreeFindFile<cr>", desc = "nvim tree find file" },
 	{ "<leader>sh", U.custom_help_tags, desc = "find help" },

@@ -8,6 +8,23 @@ M.maybe_git_root = function()
 	return vim.fn.systemlist("git rev-parse --show-toplevel 2> /dev/null")[1]
 end
 
+--- Return "path:line" or "path:start-end".
+--- When relative=true (default), uses git root if available.
+M.file_ref = function(line_start, line_end, opts)
+	local abs = vim.fn.expand("%:p")
+	local path = abs
+	if not opts or opts.relative ~= false then
+		local git_root = vim.fs.root(0, ".git")
+		if git_root then
+			path = abs:sub(#git_root + 2) -- +2 to skip trailing /
+		end
+	end
+	if line_start == line_end then
+		return path .. ":" .. line_start
+	end
+	return path .. ":" .. line_start .. "-" .. line_end
+end
+
 M.custom_find_files = function()
 	if M.maybe_git_root() ~= nil then
 		telescope.git_files({
