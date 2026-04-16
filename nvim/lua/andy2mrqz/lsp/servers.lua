@@ -11,6 +11,6 @@ return {
 	"ruby_lsp",
 	"lua_ls",
 	--"svelte",
-	"ts_ls",
+	"ts_ls", -- mise use -g npm:typescript-language-server
 	"zls",
 }

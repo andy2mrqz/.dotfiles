@@ -32,6 +32,8 @@ lazy.setup({
 	},
 	{
 		"nvim-treesitter/nvim-treesitter", -- Treesitter for better highlighting/language support
+		branch = "main",
+		lazy = false,
 		build = ":TSUpdate",
 	},
 	{
