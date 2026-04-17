@@ -23,7 +23,6 @@ end
 lazy.setup({
 	"nvim-lua/plenary.nvim", -- Common dependency fns
 	{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-	"lewis6991/impatient.nvim", -- Speeds up lua module loading for better startup time
 	"rebelot/kanagawa.nvim", -- Colorscheme
 	"tpope/vim-fugitive", -- Git in neovim!
 	{
@@ -106,7 +105,6 @@ lazy.setup({
 		dependencies = {
 			"hrsh7th/cmp-nvim-lsp", -- complete lsp suggestions
 			"hrsh7th/cmp-nvim-lsp-signature-help", -- show function signature while typing
-			"hrsh7th/cmp-nvim-lua", -- completion for nvim lua
 			"hrsh7th/cmp-buffer", -- complete within buffer
 			"hrsh7th/cmp-path", -- complete paths
 			"hrsh7th/cmp-cmdline", -- completions for commandline
@@ -128,7 +126,6 @@ lazy.setup({
 	},
 	"windwp/nvim-autopairs", -- Autoclose " ' ( {
 	"windwp/nvim-ts-autotag", -- Autoclose html tags
-	"lukas-reineke/indent-blankline.nvim", -- indent guides
 	"moll/vim-bbye", -- :Bd doesn't mess up splits
 	{ "kevinhwang91/nvim-bqf", ft = "qf" }, -- better quickfix window in nvim
 	{
@@ -141,6 +138,9 @@ lazy.setup({
 				enabled = true,
 			},
 			gitbrowse = {
+				enabled = true,
+			},
+			indent = {
 				enabled = true,
 			},
 		},
