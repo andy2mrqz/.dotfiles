@@ -1,4 +1,11 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-keybindings.json",
-  "bindings": []
+  "bindings": [
+    {
+      "context": "Chat",
+      "bindings": {
+        "opt+shift+p": "chat:modelPicker"
+      }
+    }
+  ]
 }
