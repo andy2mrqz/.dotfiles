@@ -9,6 +9,9 @@ node = "22"
 java = "temurin"
 "npm:prettier" = "latest"
 "npm:git-open" = "latest"
+"npm:typescript-language-server" = "latest"
+"aqua:LuaLS/lua-language-server" = "latest"
+"pipx:python-lsp-server" = "latest"
 
 [settings]
 disable_hints = ["python_multi"]
