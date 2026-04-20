@@ -67,7 +67,7 @@ def start_sso_login(profile):
             if m:
                 url = m.group(1)
                 found.set()
-                return
+                # Keep draining stdout so aws sso login doesn't block on pipe write
         found.set()  # EOF without finding a URL
 
     reader = threading.Thread(target=read_url, daemon=True)
