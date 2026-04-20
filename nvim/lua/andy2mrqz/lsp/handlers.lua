@@ -1,5 +1,3 @@
-local whichkey = require("which-key")
-local telescope = require("telescope.builtin")
 local nnoremap = require("andy2mrqz.keymaps").nnoremap
 local inoremap = require("andy2mrqz.keymaps").inoremap
 local U = require("andy2mrqz.utils")
@@ -9,6 +7,7 @@ local M = {}
 
 M.on_attach = function(client, bufnr)
 	client = client or {}
+	local whichkey = require("which-key")
 	whichkey.add({
 		-- Leader group
 		{ "<leader>", group = "leader key" },
@@ -83,7 +82,13 @@ M.on_attach = function(client, bufnr)
 			desc = "go to context",
 		},
 		{ "gd", U.custom_lsp_definitions, desc = "go to definition" },
-		{ "gD", telescope.type_definitions, desc = "go to type definition" },
+		{
+			"gD",
+			function()
+				require("telescope.builtin").type_definitions()
+			end,
+			desc = "go to type definition",
+		},
 		{ "gx", links.open, desc = "open document link" },
 		-- Document links group
 		{ "<leader>l", group = "document links" },

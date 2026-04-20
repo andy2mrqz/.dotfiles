@@ -1,8 +1,5 @@
 local M = {}
 
-local themes = require("telescope.themes")
-local telescope = require("telescope.builtin")
-
 -- nil or string
 M.maybe_git_root = function()
 	return vim.fn.systemlist("git rev-parse --show-toplevel 2> /dev/null")[1]
@@ -26,6 +23,7 @@ M.file_ref = function(line_start, line_end, opts)
 end
 
 M.custom_find_files = function()
+	local telescope = require("telescope.builtin")
 	if M.maybe_git_root() ~= nil then
 		telescope.git_files({
 			show_untracked = true,
@@ -36,22 +34,23 @@ M.custom_find_files = function()
 end
 
 M.custom_live_grep = function()
-	telescope.live_grep({
+	require("telescope.builtin").live_grep({
 		cwd = M.maybe_git_root(),
 	})
 end
 
 M.custom_find_buffers = function()
-	telescope.buffers(themes.get_dropdown())
+	require("telescope.builtin").buffers(require("telescope.themes").get_dropdown())
 end
 
 M.custom_help_tags = function()
-	telescope.help_tags(themes.get_dropdown({
+	require("telescope.builtin").help_tags(require("telescope.themes").get_dropdown({
 		previewer = false,
 	}))
 end
 
 M.custom_lsp_definitions = function()
+	local telescope = require("telescope.builtin")
 	local params = vim.lsp.util.make_position_params(0, "utf-8")
 
 	vim.lsp.buf_request(0, "textDocument/definition", params, function(err, result)

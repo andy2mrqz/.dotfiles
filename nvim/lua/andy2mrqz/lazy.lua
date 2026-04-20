@@ -21,29 +21,244 @@ end
 
 -- Plugins to install
 lazy.setup({
-	"nvim-lua/plenary.nvim", -- Common dependency fns
-	{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-	"rebelot/kanagawa.nvim", -- Colorscheme
-	"tpope/vim-fugitive", -- Git in neovim!
+	-- Colorscheme (eager, loads first)
 	{
-		"github/copilot.vim", -- Github Copilot in neovim!
-		cmd = "Copilot",
+		"rebelot/kanagawa.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("kanagawa").setup({
+				overrides = function(_colors)
+					return {
+						Search = { bg = "NvimDarkYellow" },
+					}
+				end,
+			})
+			vim.cmd("colorscheme kanagawa")
+		end,
+	},
+
+	-- snacks utility library (eager, provides bigfile/gitbrowse/indent)
+	{
+		"folke/snacks.nvim",
+		priority = 1000,
+		lazy = false,
+		---@type snacks.Config
+		opts = {
+			bigfile = { enabled = true },
+			gitbrowse = { enabled = true },
+			indent = { enabled = true },
+		},
+	},
+
+	-- Git
+	{
+		"tpope/vim-fugitive",
+		cmd = { "G", "Git", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse" },
 	},
 	{
-		"nvim-treesitter/nvim-treesitter", -- Treesitter for better highlighting/language support
+		"lewis6991/gitsigns.nvim",
+		event = { "BufReadPre", "BufNewFile" },
+		opts = {
+			current_line_blame = true,
+			current_line_blame_formatter = function(name, blame_info, _)
+				if blame_info.author == name then
+					blame_info.author = "You"
+				end
+
+				local text
+				if blame_info.author == "Not Committed Yet" then
+					text = blame_info.author
+				else
+					local seconds_diff = os.time() - tonumber(blame_info["author_time"])
+					local days_since = seconds_diff / 60 / 60 / 24
+					local date_time = days_since < 2
+							and require("gitsigns.util").get_relative_time(tonumber(blame_info["author_time"]))
+						or os.date("%Y-%m-%d", tonumber(blame_info["author_time"]))
+					text = string.format(
+						"%s, %s - %s (%s)",
+						blame_info.author,
+						date_time,
+						blame_info.summary,
+						blame_info.abbrev_sha
+					)
+				end
+				return { { " " .. text, "GitSignsCurrentLineBlame" } }
+			end,
+			current_line_blame_opts = {
+				delay = 50,
+				virt_text_pos = "eol",
+			},
+		},
+	},
+
+	-- Copilot
+	{
+		"github/copilot.vim",
+		cmd = "Copilot",
+	},
+
+	-- Treesitter (eager on main branch)
+	{
+		"nvim-treesitter/nvim-treesitter",
 		branch = "main",
 		lazy = false,
 		build = ":TSUpdate",
 	},
 	{
 		"nvim-treesitter/nvim-treesitter-context",
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter",
-		},
+		event = "BufReadPost",
+		dependencies = { "nvim-treesitter/nvim-treesitter" },
 	},
-	"folke/which-key.nvim", -- show command options as you type
+
+	-- Which-key (keymap discovery)
 	{
-		"rmagatti/auto-session", -- session manager
+		"folke/which-key.nvim",
+		event = "VeryLazy",
+		opts = {
+			icons = {
+				breadcrumb = "»",
+				separator = "",
+				group = "+",
+			},
+		},
+		config = function(_, opts)
+			local wk = require("which-key")
+			local U = require("andy2mrqz.utils")
+			wk.setup(opts)
+
+			local gs = require("gitsigns")
+
+			wk.add({
+				-- Leader group
+				{ "<leader>", group = "leader key" },
+				{ "<leader><leader>", U.custom_find_files, desc = "Find file" },
+				{ "<leader>/", U.custom_live_grep, desc = "Search project" },
+				{ "<leader>b", U.custom_find_buffers, desc = "Find Buffer" },
+				{ "<leader>e", ":NvimTreeToggle<cr>", desc = "Open sidebar" },
+				-- Window group
+				{ "<leader>w", group = "window" },
+				{ "<leader>wj", "<C-w>j", desc = "window down" },
+				{ "<leader>wk", "<C-w>k", desc = "window up" },
+				{ "<leader>wh", "<C-w>h", desc = "window left" },
+				{ "<leader>wl", "<C-w>l", desc = "window right" },
+				-- Git group
+				{ "<leader>g", group = "git" },
+				{
+					"<leader>gb",
+					function()
+						for _, win in ipairs(vim.api.nvim_list_wins()) do
+							local buf = vim.api.nvim_win_get_buf(win)
+							local ft = vim.api.nvim_get_option_value("filetype", { buf = buf })
+							if ft == "gitsigns-blame" then
+								vim.api.nvim_win_close(win, true)
+								return
+							end
+						end
+						gs.blame()
+					end,
+					desc = "toggle blame sidebar",
+				},
+				{ "<leader>gd", gs.diffthis, desc = "diff this" },
+				{
+					"<leader>gs",
+					function()
+						vim.cmd("split")
+						vim.cmd("term bash -c 'git-stats; sleep 5'")
+						local term_buf = vim.api.nvim_get_current_buf()
+						vim.defer_fn(function()
+							if vim.api.nvim_buf_is_valid(term_buf) then
+								vim.api.nvim_buf_delete(term_buf, { force = true })
+							end
+						end, 5000)
+					end,
+					desc = "Show git stats briefly in bottom split",
+				},
+				-- (git) Hunk group
+				{ "<leader>h", group = "hunk" },
+				{ "<leader>hr", gs.reset_hunk, desc = "reset hunk" },
+				{ "<leader>hs", gs.stage_hunk, desc = "stage hunk" },
+				{ "<leader>hv", gs.preview_hunk, desc = "view hunk" },
+				{
+					"<leader>hn",
+					function()
+						gs.nav_hunk("next", { preview = true, greedy = false, target = "all" })
+					end,
+					desc = "next hunk",
+				},
+				{
+					"<leader>hp",
+					function()
+						gs.nav_hunk("prev", { preview = true, greedy = false, target = "all" })
+					end,
+					desc = "previous hunk",
+				},
+				-- Terminal group
+				{ "<leader>t", group = "terminal" },
+				{ "<leader>tt", ":ToggleTerm direction=horizontal<cr>", desc = "terminal" },
+				{ "<leader>tn", ":lua _NODE_TOGGLE()<cr>", desc = "node" },
+				-- Yank group
+				{ "<leader>y", group = "yank" },
+				{
+					"<leader>yp",
+					function()
+						local line = vim.fn.line(".")
+						local result = U.file_ref(line, line)
+						vim.fn.setreg("+", result)
+						vim.notify(result, vim.log.levels.INFO)
+					end,
+					desc = "copy relative path:line",
+				},
+				{
+					"<leader>yp",
+					function()
+						local line1 = vim.fn.line("v")
+						local line2 = vim.fn.line(".")
+						local result = U.file_ref(math.min(line1, line2), math.max(line1, line2))
+						vim.fn.setreg("+", result)
+						vim.schedule(function()
+							vim.notify(result, vim.log.levels.INFO)
+						end)
+					end,
+					mode = "v",
+					desc = "copy relative path:lines",
+				},
+				{
+					"<leader>yP",
+					function()
+						local line = vim.fn.line(".")
+						local result = U.file_ref(line, line, { relative = false })
+						vim.fn.setreg("+", result)
+						vim.notify(result, vim.log.levels.INFO)
+					end,
+					desc = "copy absolute path:line",
+				},
+				{
+					"<leader>yP",
+					function()
+						local line1 = vim.fn.line("v")
+						local line2 = vim.fn.line(".")
+						local result = U.file_ref(math.min(line1, line2), math.max(line1, line2), { relative = false })
+						vim.fn.setreg("+", result)
+						vim.schedule(function()
+							vim.notify(result, vim.log.levels.INFO)
+						end)
+					end,
+					mode = "v",
+					desc = "copy absolute path:lines",
+				},
+				-- Miscellaneous
+				{ "<leader>fe", ":NvimTreeFindFile<cr>", desc = "nvim tree find file" },
+				{ "<leader>sh", U.custom_help_tags, desc = "find help" },
+				{ "]d", ":lua vim.diagnostic.goto_next() <cr>", desc = "next diagnostic" },
+				{ "[d", ":lua vim.diagnostic.goto_prev() <cr>", desc = "previous diagnostic" },
+			})
+		end,
+	},
+
+	-- Session manager (must be eager to restore on startup)
+	{
+		"rmagatti/auto-session",
 		lazy = false,
 		opts = {
 			suppressed_dirs = {
@@ -51,23 +266,78 @@ lazy.setup({
 				"~/Downloads",
 				"/",
 			},
+			-- Don't pull in the telescope picker at startup; it'll load on demand
+			session_lens = { load_on_setup = false },
 		},
 	},
-	"akinsho/toggleterm.nvim", -- better terminal support
+
+	-- Terminal
 	{
-		"karb94/neoscroll.nvim", -- smooth scrolling
+		"akinsho/toggleterm.nvim",
+		cmd = "ToggleTerm",
+		keys = {
+			{ "<leader>tt", ":ToggleTerm direction=horizontal<cr>", desc = "terminal" },
+			{ "<leader>tn", ":lua _NODE_TOGGLE()<cr>", desc = "node" },
+		},
+		config = function()
+			require("toggleterm").setup()
+			local Terminal = require("toggleterm.terminal").Terminal
+			local node = Terminal:new({ cmd = "node", hidden = true })
+			function _NODE_TOGGLE()
+				node:toggle()
+			end
+		end,
+	},
+
+	-- Smooth scrolling
+	{
+		"karb94/neoscroll.nvim",
+		keys = { "<C-u>", "<C-d>", "<C-b>", "<C-f>", "<C-y>", "<C-e>", "zz", "zt", "zb" },
 		config = function()
 			require("neoscroll").setup()
 		end,
 	},
+
+	-- File tree
 	{
-		"kyazdani42/nvim-tree.lua", -- File tree
+		"kyazdani42/nvim-tree.lua",
+		cmd = { "NvimTreeToggle", "NvimTreeFocus", "NvimTreeFindFile" },
+		keys = { { "<leader>e", ":NvimTreeToggle<cr>", desc = "Open sidebar" } },
 		dependencies = { "kyazdani42/nvim-web-devicons" },
+		-- :help nvim-tree-default-mappings
+		opts = {
+			prefer_startup_root = true,
+			update_focused_file = {
+				enable = true,
+			},
+			renderer = {
+				full_name = true, -- shows full name in floating window overlapping with buffer
+				indent_width = 1,
+				indent_markers = {
+					enable = true,
+				},
+			},
+			git = { enable = true, ignore = false },
+			filters = { dotfiles = false },
+		},
+	},
+
+	-- LSP
+	{
+		"neovim/nvim-lspconfig",
+		lazy = false, -- needed on rtp for vim.lsp.enable() in lsp/init.lua
 	},
 	{
-		"williamboman/mason.nvim", -- lsp/linter package manager
-		dependencies = {
-			"neovim/nvim-lspconfig", -- nvim builtin lsp
+		"williamboman/mason.nvim",
+		cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonLog", "MasonUninstall" },
+		opts = {
+			ui = {
+				icons = {
+					package_installed = "✓",
+					package_pending = "➜",
+					package_uninstalled = "✗",
+				},
+			},
 		},
 	},
 	{
@@ -77,13 +347,19 @@ lazy.setup({
 	},
 	{
 		"nvimtools/none-ls.nvim", -- for formatters/linters
+		event = { "BufReadPre", "BufNewFile" },
 		dependencies = {
 			"gbprod/none-ls-shellcheck.nvim",
 			"nvimtools/none-ls-extras.nvim",
 		},
+		config = function()
+			require("andy2mrqz.lsp.null-ls")
+		end,
 	},
+
+	-- Lua dev completion
 	{
-		"folke/lazydev.nvim", -- Can sometimes help with function completion
+		"folke/lazydev.nvim",
 		ft = "lua",
 		opts = {
 			library = {
@@ -92,57 +368,120 @@ lazy.setup({
 			},
 		},
 	},
+
+	-- Completion
 	{
-		-- cmp plugins
-		"hrsh7th/nvim-cmp", -- completion plugin
-		opts = function(_, opts)
-			opts.sources = opts.sources or {}
-			table.insert(opts.sources, {
-				name = "lazydev",
-				group_index = 0, -- set group index to 0 to skip loading LuaLS completions
-			})
-		end,
+		"hrsh7th/nvim-cmp",
+		event = "InsertEnter",
 		dependencies = {
-			"hrsh7th/cmp-nvim-lsp", -- complete lsp suggestions
-			"hrsh7th/cmp-nvim-lsp-signature-help", -- show function signature while typing
-			"hrsh7th/cmp-buffer", -- complete within buffer
-			"hrsh7th/cmp-path", -- complete paths
-			"hrsh7th/cmp-cmdline", -- completions for commandline
+			"hrsh7th/cmp-nvim-lsp",
+			"hrsh7th/cmp-nvim-lsp-signature-help",
+			"hrsh7th/cmp-buffer",
+			"hrsh7th/cmp-path",
+			"windwp/nvim-autopairs",
 		},
+		config = function()
+			local cmp = require("cmp")
+			cmp.setup({
+				mapping = {
+					["<C-k>"] = cmp.mapping.select_prev_item(),
+					["<C-j>"] = cmp.mapping.select_next_item(),
+					["<CR>"] = cmp.mapping.confirm({ select = true }),
+					["<Tab>"] = cmp.mapping.confirm({ select = true }),
+				},
+				sources = {
+					{ name = "nvim_lsp" },
+					{ name = "nvim_lsp_signature_help" },
+					{ name = "lazydev", group_index = 0 },
+					{ name = "buffer" },
+					{ name = "path" },
+				},
+				window = {
+					documentation = {
+						border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+					},
+				},
+			})
+
+			local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+			cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({ map_char = { tex = "" } }))
+		end,
 	},
+
+	-- Telescope
 	{
-		"nvim-telescope/telescope.nvim", -- fuzzy finding searcher
+		"nvim-telescope/telescope.nvim",
+		cmd = "Telescope",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
-			"telescope-fzf-native.nvim",
+			{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 		},
-	},
-	"lewis6991/gitsigns.nvim", -- Git gutter, blame, etc.
-	{
-		"kylechui/nvim-surround", -- Easier surrounding (e.g. cs"')
-		config = function()
-			require("nvim-surround").setup()
-		end,
-	},
-	"windwp/nvim-autopairs", -- Autoclose " ' ( {
-	"windwp/nvim-ts-autotag", -- Autoclose html tags
-	"moll/vim-bbye", -- :Bd doesn't mess up splits
-	{ "kevinhwang91/nvim-bqf", ft = "qf" }, -- better quickfix window in nvim
-	{
-		"folke/snacks.nvim",
-		priority = 1000,
-		lazy = false,
-		---@type snacks.Config
 		opts = {
-			bigfile = {
-				enabled = true,
+			pickers = {
+				buffers = {
+					mappings = {
+						n = {
+							["dd"] = "delete_buffer",
+						},
+					},
+				},
 			},
-			gitbrowse = {
-				enabled = true,
-			},
-			indent = {
-				enabled = true,
+			defaults = {
+				sorting_strategy = "ascending",
+				winblend = 15,
+				path_display = { "filename_first" },
+				file_ignore_patterns = { "^.git/" },
+				dynamic_preview_title = true,
+				vimgrep_arguments = {
+					"rg",
+					"--color=never",
+					"--no-heading",
+					"--with-filename",
+					"--line-number",
+					"--column",
+					"--hidden",
+					"--ignore-case",
+					"--sort=path", -- match case with vscode search (alphabetical)
+				},
+				mappings = {
+					i = {
+						["<C-j>"] = "move_selection_next",
+						["<C-k>"] = "move_selection_previous",
+						["<C-n>"] = "cycle_history_next",
+						["<C-p>"] = "cycle_history_prev",
+					},
+				},
 			},
 		},
 	},
+
+	-- Editing helpers
+	{
+		"kylechui/nvim-surround",
+		event = { "BufReadPost", "BufNewFile" },
+		opts = {},
+	},
+	{
+		"windwp/nvim-autopairs",
+		event = "InsertEnter",
+		opts = {
+			check_ts = true,
+			ts_config = {
+				lua = { "string", "source" },
+				javascript = { "string", "template_string" },
+			},
+		},
+	},
+	{
+		"windwp/nvim-ts-autotag",
+		event = "InsertEnter",
+		opts = {},
+	},
+
+	-- Buffer / quickfix utilities
+	{
+		"moll/vim-bbye",
+		cmd = { "Bdelete", "Bwipeout" },
+	},
+	{ "kevinhwang91/nvim-bqf", ft = "qf" },
 })

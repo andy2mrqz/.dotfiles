@@ -14,6 +14,7 @@ vim.opt.hidden = true -- allow switching buffers without saving
 vim.opt.undofile = true -- persistent undo
 vim.opt.signcolumn = "yes" -- always show the signcolumn (git gutter, linting)
 vim.opt.cursorline = true -- highlight current line
+vim.opt.colorcolumn = "80,120" -- rulers at 80 and 120 columns
 vim.opt.pumheight = 10 -- limit popup window to 10 items
 vim.opt.splitbelow = true -- always open splits below
 vim.opt.splitright = true -- always open splits to the right
