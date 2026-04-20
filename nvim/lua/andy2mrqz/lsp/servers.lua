@@ -6,7 +6,7 @@ return {
 	"html",
 	"gopls",
 	"gh_actions_ls", -- mise use -g npm:gh-actions-language-server
-	"pylsp",
+	"basedpyright",
 	--"rust_analyzer",
 	"ruby_lsp",
 	"lua_ls",

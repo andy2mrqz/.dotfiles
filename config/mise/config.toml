@@ -12,6 +12,9 @@ java = "temurin"
 "npm:typescript-language-server" = "latest"
 "aqua:LuaLS/lua-language-server" = "latest"
 "pipx:python-lsp-server" = "latest"
+ruff = "latest"
+"npm:basedpyright" = "latest"
+"go:golang.org/x/tools/cmd/goimports" = "latest"
 
 [settings]
 disable_hints = ["python_multi"]

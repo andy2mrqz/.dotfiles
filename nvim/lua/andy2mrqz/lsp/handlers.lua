@@ -14,54 +14,11 @@ M.on_attach = function(client, bufnr)
 		{
 			"<leader>F",
 			function()
-				vim.lsp.buf.format({
-					async = true,
-					filter = function(c)
-            return true
-					end,
-				})
+				require("conform").format({ async = true, lsp_format = "fallback" })
 			end,
 			desc = "Format buffer",
 		},
-		-- Diagnostic group
-		{ "<leader>d", group = "diagnostic" },
-		{
-			"<leader>dq",
-			function()
-				vim.diagnostic.setqflist()
-			end,
-			desc = "set quickfix list",
-		},
-		{
-			"<leader>ds",
-			function()
-				vim.diagnostic.open_float()
-			end,
-			desc = "show",
-		},
-		{
-			"<leader>dn",
-			function()
-				vim.diagnostic.jump({ count = 1 })
-			end,
-			desc = "go to next diagnostic",
-		},
-		{
-			"<leader>dp",
-			function()
-				vim.diagnostic.jump({ count = -1 })
-			end,
-			desc = "go to previous diagnostic",
-		},
-		-- Quickfix/code
-		{ "<leader>c", group = "quickifx/code" },
-		{
-			"<leader>co",
-			function()
-				vim.cmd("copen")
-			end,
-			desc = "open quickfix list",
-		},
+		-- Quickfix/code (LSP-dependent entries only; see which-key spec in lazy.lua for LSP-agnostic ones)
 		{
 			"<leader>ca",
 			function()
@@ -111,13 +68,6 @@ M.on_attach = function(client, bufnr)
 	links.setup(bufnr)
 end
 
-local status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-if not status_ok then
-	print("cmp_nvim_lsp failed to load")
-	return
-end
-
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-M.capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+M.capabilities = require("blink.cmp").get_lsp_capabilities()
 
 return M

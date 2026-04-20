@@ -247,11 +247,62 @@ lazy.setup({
 					mode = "v",
 					desc = "copy absolute path:lines",
 				},
+				-- Diagnostic group (LSP-agnostic; works with any diagnostic source, e.g. nvim-lint)
+				{ "<leader>d", group = "diagnostic" },
+				{
+					"<leader>dq",
+					function()
+						vim.diagnostic.setqflist()
+					end,
+					desc = "set quickfix list",
+				},
+				{
+					"<leader>ds",
+					function()
+						vim.diagnostic.open_float()
+					end,
+					desc = "show",
+				},
+				{
+					"<leader>dn",
+					function()
+						vim.diagnostic.jump({ count = 1 })
+					end,
+					desc = "next diagnostic",
+				},
+				{
+					"<leader>dp",
+					function()
+						vim.diagnostic.jump({ count = -1 })
+					end,
+					desc = "previous diagnostic",
+				},
+				{
+					"]d",
+					function()
+						vim.diagnostic.jump({ count = 1 })
+					end,
+					desc = "next diagnostic",
+				},
+				{
+					"[d",
+					function()
+						vim.diagnostic.jump({ count = -1 })
+					end,
+					desc = "previous diagnostic",
+				},
+				-- Quickfix group
+				{ "<leader>c", group = "quickfix/code" },
+				{
+					"<leader>co",
+					function()
+						vim.cmd("copen")
+					end,
+					desc = "open quickfix list",
+				},
 				-- Miscellaneous
 				{ "<leader>fe", ":NvimTreeFindFile<cr>", desc = "nvim tree find file" },
 				{ "<leader>sh", U.custom_help_tags, desc = "find help" },
-				{ "]d", ":lua vim.diagnostic.goto_next() <cr>", desc = "next diagnostic" },
-				{ "[d", ":lua vim.diagnostic.goto_prev() <cr>", desc = "previous diagnostic" },
 			})
 		end,
 	},
@@ -328,32 +379,91 @@ lazy.setup({
 		lazy = false, -- needed on rtp for vim.lsp.enable() in lsp/init.lua
 	},
 	{
-		"williamboman/mason.nvim",
-		cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonLog", "MasonUninstall" },
-		opts = {
-			ui = {
-				icons = {
-					package_installed = "✓",
-					package_pending = "➜",
-					package_uninstalled = "✗",
-				},
-			},
-		},
-	},
-	{
 		"mrcjkb/rustaceanvim",
 		version = "^6",
 		lazy = false, -- This plugin is already lazy
 	},
+	-- Formatting
 	{
-		"nvimtools/none-ls.nvim", -- for formatters/linters
-		event = { "BufReadPre", "BufNewFile" },
-		dependencies = {
-			"gbprod/none-ls-shellcheck.nvim",
-			"nvimtools/none-ls-extras.nvim",
+		"stevearc/conform.nvim",
+		event = { "BufWritePre" },
+		cmd = { "ConformInfo" },
+		opts = {
+			formatters_by_ft = {
+				lua = { "stylua" },
+				sh = { "shfmt" },
+				bash = { "shfmt" },
+				zsh = { "shfmt" },
+				rust = { "rustfmt" },
+				go = { "goimports" },
+				python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
+				javascript = { "prettier" },
+				javascriptreact = { "prettier" },
+				typescript = { "prettier" },
+				typescriptreact = { "prettier" },
+				css = { "prettier" },
+				scss = { "prettier" },
+				html = { "prettier" },
+				json = { "prettier" },
+				yaml = { "prettier" },
+				-- markdown is formatted by the explicit BufWritePre autocmd in options.lua
+			},
+			formatters = {
+				shfmt = {
+					prepend_args = { "-ci", "-s", "-bn" },
+				},
+			},
+			format_on_save = {
+				timeout_ms = 1000,
+				lsp_format = "fallback",
+			},
 		},
+	},
+
+	-- Linting
+	{
+		"mfussenegger/nvim-lint",
+		event = { "BufReadPre", "BufNewFile" },
 		config = function()
-			require("andy2mrqz.lsp.null-ls")
+			local lint = require("lint")
+			lint.linters_by_ft = {
+				sh = { "shellcheck" },
+				bash = { "shellcheck" },
+				zsh = { "shellcheck" },
+				python = { "ruff" },
+				go = { "golangcilint" },
+			}
+			-- Treat zsh/sh/bash as bash for shellcheck
+			lint.linters.shellcheck.args =
+				vim.list_extend(vim.deepcopy(lint.linters.shellcheck.args or {}), { "--shell=bash" })
+
+			local group = vim.api.nvim_create_augroup("andy2mrqz_lint", { clear = true })
+			vim.api.nvim_create_autocmd({ "BufReadPost", "BufWritePost", "InsertLeave" }, {
+				group = group,
+				callback = function()
+					lint.try_lint()
+				end,
+			})
+
+			vim.api.nvim_create_user_command("LintInfo", function()
+				local ft = vim.bo.filetype
+				local names = lint.linters_by_ft[ft] or {}
+				if #names == 0 then
+					print("No linters configured for filetype: " .. ft)
+					return
+				end
+				local lines = { "Linters for " .. ft .. ":" }
+				for _, name in ipairs(names) do
+					local linter = lint.linters[name]
+					local cmd = type(linter.cmd) == "function" and linter.cmd() or linter.cmd
+					local available = cmd and vim.fn.executable(cmd) == 1
+					table.insert(
+						lines,
+						string.format("  %s - %s (%s)", name, cmd or "?", available and "installed" or "MISSING")
+					)
+				end
+				print(table.concat(lines, "\n"))
+			end, {})
 		end,
 	},
 
@@ -371,41 +481,40 @@ lazy.setup({
 
 	-- Completion
 	{
-		"hrsh7th/nvim-cmp",
-		event = "InsertEnter",
-		dependencies = {
-			"hrsh7th/cmp-nvim-lsp",
-			"hrsh7th/cmp-nvim-lsp-signature-help",
-			"hrsh7th/cmp-buffer",
-			"hrsh7th/cmp-path",
-			"windwp/nvim-autopairs",
-		},
-		config = function()
-			local cmp = require("cmp")
-			cmp.setup({
-				mapping = {
-					["<C-k>"] = cmp.mapping.select_prev_item(),
-					["<C-j>"] = cmp.mapping.select_next_item(),
-					["<CR>"] = cmp.mapping.confirm({ select = true }),
-					["<Tab>"] = cmp.mapping.confirm({ select = true }),
-				},
-				sources = {
-					{ name = "nvim_lsp" },
-					{ name = "nvim_lsp_signature_help" },
-					{ name = "lazydev", group_index = 0 },
-					{ name = "buffer" },
-					{ name = "path" },
-				},
-				window = {
-					documentation = {
+		"saghen/blink.cmp",
+		version = "1.*",
+		lazy = false, -- eager so LSP capabilities are available at startup
+		---@module 'blink.cmp'
+		---@type blink.cmp.Config
+		opts = {
+			keymap = {
+				preset = "none",
+				["<C-k>"] = { "select_prev", "fallback" },
+				["<C-j>"] = { "select_next", "fallback" },
+				["<CR>"] = { "accept", "fallback" },
+				["<Tab>"] = { "accept", "fallback" },
+			},
+			completion = {
+				accept = { auto_brackets = { enabled = true } },
+				documentation = {
+					auto_show = true,
+					window = {
 						border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
 					},
 				},
-			})
-
-			local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-			cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({ map_char = { tex = "" } }))
-		end,
+			},
+			signature = { enabled = true },
+			sources = {
+				default = { "lsp", "path", "buffer", "lazydev" },
+				providers = {
+					lazydev = {
+						name = "LazyDev",
+						module = "lazydev.integrations.blink",
+						score_offset = 100,
+					},
+				},
+			},
+		},
 	},
 
 	-- Telescope
@@ -484,4 +593,20 @@ lazy.setup({
 		cmd = { "Bdelete", "Bwipeout" },
 	},
 	{ "kevinhwang91/nvim-bqf", ft = "qf" },
+}, {
+	performance = {
+		rtp = {
+			disabled_plugins = {
+				"gzip",
+				"matchit",
+				"matchparen",
+				"netrwPlugin",
+				"rplugin",
+				"tarPlugin",
+				"tohtml",
+				"tutor",
+				"zipPlugin",
+			},
+		},
+	},
 })
