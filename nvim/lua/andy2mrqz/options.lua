@@ -59,27 +59,3 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 		vim.api.nvim_set_option_value("filetype", "gitignore", { scope = "local" })
 	end,
 })
-
-vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-	group = vim.api.nvim_create_augroup("FORMAT_ON_SAVE", {}),
-	pattern = "*.md",
-	callback = function()
-		-- Skip formatting for files in worknotes directory
-		if vim.fn.expand("%:p"):match("WorkNotes") then
-			return
-		end
-
-		-- Save cursor position
-		local cursor_pos = vim.api.nvim_win_get_cursor(0)
-
-		-- Run Prettier
-		vim.cmd("silent! %!prettier --parser markdown --print-width 80 --prose-wrap always")
-
-		-- Clamp the cursor position to the last line of the buffer (if previous line was deleted)
-		local last_line = vim.api.nvim_buf_line_count(0)
-		local restored_line = math.min(cursor_pos[1], last_line)
-
-		-- Restore cursor position
-		vim.api.nvim_win_set_cursor(0, { restored_line, cursor_pos[2] })
-	end,
-})

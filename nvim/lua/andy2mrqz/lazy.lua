@@ -396,6 +396,9 @@ lazy.setup({
 				zsh = { "shfmt" },
 				rust = { "rustfmt" },
 				go = { "goimports" },
+				tf = { "terraform_fmt" },
+				terraform = { "terraform_fmt" },
+				["terraform-vars"] = { "terraform_fmt" },
 				python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
 				javascript = { "prettier" },
 				javascriptreact = { "prettier" },
@@ -406,7 +409,7 @@ lazy.setup({
 				html = { "prettier" },
 				json = { "prettier" },
 				yaml = { "prettier" },
-				-- markdown is formatted by the explicit BufWritePre autocmd in options.lua
+				markdown = { "prettier" },
 			},
 			formatters = {
 				shfmt = {
