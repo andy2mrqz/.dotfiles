@@ -2,27 +2,20 @@
 # Shellcheck configuration
 #-----------------------------------------------------------
 
-# shellcheck disable=2034   # [...] appears unused. Verify use (or export if used externally).
-# shellcheck disable=2154   # [...] is referenced but not assigned.
-# shellcheck disable=2168   # 'local' is only valid in functions.
-
-#-----------------------------------------------------------
-# Cleanup orphaned nvim processes (parent = launchd/PID 1)
-# These accumulate when terminal tabs close without cleanly exiting nvim
-#-----------------------------------------------------------
-
-{
-  orphans=$(ps -eo pid,ppid,comm | awk '$3 ~ /nvim$/ && $2 == 1 { print $1 }')
-  [[ -n "$orphans" ]] && kill $=orphans 2>/dev/null
-} &!
+# ShellCheck has no zsh parser. Treat this file as bash so ShellCheck can still
+# lint the overlapping syntax, then silence expected zsh/.zshrc false positives.
+# shellcheck shell=bash
+# shellcheck disable=2034 # Prompt variables are expanded later by zsh.
+# shellcheck disable=2154 # zsh/plugin variables can be initialized outside ShellCheck's view.
+# shellcheck disable=2168 # zsh permits `local` at .zshrc top level.
 
 #-----------------------------------------------------------
 # General configuration
 #-----------------------------------------------------------
 
-typeset -U PATH                   # Ensure uniqueness within the PATH env variable
-unsetopt BEEP                     # Turn off all beeps
-[[ -t 0 ]] && stty -ixon          # Disable XON/XOFF so Ctrl+S is free for tmux prefix
+typeset -U PATH          # Ensure uniqueness within the PATH env variable
+unsetopt BEEP            # Turn off all beeps
+[[ -t 0 ]] && stty -ixon # Disable XON/XOFF so Ctrl+S is free for tmux prefix
 
 #-----------------------------------------------------------
 # Environment
@@ -30,11 +23,11 @@ unsetopt BEEP                     # Turn off all beeps
 
 # PATH is defined in ~/.zprofile
 
-export ZSH="$HOME/.zsh.d"                   # Add zsh-specific directory for configuration files
-export EDITOR="nvim"                        # Set editor to neovim
-export KEYTIMEOUT=1                         # Reduce delay for key combinations in order to change to vi mode faster
-export HOMEBREW_NO_AUTO_UPDATE=1            # Don't update homebrew on every package install
-export EZA_CONFIG_DIR="$HOME/.config/eza"   # Add config directory for eza (ls replacement)
+export ZSH="$HOME/.zsh.d"                 # Add zsh-specific directory for configuration files
+export EDITOR="nvim"                      # Set editor to neovim
+export KEYTIMEOUT=1                       # Reduce delay for key combinations in order to change to vi mode faster
+export HOMEBREW_NO_AUTO_UPDATE=1          # Don't update homebrew on every package install
+export EZA_CONFIG_DIR="$HOME/.config/eza" # Add config directory for eza (ls replacement)
 export XDG_CONFIG_HOME="$HOME/.config"
 
 # Export common dumps to places better than $HOME
@@ -45,13 +38,13 @@ export LESSHISTFILE="$HOME/.cache/.lesshst"
 # Keybindings
 #-----------------------------------------------------------
 
-bindkey -v                                                  # vim keybindings
-autoload -U edit-command-line && zle -N edit-command-line   # enable line editing with vim
+bindkey -v                                                # vim keybindings
+autoload -U edit-command-line && zle -N edit-command-line # enable line editing with vim
 
-bindkey '^R' history-incremental-search-backward  # history search
+bindkey '^R' history-incremental-search-backward # history search
 
-bindkey '^[[A' history-substring-search-up        # substring history search (from plugin)
-bindkey '^[[B' history-substring-search-down      # substring history search (from plugin)
+bindkey '^[[A' history-substring-search-up   # substring history search (from plugin)
+bindkey '^[[B' history-substring-search-down # substring history search (from plugin)
 
 #-----------------------------------------------------------
 # History
@@ -76,17 +69,16 @@ setopt SHARE_HISTORY          # Share history between all sessions.
 #-----------------------------------------------------------
 
 gmbd() {
-    curr=$(git symbolic-ref --short HEAD)
-    (git checkout main || git checkout master) && git pull && git branch -d "$curr"
-    git remote prune origin
-    unset curr
+  curr=$(git symbolic-ref --short HEAD)
+  (git checkout main || git checkout master) && git pull && git branch -d "$curr"
+  git remote prune origin
+  unset curr
 }
 
 awslogin() {
   # shellcheck disable=1091
   source "$HOME/bin/_awslogin_headless" "$@"
 }
-
 
 statsize() {
   for file in "$@"; do
@@ -98,7 +90,6 @@ statsize() {
     printf "%s %s %s\n" "$human" "$bytes" "$file"
   done
 }
-
 
 ssm-get-parameter() {
   aws ssm get-parameter --name "$1" --with-decryption --query "Parameter" | jq -r '.Value'
@@ -130,11 +121,11 @@ FPATH="$ZSH/site-functions:$FPATH"
 # Load and initialize the completion system
 autoload -Uz compinit && compinit -C -d "$ZSH/cache/.zcompdump"
 
-unsetopt flowcontrol      # Disable use of ctrl-s and ctrl-q for flow control
-setopt auto_menu          # Show completion menu on successive tab press
-setopt complete_in_word   # Allow completion within a word, not just at the end
-setopt always_to_end      # Move cursor to the end of a completed word
-setopt auto_pushd         # Automatically push directories onto the directory stack
+unsetopt flowcontrol    # Disable use of ctrl-s and ctrl-q for flow control
+setopt auto_menu        # Show completion menu on successive tab press
+setopt complete_in_word # Allow completion within a word, not just at the end
+setopt always_to_end    # Move cursor to the end of a completed word
+setopt auto_pushd       # Automatically push directories onto the directory stack
 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' # Case-insensitive completion
 
@@ -186,18 +177,18 @@ alias cursor="/Applications/Cursor.app/Contents/Resources/app/bin/code"
 # Prompt
 #-----------------------------------------------------------
 
-setopt prompt_subst       # Docs: https://zsh.sourceforge.io/Doc/Release/Prompt-Expansion.html
+setopt prompt_subst # Docs: https://zsh.sourceforge.io/Doc/Release/Prompt-Expansion.html
 
 git_prompt_info() {
   local dirstatus="%B%F{green}✓%b%f"
   local dirty="%B%F{yellow}✗%b%f"
 
-  if [[ -n $(git status --porcelain 2> /dev/null | tail -n1) ]]; then
+  if [[ -n $(git status --porcelain 2>/dev/null | tail -n1) ]]; then
     dirstatus=$dirty
   fi
 
-  ref=$(git symbolic-ref HEAD 2> /dev/null) || \
-  ref=$(git rev-parse --short HEAD 2> /dev/null) || return
+  ref=$(git symbolic-ref HEAD 2>/dev/null) \
+    || ref=$(git rev-parse --short HEAD 2>/dev/null) || return
 
   echo " %B%F{blue}git:(%F{red}${ref#refs/heads/}%F{blue}) ${dirstatus}%f%b"
 }
@@ -233,16 +224,13 @@ export PATH="/Users/andrewmarquez/.config/herd-lite/bin:$PATH"
 export PHP_INI_SCAN_DIR="/Users/andrewmarquez/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
 export PATH="/Users/andrewmarquez/bin:$PATH"
 
-# bun completions
-[ -s "/Users/andrewmarquez/.bun/_bun" ] && source "/Users/andrewmarquez/.bun/_bun"
-
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 # START eval "$(mise activate zsh)"
 # shellcheck disable=2199,2206,2300
-{ 
+{
   export MISE_SHELL=zsh
   export __MISE_ORIG_PATH="$PATH"
 
@@ -256,43 +244,43 @@ export PATH="$BUN_INSTALL/bin:$PATH"
     shift
 
     case "$command" in
-    deactivate|s|shell)
-      # if argv doesn't contains -h,--help
-      if [[ ! " $@ " =~ " --help " ]] && [[ ! " $@ " =~ " -h " ]]; then
-        eval "$(command /Users/andrewmarquez/.local/bin/mise "$command" "$@")"
-        return $?
-      fi
-      ;;
+      deactivate | s | shell)
+        # if argv doesn't contains -h,--help
+        if [[ ! " $@ " =~ " --help " ]] && [[ ! " $@ " =~ " -h " ]]; then
+          eval "$(command /Users/andrewmarquez/.local/bin/mise "$command" "$@")"
+          return $?
+        fi
+        ;;
     esac
     command /Users/andrewmarquez/.local/bin/mise "$command" "$@"
   }
 
   _mise_hook() {
-    eval "$(/Users/andrewmarquez/.local/bin/mise hook-env -s zsh)";
+    eval "$(/Users/andrewmarquez/.local/bin/mise hook-env -s zsh)"
   }
-  typeset -ag precmd_functions;
-  if [[ -z "${precmd_functions[(r)_mise_hook]+1}" ]]; then
-    precmd_functions=( _mise_hook ${precmd_functions[@]} )
+  typeset -ag precmd_functions
+  if [[ -z ${precmd_functions[(r)_mise_hook]+1} ]]; then
+    precmd_functions=(_mise_hook ${precmd_functions[@]})
   fi
-  typeset -ag chpwd_functions;
-  if [[ -z "${chpwd_functions[(r)_mise_hook]+1}" ]]; then
-    chpwd_functions=( _mise_hook ${chpwd_functions[@]} )
+  typeset -ag chpwd_functions
+  if [[ -z ${chpwd_functions[(r)_mise_hook]+1} ]]; then
+    chpwd_functions=(_mise_hook ${chpwd_functions[@]})
   fi
 
   if [ -z "${_mise_cmd_not_found:-}" ]; then
-      _mise_cmd_not_found=1
-      [ -n "$(declare -f command_not_found_handler)" ] && eval "${$(declare -f command_not_found_handler)/command_not_found_handler/_command_not_found_handler}"
+    _mise_cmd_not_found=1
+    [ -n "$(declare -f command_not_found_handler)" ] && eval "${$(declare -f command_not_found_handler)/command_not_found_handler/_command_not_found_handler}"
 
-      function command_not_found_handler() {
-          if /Users/andrewmarquez/.local/bin/mise hook-not-found -s zsh -- "$1"; then
-            _mise_hook
-            "$@"
-          elif [ -n "$(declare -f _command_not_found_handler)" ]; then
-              _command_not_found_handler "$@"
-          else
-              echo "zsh: command not found: $1" >&2
-              return 127
-          fi
-      }
+    function command_not_found_handler() {
+      if /Users/andrewmarquez/.local/bin/mise hook-not-found -s zsh -- "$1"; then
+        _mise_hook
+        "$@"
+      elif [ -n "$(declare -f _command_not_found_handler)" ]; then
+        _command_not_found_handler "$@"
+      else
+        echo "zsh: command not found: $1" >&2
+        return 127
+      fi
+    }
   fi
 } # END
