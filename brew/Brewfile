@@ -71,6 +71,7 @@ brew "mpv"                  # media player
 brew "chromaprint"          # audio fingerprinting (used by mpv)
 brew "pandoc"               # document converter
 brew "vips"                 # image processing library
+brew "chafa"                # terminal graphics
 
 # ─── Productivity & Utils ────────────────────────────────────────────────────
 
