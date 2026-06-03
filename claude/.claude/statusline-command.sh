@@ -9,6 +9,7 @@ cwd=$(echo "$input" | jq -r '.cwd // .workspace.current_dir // ""')
 model=$(echo "$input" | jq -r '.model.display_name // ""')
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 vim_mode=$(echo "$input" | jq -r '.vim.mode // empty')
+session_id=$(echo "$input" | jq -r '.session_id')
 
 # --- Colors (ANSI-C quoting so escapes are real ESC chars) ---
 CYAN=$'\033[0;36m'
@@ -67,7 +68,7 @@ fi
 
 # --- Assemble and print ---
 printf "${CYAN}${BOLD}%s${RESET}%s" "$dir" "$git_info"
-if [ -n "$model_info" ] || [ -n "$context_info" ] || [ -n "$vim_info" ]; then
-  printf "  ${BOLD}|${RESET}  %s%s%s" "$model_info" "$context_info" "$vim_info"
+if [ -n "$model_info" ] || [ -n "$context_info" ] || [ -n "$vim_info" ] || [ -n "$session_id" ]; then
+  printf "  ${BOLD}|${RESET}  %s%s%s" "$model_info" "$context_info" "$vim_info" "session_id: " "$session_id"
 fi
 printf "\n"
