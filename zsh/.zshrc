@@ -138,11 +138,10 @@ alias ll="eza -l"
 alias sz="exec zsh" # "source ~/.zshrc" -- this is the WRONG way (https://blog.mattclemente.com/2020/06/26/oh-my-zsh-slow-to-load.html)
 alias vz="vim ~/Projects/.dotfiles/zsh/.zshrc"
 alias vim="nvim"
-alias pk="kill -9"
 alias vimdiff="nvim -d"
 alias cloc="scc"
 alias vimg="vim --cmd 'let g:auto_session_enabled = v:false' -c 'silent! AutoSession restore' -c 'NvimTreeToggle' -c 'G' -c '1000'" # open with git mode on and go to the last line (1000)
-alias zdots="z .dotfiles"
+alias gallery="chafa --grid=5 --label=on"
 
 # Obsidian notes
 alias todo="(cd ~/vault && vim Notes/personal-todo.md -c 'NvimTreeToggle' -c 'wincmd l' -c 'NvimTreeFindFile' -c 'wincmd l')"
@@ -167,9 +166,6 @@ alias gsl="git stash list"
 alias gitcs="git log -n 1 --pretty=format:%H | tee >(pbcopy)"
 alias gb="git branch --sort=-committerdate --format='%(HEAD) %(if)%(HEAD)%(then)%(color:green)%(end)%(refname:short) | %(committerdate:relative)'"
 alias gbd="git branch -D"
-
-# Run github copilot cli
-alias how="brain --new"
 
 alias cursor="/Applications/Cursor.app/Contents/Resources/app/bin/code"
 
@@ -237,7 +233,7 @@ export PATH="$BUN_INSTALL/bin:$PATH"
   mise() {
     local command
     command="${1:-}"
-    if [ "$#" = 0 ]; then
+    if [ "$" = 0 ]; then
       command /Users/andrewmarquez/.local/bin/mise
       return
     fi
