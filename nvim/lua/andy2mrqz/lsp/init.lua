@@ -1,6 +1,10 @@
 require("andy2mrqz.lsp.config")
 local h = require("andy2mrqz.lsp.handlers")
-vim.lsp.config("*", { on_attach = h.on_attach, capabilities = h.capabilities })
+-- Capabilities apply to every server enabled below. Keymaps are registered once
+-- by h.setup() via a single LspAttach autocmd (covers these servers AND
+-- rust-analyzer through rustaceanvim).
+vim.lsp.config("*", { capabilities = h.capabilities })
+h.setup()
 local servers = require("andy2mrqz.lsp.servers")
 for _, server in ipairs(servers) do
 	local ok, custom = pcall(require, "andy2mrqz.lsp.settings." .. server)

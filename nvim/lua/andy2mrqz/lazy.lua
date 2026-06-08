@@ -382,6 +382,18 @@ lazy.setup({
 		"mrcjkb/rustaceanvim",
 		version = "^6",
 		lazy = false, -- This plugin is already lazy
+		init = function()
+			-- rustaceanvim starts rust-analyzer outside vim.lsp.config/enable, so it
+			-- won't inherit the global capabilities — set them here. Keymaps come from
+			-- the shared LspAttach autocmd (handlers.setup), which fires for this
+			-- client too, so no on_attach wiring is needed. Must be set before the
+			-- Rust ftplugin loads, hence `init`.
+			vim.g.rustaceanvim = {
+				server = {
+					capabilities = require("andy2mrqz.lsp.handlers").capabilities,
+				},
+			}
+		end,
 	},
 	-- Formatting
 	{
