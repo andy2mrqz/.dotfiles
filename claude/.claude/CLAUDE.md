@@ -38,6 +38,11 @@ company-specific context.
 ## Tool Preferences
 
 - Prefer `rg` (ripgrep) over `grep` — always
+  - **Never use `-r` with `rg` for recursion.** `rg` recurses by default, and `-r`
+    is `--replace` — it consumes the next token as replacement text. So `rg -rn pat`
+    parses as `--replace=n` and silently rewrites every match to `n` in the output
+    (likewise `-rln` → `--replace=ln`), which looks like corrupted/mangled results.
+    Use `rg -n "pattern" path/`; use `-l` alone for filenames-only.
 - Prefer the Grep tool over Bash grep — it has proper permissions and access
 - Use `statsize` to check file sizes before deciding how to process them
 - Use `snip` to extract targeted byte slices from large files instead of loading
