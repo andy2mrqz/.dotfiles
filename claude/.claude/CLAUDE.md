@@ -48,3 +48,10 @@ company-specific context.
 - Use `snip` to extract targeted byte slices from large files instead of loading
   them
 - Always run `shellcheck` on bash/sh scripts after writing or editing them
+  - shellcheck catches syntax/quoting, NOT logic or runtime errors. Before
+    handing over a command or script, run it once against real input to
+    confirm it behaves — but ONLY if it's read-only/side-effect-free. Never
+    test-run scripts that write, delete, push, deploy, or otherwise mutate
+    state; for those, dry-run or inspect by hand instead. (e.g. flag-ordering
+    bugs like `rg ... -- pat path --glob '*.x'` pass shellcheck but fail at
+    runtime — `--` ends option parsing.)
