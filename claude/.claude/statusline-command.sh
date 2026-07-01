@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Claude Code status line - mirrors the zsh PROMPT style
+# Claude Code + Cursor Agent CLI status line - mirrors the zsh PROMPT style
 # Receives JSON via stdin with session/model/context data
 
 INPUT=$(cat)
@@ -11,9 +11,20 @@ USED_PCT=$(echo "$INPUT" | jq -r '.context_window.used_percentage // empty')
 VIM_MODE=$(echo "$INPUT" | jq -r '.vim.mode // empty')
 EFFORT=$(echo "$INPUT" | jq -r '.effort.level // empty')
 SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // ""')
-SESSION_COST=$(echo "$INPUT" | jq -r '.cost.total_cost_usd // 0')
-API_DURATION_MS=$(echo "$INPUT" | jq -r '.cost.total_api_duration_ms // 0')
-WALL_DURATION_MS=$(echo "$INPUT" | jq -r '.cost.total_duration_ms // 0')
+HAS_COST=$(echo "$INPUT" | jq -r 'if .cost.total_cost_usd != null then "1" else "" end')
+HAS_API_MS=$(echo "$INPUT" | jq -r 'if .cost.total_api_duration_ms != null then "1" else "" end')
+HAS_WALL_MS=$(echo "$INPUT" | jq -r 'if .cost.total_duration_ms != null then "1" else "" end')
+
+# Cursor Agent CLI: no effort/cost fields; map param_summary / max_mode when absent
+if [ -z "$EFFORT" ]; then
+  PARAM_SUMMARY=$(echo "$INPUT" | jq -r '.model.param_summary // empty')
+  if [ -n "$PARAM_SUMMARY" ]; then
+    EFFORT="${PARAM_SUMMARY#(}"
+    EFFORT="${EFFORT%)}"
+  elif [ "$(echo "$INPUT" | jq -r '.model.max_mode // false')" = "true" ]; then
+    EFFORT="max"
+  fi
+fi
 
 # --- Colors (ANSI-C quoting so escapes are real ESC chars) ---
 CYAN=$'\033[0;36m'
@@ -50,9 +61,10 @@ fmt_duration() {
 # --- Context window usage bar ---
 CONTEXT_INFO=""
 if [ -n "$USED_PCT" ]; then
-  if [ "$USED_PCT" -ge 90 ]; then
+  USED_PCT_INT=${USED_PCT%%.*}
+  if [ "$USED_PCT_INT" -ge 90 ]; then
     CTX_COLOR="$RED"
-  elif [ "$USED_PCT" -ge 70 ]; then
+  elif [ "$USED_PCT_INT" -ge 70 ]; then
     CTX_COLOR="$YELLOW"
   else
     CTX_COLOR="$GREEN"
@@ -93,15 +105,41 @@ if [ -n "$VIM_MODE" ]; then
   fi
 fi
 
-# --- Session stats ---
-printf -v COST_INFO '$%.2f' "$SESSION_COST"
-API_INFO=$(fmt_duration "$API_DURATION_MS")
-WALL_INFO=$(fmt_duration "$WALL_DURATION_MS")
+# --- Session stats (render only fields present in payload) ---
+LINE2_SEGMENTS=()
+
+if [ -n "$HAS_COST" ]; then
+  SESSION_COST=$(echo "$INPUT" | jq -r '.cost.total_cost_usd')
+  printf -v COST_INFO '$%.2f' "$SESSION_COST"
+  LINE2_SEGMENTS+=("${GREEN}${COST_INFO}${RESET}")
+fi
+
+TIMING_PART=""
+if [ -n "$HAS_API_MS" ]; then
+  API_INFO=$(fmt_duration "$(echo "$INPUT" | jq -r '.cost.total_api_duration_ms')")
+  TIMING_PART="${DIM}api${RESET} ${API_INFO}"
+fi
+if [ -n "$HAS_WALL_MS" ]; then
+  WALL_INFO=$(fmt_duration "$(echo "$INPUT" | jq -r '.cost.total_duration_ms')")
+  if [ -n "$TIMING_PART" ]; then
+    TIMING_PART="${TIMING_PART} ${DIM}/${RESET} ${DIM}wall${RESET} ${WALL_INFO}"
+  else
+    TIMING_PART="${DIM}wall${RESET} ${WALL_INFO}"
+  fi
+fi
+[ -n "$TIMING_PART" ] && LINE2_SEGMENTS+=("$TIMING_PART")
+
+[ -n "$SESSION_ID" ] && LINE2_SEGMENTS+=("${DIM}session_id:${RESET} ${SESSION_ID}")
 
 # --- Assemble and print ---
 # Line 1: directory + git | model (effort) ctx% + vim mode
 printf "${CYAN}${BOLD}%s${RESET}%s  ${BOLD}|${RESET}  %s%s\n" "$DIR" "$GIT_INFO" "$MODEL_INFO" "$VIM_INFO"
 
-# Line 2: cost | api time / wall time | session id
-printf "${GREEN}%s${RESET}  ${DIM}|${RESET}  ${DIM}api${RESET} %s ${DIM}/${RESET} ${DIM}wall${RESET} %s  ${DIM}|${RESET}  ${DIM}session_id:${RESET} %s\n" \
-  "$COST_INFO" "$API_INFO" "$WALL_INFO" "$SESSION_ID"
+# Line 2: optional cost / api / wall segments, then session id
+if [ ${#LINE2_SEGMENTS[@]} -gt 0 ]; then
+  LINE2="${LINE2_SEGMENTS[0]}"
+  for ((i = 1; i < ${#LINE2_SEGMENTS[@]}; i++)); do
+    LINE2="${LINE2}  ${DIM}|${RESET}  ${LINE2_SEGMENTS[$i]}"
+  done
+  printf '%b\n' "$LINE2"
+fi

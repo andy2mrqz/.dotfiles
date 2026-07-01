@@ -191,4 +191,6 @@
     "/Users/andrewmarquez/.config/yaml-schemas/compose-spec.json": "{compose.yml,compose.yaml,docker-compose.yml,**/compose.yml,**/compose.yaml,**/docker-compose.yml}",
   },
   "datadog.staticAnalysis.notification.suppressOnboarding": true,
+  "search.seedOnFocus": true,
+  "css.lint.unknownAtRules": "ignore",
 }
