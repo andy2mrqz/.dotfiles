@@ -30,10 +30,12 @@ EOF
   exit 0
 fi
 
-# --- normal invocation: read the Stop hook payload from stdin -------
+# --- normal invocation: read the hook payload from stdin ------------
 PAYLOAD=$(cat)
 CWD=$(jq -r '.cwd // empty' <<< "$PAYLOAD")
 TRANSCRIPT=$(jq -r '.transcript_path // empty' <<< "$PAYLOAD")
+EVENT=$(jq -r '.hook_event_name // empty' <<< "$PAYLOAD")
+TOOL_NAME=$(jq -r '.tool_name // empty' <<< "$PAYLOAD")
 PROJECT=$(basename "${CWD:-Claude Code}")
 
 # Controlling tty of this hook, i.e. the Ghostty pty Claude Code is running in.
@@ -55,7 +57,8 @@ user_is_watching() {
   [ -z "$TTY" ] && return 1
   local front
   front=$(osa -e 'tell application "System Events" to get name of first application process whose frontmost is true' 2>/dev/null || echo "")
-  [ "$front" != "Ghostty" ] && return 1
+  front=$(tr '[:upper:]' '[:lower:]' <<< "$front")
+  [ "$front" != "ghostty" ] && return 1
   local cur
   cur=$(osa -e 'tell application "Ghostty" to return tty of (focused terminal of (selected tab of front window))' 2>/dev/null || echo "")
   [ "$cur" = "$TTY" ]
@@ -71,18 +74,54 @@ if [ -n "$TTY" ]; then
 fi
 [ -z "$SUBJECT" ] && SUBJECT="$PROJECT"
 
-# Message: preview of the response's first text, from the last assistant
-# turn in the transcript. Falls back to a generic message.
+# Message: for events where Claude is blocked waiting on the user, build a
+# preview from the payload itself (the last assistant turn is stale/unrelated
+# in those cases). For a plain Stop (or unrecognized event), fall back to the
+# previous behavior of previewing the last assistant turn's text.
 PREVIEW=""
-if [ -n "$TRANSCRIPT" ] && [ -f "$TRANSCRIPT" ]; then
-  LAST_ASSISTANT_LINE=$(tail -r "$TRANSCRIPT" 2>/dev/null | rg -m 1 '"type":"assistant"' || true)
-  if [ -n "$LAST_ASSISTANT_LINE" ]; then
-    PREVIEW=$(jq -r '(.message.content | if type == "array" then (map(select(.type == "text") | .text) | first) else . end) // ""' \
-      <<< "$LAST_ASSISTANT_LINE" 2>/dev/null | tr -s '[:space:]' ' ' | sed -E 's/^ +//;s/ +$//')
-    PREVIEW="${PREVIEW:0:100}"
+case "$EVENT" in
+  PreToolUse)
+    if [ "$TOOL_NAME" = "AskUserQuestion" ]; then
+      PREVIEW=$(jq -r '.tool_input.questions[0].question // empty' <<< "$PAYLOAD")
+      [ -n "$PREVIEW" ] && PREVIEW="Question: $PREVIEW"
+    fi
+    ;;
+  PermissionRequest)
+    [ -n "$TOOL_NAME" ] && PREVIEW="Needs permission to use $TOOL_NAME"
+    ;;
+  Elicitation)
+    PREVIEW=$(jq -r '.message // .prompt // empty' <<< "$PAYLOAD")
+    [ -n "$PREVIEW" ] && PREVIEW="MCP input needed: $PREVIEW"
+    ;;
+  StopFailure)
+    PREVIEW=$(jq -r '.error_type // .error.type // .error // empty' <<< "$PAYLOAD")
+    if [ -n "$PREVIEW" ]; then
+      PREVIEW="Turn failed: $PREVIEW"
+    else
+      PREVIEW="Turn ended due to an error"
+    fi
+    ;;
+esac
+PREVIEW="${PREVIEW:0:100}"
+
+if [ -z "$PREVIEW" ] && { [ -z "$EVENT" ] || [ "$EVENT" = "Stop" ]; }; then
+  if [ -n "$TRANSCRIPT" ] && [ -f "$TRANSCRIPT" ]; then
+    LAST_ASSISTANT_LINE=$(tail -r "$TRANSCRIPT" 2>/dev/null | rg -m 1 '"type":"assistant"' || true)
+    if [ -n "$LAST_ASSISTANT_LINE" ]; then
+      PREVIEW=$(jq -r '(.message.content | if type == "array" then (map(select(.type == "text") | .text) | first) else . end) // ""' \
+        <<< "$LAST_ASSISTANT_LINE" 2>/dev/null | tr -s '[:space:]' ' ' | sed -E 's/^ +//;s/ +$//')
+      PREVIEW="${PREVIEW:0:100}"
+    fi
   fi
 fi
-[ -z "$PREVIEW" ] && PREVIEW="Ready for input"
+
+if [ -z "$PREVIEW" ]; then
+  if [ -n "$EVENT" ] && [ "$EVENT" != "Stop" ]; then
+    PREVIEW="Claude needs your attention ($EVENT)"
+  else
+    PREVIEW="Ready for input"
+  fi
+fi
 
 HOOK_PATH="$HOME/.claude/hooks/notify.sh"
 ARGS=(-title "Claude Code" -subtitle "$SUBJECT" -message "$PREVIEW" -sound default -group "claude-${TTY:-$PROJECT}")

@@ -19,6 +19,55 @@
           }
         ]
       }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/andrewmarquez/.claude/hooks/notify.sh",
+            "timeout": 15,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/andrewmarquez/.claude/hooks/notify.sh",
+            "timeout": 15,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Elicitation": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/andrewmarquez/.claude/hooks/notify.sh",
+            "timeout": 15,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/andrewmarquez/.claude/hooks/notify.sh",
+            "timeout": 15,
+            "async": true
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
@@ -42,7 +91,7 @@
       }
     }
   },
-  "effortLevel": "high",
+  "effortLevel": "medium",
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "editorMode": "vim",
