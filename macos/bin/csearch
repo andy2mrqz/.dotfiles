@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+#
+# csearch — search Claude Code session transcripts by keyword (newest first).
+#
+# Usage: csearch [-c CTX] [-n MAX] <keyword>
+#   -c CTX   chars of context shown each side of the match (default 140)
+#   -n MAX   max snippets shown per session            (default 3)
+#   keyword  treated as a regex; matched case-insensitively
+#
+# Prints, per matching session: last-modified time, raw hit count, project
+# dir, a ready-to-paste `claude --resume` command, and up to MAX snippets of
+# the human-readable message text around the keyword (role-tagged).
+#
+# Needs: rg, jq.
+
+# NB: deliberately NOT using `set -e`/`pipefail` — rg exits 1 on "no match",
+# which is expected here (e.g. metadata-only hits, or zero results), and would
+# otherwise kill the script mid-loop. `set -u` only.
+set -u
+
+ctx=140
+max=3
+kw=""
+root="${HOME}/.claude/projects"
+
+usage() {
+    cat >&2 <<'EOF'
+csearch — search Claude Code session transcripts by keyword (newest first).
+
+Usage: csearch [-c CTX] [-n MAX] <keyword>
+  -c CTX   chars of context shown each side of the match (default 140)
+  -n MAX   max snippets shown per session                (default 3)
+  -h       show this help
+  keyword  treated as a regex; matched case-insensitively
+
+Flags may appear before or after the keyword. Use `--` to force what
+follows to be treated as the keyword (e.g. a keyword starting with `-`).
+EOF
+    exit "${1:-0}"
+}
+
+die() { echo "csearch: $1" >&2; exit "${2:-2}"; }
+
+# Manual parse so flags work in ANY position (getopts stops at the first
+# non-option arg, which silently dropped flags placed after the keyword).
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help) usage 0 ;;
+        -c) [[ $# -ge 2 ]] || die "-c requires an argument"; ctx=$2; shift 2 ;;
+        -n) [[ $# -ge 2 ]] || die "-n requires an argument"; max=$2; shift 2 ;;
+        -c*) ctx=${1#-c}; shift ;;
+        -n*) max=${1#-n}; shift ;;
+        --) shift; [[ $# -ge 1 ]] && { kw=$1; shift; } ;;
+        -*) die "unknown option: $1" ;;
+        *)  [[ -z $kw ]] || die "multiple keywords ('$kw', '$1') — quote the keyword"; kw=$1; shift ;;
+    esac
+done
+
+[[ -n $kw ]] || { echo "csearch: missing <keyword>" >&2; usage 2; }
+[[ $ctx =~ ^[0-9]+$ ]] || die "-c must be a non-negative integer (got '$ctx')"
+[[ $max =~ ^[0-9]+$ ]] || die "-n must be a non-negative integer (got '$max')"
+
+for dep in rg jq; do
+    command -v "$dep" >/dev/null || { echo "csearch: '$dep' not found on PATH" >&2; exit 1; }
+done
+
+if [[ ! -d $root ]]; then
+    echo "csearch: no transcripts dir at $root" >&2
+    exit 1
+fi
+
+rg -l -i --sortr modified --glob '*.jsonl' -- "$kw" "$root" | while read -r f; do
+    id=$(basename "$f" .jsonl)
+    when=$(stat -f '%Sm' "$f")
+    n=$(rg -ic -- "$kw" "$f")
+    # The real working dir is stored in the transcript (the encoded dir name
+    # can't be decoded reliably — `/`->`-` is lossy when dir names contain `-`).
+    cwd=$(rg -m1 -N '"cwd":' "$f" | jq -r '.cwd // empty' 2>/dev/null)
+    if [[ -n $cwd ]]; then
+        resume="cd \"$cwd\" && claude --resume $id"
+    else
+        cwd=$(basename "$(dirname "$f")")   # encoded fallback
+        resume="claude --resume $id"
+    fi
+    printf '\n%s  (%s matching lines)\n  project: %s\n  resume:  %s\n' \
+        "$when" "$n" "$cwd" "$resume"
+
+    # matching lines -> pull role + plain text -> show a window around the
+    # keyword. Skip lines where the hit is only in JSON metadata (no human
+    # text), and stop after $max useful snippets.
+    count=0
+    while IFS= read -r line; do
+        # content is either a string (user msgs) or an array of blocks;
+        # grab the string form plus every nested .text field.
+        text=$(printf '%s' "$line" | jq -r '
+            [ (.message.content | select(type=="string")),
+              (.. | .text? | select(type=="string")) ]
+            | map(select(. != null and . != "")) | join(" ")' 2>/dev/null)
+        snip=$(printf '%s' "$text" | tr '\n\t' '  ' | rg -i -o ".{0,$ctx}${kw}.{0,$ctx}" | head -1)
+        [[ -z $snip ]] && continue
+        role=$(printf '%s' "$line" | jq -r '.type // "?"' 2>/dev/null)
+        printf '  [%s] …%s…\n' "$role" "$snip"
+        count=$((count + 1))
+        [[ $count -ge $max ]] && break
+    done < <(rg -i -- "$kw" "$f")
+done
